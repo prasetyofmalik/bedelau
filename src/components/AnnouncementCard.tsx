@@ -28,18 +28,18 @@ export const AnnouncementCard = ({ title, status, date, description }: Announcem
     }
   };
 
-  const getBadgeVariant = (status: AnnouncementStatus): "destructive" | "warning" | "secondary" | "default" => {
+  const getBadgeVariant = (status: AnnouncementStatus): "destructive" | "secondary" | "default" | "outline" => {
     switch (status) {
       case "critical":
         return "destructive";
       case "high":
-        return "warning";
+        return "secondary";
       case "medium":
         return "secondary";
       case "low":
         return "default";
       case "general":
-        return "secondary";
+        return "outline";
       default:
         return "default";
     }
