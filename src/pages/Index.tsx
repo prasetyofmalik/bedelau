@@ -5,8 +5,84 @@ import { AnnouncementCard } from "@/components/AnnouncementCard";
 import { PostCard } from "@/components/PostCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+import { useState } from "react";
 
 const Index = () => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const postsPerPage = 6;
+
+  const posts = [
+    {
+      title: "Post 1 Headline",
+      date: "Jum, 13 Des 2023",
+      image: "https://picsum.photos/800/600",
+    },
+    {
+      title: "Post 2 Headline",
+      date: "Jum, 20 Des 2024",
+      image: "https://random-image-pepebigotes.vercel.app/api/random-image",
+    },
+    {
+      title: "Post 3 Headline",
+      date: "Jum, 27 Des 2024",
+      image: "https://loremflickr.com/800/600",
+    },
+    {
+      title: "Post 4 Headline",
+      date: "Jum, 13 Des 2023",
+      image: "https://picsum.photos/800/600",
+    },
+    {
+      title: "Post 5 Headline",
+      date: "Jum, 20 Des 2024",
+      image: "https://random-image-pepebigotes.vercel.app/api/random-image",
+    },
+    {
+      title: "Post 6 Headline",
+      date: "Jum, 27 Des 2024",
+      image: "https://loremflickr.com/800/600",
+    },
+    {
+      title: "Post 7 Headline",
+      date: "Jum, 13 Des 2023",
+      image: "https://picsum.photos/800/600",
+    },
+    {
+      title: "Post 8 Headline",
+      date: "Jum, 20 Des 2024",
+      image: "https://random-image-pepebigotes.vercel.app/api/random-image",
+    },
+    {
+      title: "Post 9 Headline",
+      date: "Jum, 27 Des 2024",
+      image: "https://loremflickr.com/800/600",
+    },
+    {
+      title: "Post 10 Headline",
+      date: "Jum, 13 Des 2023",
+      image: "https://picsum.photos/800/600",
+    },
+    {
+      title: "Post 11 Headline",
+      date: "Jum, 20 Des 2024",
+      image: "https://random-image-pepebigotes.vercel.app/api/random-image",
+    },
+  ];
+
+  // Calculate pagination
+  const totalPages = Math.ceil(posts.length / postsPerPage);
+  const indexOfLastPost = currentPage * postsPerPage;
+  const indexOfFirstPost = indexOfLastPost - postsPerPage;
+  const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
+
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
       <Header />
@@ -99,72 +175,56 @@ const Index = () => {
 
         {/* Latest Posts Section */}
         <section className="py-12 container mx-auto px-4">
-            <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-8">
-            <h2 className="text-2xl font-bold mb-4 md:mb-0">
-              Postingan Terbaru
-            </h2>
+          <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-8">
+            <h2 className="text-2xl font-bold mb-4 md:mb-0">Postingan Terbaru</h2>
             <Input
               type="search"
               placeholder="Cari postingan..."
               className="w-full md:w-1/2 lg:w-1/3"
             />
-            </div>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <PostCard
-              title="Post 1 Headline"
-              date="Jum, 13 Des 2023"
-              image="https://picsum.photos/800/600"
-            />
-            <PostCard
-              title="Post 2 Headline"
-              date="Jum, 20 Des 2024"
-              image="https://random-image-pepebigotes.vercel.app/api/random-image"
-            />
-            <PostCard
-              title="Post 3 Headline"
-              date="Jum, 27 Des 2024"
-              image="https://loremflickr.com/800/600"
-            />
-            <PostCard
-              title="Post 4 Headline"
-              date="Jum, 13 Des 2023"
-              image="https://picsum.photos/800/600"
-            />
-            <PostCard
-              title="Post 5 Headline"
-              date="Jum, 20 Des 2024"
-              image="https://random-image-pepebigotes.vercel.app/api/random-image"
-            />
-            <PostCard
-              title="Post 6 Headline"
-              date="Jum, 27 Des 2024"
-              image="https://loremflickr.com/800/600"
-            />
-            <PostCard
-              title="Post 7 Headline"
-              date="Jum, 13 Des 2023"
-              image="https://picsum.photos/800/600"
-            />
-            <PostCard
-              title="Post 8 Headline"
-              date="Jum, 20 Des 2024"
-              image="https://random-image-pepebigotes.vercel.app/api/random-image"
-            />
-            <PostCard
-              title="Post 9 Headline"
-              date="Jum, 27 Des 2024"
-              image="https://loremflickr.com/800/600"
-            />
-            <PostCard
-              title="Post 10 Headline"
-              date="Jum, 13 Des 2023"
-              image="https://picsum.photos/800/600"
-            />
-            <PostCard
-              title="Post 11 Headline"
-              date="Jum, 20 Des 2024"
-              image="https://random-image-pepebigotes.vercel.app/api/random-image"
-            />
+            {currentPosts.map((post, index) => (
+              <PostCard
+                key={index}
+                title={post.title}
+                date={post.date}
+                image={post.image}
+              />
+            ))}
+          </div>
+          
+          {/* Pagination */}
+          <div className="mt-8">
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious
+                    onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                    className={currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                  />
+                </PaginationItem>
+                
+                {[...Array(totalPages)].map((_, index) => (
+                  <PaginationItem key={index}>
+                    <PaginationLink
+                      onClick={() => setCurrentPage(index + 1)}
+                      isActive={currentPage === index + 1}
+                      className="cursor-pointer"
+                    >
+                      {index + 1}
+                    </PaginationLink>
+                  </PaginationItem>
+                ))}
+                
+                <PaginationItem>
+                  <PaginationNext
+                    onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                    className={currentPage === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
           </div>
         </section>
       </main>
