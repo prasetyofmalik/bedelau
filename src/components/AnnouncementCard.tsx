@@ -52,7 +52,7 @@ export const AnnouncementCard = ({ title, status, date, description }: Announcem
       case "high":
         return "bg-orange-500 hover:bg-orange-600 text-white";
       case "medium":
-        return "bg-violet-500 hover:bg-violet-600 text-white";
+        return "bg-yellow-500 hover:bg-yellow-600 text-white";
       case "low":
         return "";
       case "general":
