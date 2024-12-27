@@ -27,29 +27,47 @@ const Index = () => {
           </div>
         </section>
 
-        {/* Announcements Section - Moved up */}
+        {/* Announcements Section */}
         <section className="py-12 bg-white">
           <div className="container mx-auto px-4">
             <h2 className="text-2xl font-bold mb-2">Announcements</h2>
             <p className="text-secondary mb-8">Stay updated with the latest announcements and updates</p>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <AnnouncementCard
-                title="System Maintenance"
-                status="urgent"
-                date="3 mo ago"
-                description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore."
+                title="Warning: System Emergency Maintenance"
+                status="critical"
+                date="10 min ago"
+                description="Emergency system maintenance required. All services will be unavailable for approximately 30 minutes starting at 15:00 UTC."
               />
               <AnnouncementCard
-                title="New Feature Release"
-                status="warning"
-                date="20 min ago"
-                description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore."
+                title="Important Meeting Schedule Changes"
+                status="high"
+                date="1 hour ago"
+                description="The quarterly review meeting has been rescheduled to next Monday. All department heads must attend."
+              />
+              <AnnouncementCard
+                title="Updated Company Policies"
+                status="medium"
+                date="2 days ago"
+                description="New workplace policies have been implemented. Please review the updated documentation in the company portal."
+              />
+              <AnnouncementCard
+                title="Company Social Event Next Week"
+                status="low"
+                date="3 days ago"
+                description="Join us for the annual company picnic next Saturday at Central Park. Family members are welcome!"
+              />
+              <AnnouncementCard
+                title="New Office Equipment Arrival"
+                status="general"
+                date="1 week ago"
+                description="New printers have been installed on each floor. Please check your email for usage guidelines."
               />
             </div>
           </div>
         </section>
 
-        {/* Stats Section - Moved down */}
+        {/* Stats Section */}
         <section className="py-12 container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <StatsCard
