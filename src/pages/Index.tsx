@@ -88,17 +88,17 @@ const Index = () => {
             <PostCard
               title="Post 1 Headline"
               date="Fri, Dec 15 2023"
-              image="https://source.unsplash.com/random/800x600?workflow"
+              image="https://picsum.photos/800/600"
             />
             <PostCard
               title="Post 2 Headline"
               date="Fri, Dec 20 2024"
-              image="https://source.unsplash.com/random/800x600?office"
+              image="https://picsum.photos/800/600"
             />
             <PostCard
               title="Post 3 Headline"
               date="Fri, Dec 25 2024"
-              image="https://source.unsplash.com/random/800x600?management"
+              image="https://picsum.photos/800/600"
             />
           </div>
         </section>
