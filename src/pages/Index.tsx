@@ -27,7 +27,29 @@ const Index = () => {
           </div>
         </section>
 
-        {/* Stats Section */}
+        {/* Announcements Section - Moved up */}
+        <section className="py-12 bg-white">
+          <div className="container mx-auto px-4">
+            <h2 className="text-2xl font-bold mb-2">Announcements</h2>
+            <p className="text-secondary mb-8">Stay updated with the latest announcements and updates</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <AnnouncementCard
+                title="System Maintenance"
+                status="urgent"
+                date="3 mo ago"
+                description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore."
+              />
+              <AnnouncementCard
+                title="New Feature Release"
+                status="warning"
+                date="20 min ago"
+                description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore."
+              />
+            </div>
+          </div>
+        </section>
+
+        {/* Stats Section - Moved down */}
         <section className="py-12 container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <StatsCard
@@ -50,27 +72,6 @@ const Index = () => {
               title="Work Teams"
               value={15}
             />
-          </div>
-        </section>
-
-        {/* Announcements Section */}
-        <section className="py-12 bg-white">
-          <div className="container mx-auto px-4">
-            <h2 className="text-2xl font-bold mb-8">Announcements</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <AnnouncementCard
-                title="System Maintenance"
-                status="urgent"
-                date="3 mo ago"
-                description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore."
-              />
-              <AnnouncementCard
-                title="New Feature Release"
-                status="warning"
-                date="20 min ago"
-                description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore."
-              />
-            </div>
           </div>
         </section>
 
