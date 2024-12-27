@@ -93,12 +93,12 @@ const Index = () => {
             <PostCard
               title="Post 2 Headline"
               date="Fri, Dec 20 2024"
-              image="https://picsum.photos/800/600"
+              image="https://random-image-pepebigotes.vercel.app/api/random-image"
             />
             <PostCard
               title="Post 3 Headline"
               date="Fri, Dec 25 2024"
-              image="https://picsum.photos/800/600"
+              image="https://loremflickr.com/800/600"
             />
           </div>
         </section>
