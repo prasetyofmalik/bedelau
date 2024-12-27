@@ -162,21 +162,26 @@ const Index = () => {
               ]}
             />
             <StatsCard
-              title="Jumlah Proyek"
+              title="Jumlah Surat"
               value={204}
               subStats={[
-                { label: "Aktif", value: 24 },
-                { label: "Terarsip", value: 180 },
+                { label: "Masuk", value: 24 },
+                { label: "Keluar", value: 180 },
               ]}
             />
-            <StatsCard title="Tim Kerja" value={15} />
+            <StatsCard
+              title="Jumlah Tim Kerja"
+              value={7}
+            />
           </div>
         </section>
 
         {/* Latest Posts Section */}
         <section className="py-12 container mx-auto px-4">
           <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-8">
-            <h2 className="text-2xl font-bold mb-4 md:mb-0">Postingan Terbaru</h2>
+            <h2 className="text-2xl font-bold mb-4 md:mb-0">
+              Postingan Terbaru
+            </h2>
             <Input
               type="search"
               placeholder="Cari postingan..."
@@ -193,18 +198,24 @@ const Index = () => {
               />
             ))}
           </div>
-          
+
           {/* Pagination */}
           <div className="mt-8">
             <Pagination>
               <PaginationContent>
                 <PaginationItem>
                   <PaginationPrevious
-                    onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                    className={currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                    onClick={() =>
+                      setCurrentPage((prev) => Math.max(prev - 1, 1))
+                    }
+                    className={
+                      currentPage === 1
+                        ? "pointer-events-none opacity-50"
+                        : "cursor-pointer"
+                    }
                   />
                 </PaginationItem>
-                
+
                 {[...Array(totalPages)].map((_, index) => (
                   <PaginationItem key={index}>
                     <PaginationLink
@@ -216,11 +227,17 @@ const Index = () => {
                     </PaginationLink>
                   </PaginationItem>
                 ))}
-                
+
                 <PaginationItem>
                   <PaginationNext
-                    onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-                    className={currentPage === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                    onClick={() =>
+                      setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                    }
+                    className={
+                      currentPage === totalPages
+                        ? "pointer-events-none opacity-50"
+                        : "cursor-pointer"
+                    }
                   />
                 </PaginationItem>
               </PaginationContent>
