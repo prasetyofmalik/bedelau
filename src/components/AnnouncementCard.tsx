@@ -33,15 +33,32 @@ export const AnnouncementCard = ({ title, status, date, description }: Announcem
       case "critical":
         return "destructive";
       case "high":
-        return "secondary";
+        return "destructive";
       case "medium":
-        return "secondary";
+        return "destructive";
       case "low":
         return "default";
       case "general":
         return "outline";
       default:
         return "default";
+    }
+  };
+
+  const getBadgeStyles = (status: AnnouncementStatus): string => {
+    switch (status) {
+      case "critical":
+        return "bg-red-500 hover:bg-red-600 text-white";
+      case "high":
+        return "bg-orange-500 hover:bg-orange-600 text-white";
+      case "medium":
+        return "bg-violet-500 hover:bg-violet-600 text-white";
+      case "low":
+        return "";
+      case "general":
+        return "";
+      default:
+        return "";
     }
   };
 
@@ -63,13 +80,16 @@ export const AnnouncementCard = ({ title, status, date, description }: Announcem
   };
 
   return (
-    <Card className={`p-6 hover:shadow-lg transition-shadow duration-200 ${getBgColor(status)}`}>
+    <Card className={`p-6 hover:shadow-lg transition-shadow duration-200 ${getBgColor(status)} cursor-pointer`}>
       <div className="flex justify-between items-start mb-4">
         <div className="flex items-center gap-2">
           <span className="text-lg" aria-hidden="true">{getStatusIcon(status)}</span>
           <h3 className="font-semibold text-lg">{title}</h3>
         </div>
-        <Badge variant={getBadgeVariant(status)} className="capitalize">
+        <Badge 
+          variant={getBadgeVariant(status)} 
+          className={`capitalize ${getBadgeStyles(status)}`}
+        >
           {status}
         </Badge>
       </div>
