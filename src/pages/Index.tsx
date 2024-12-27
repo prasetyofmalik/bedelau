@@ -10,7 +10,7 @@ const Index = () => {
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
       <Header />
-      
+
       <main className="flex-1">
         {/* Hero Section */}
         <section className="bg-gradient-to-r from-primary to-blue-800 text-white py-20">
@@ -25,7 +25,7 @@ const Index = () => {
               size="lg"
               variant="secondary"
               className="bg-white text-primary hover:bg-gray-100"
-              onClick={() => window.location.href = '/login'}
+              onClick={() => (window.location.href = "/login")}
             >
               Mulai Sekarang
             </Button>
@@ -36,7 +36,9 @@ const Index = () => {
         <section className="py-12 bg-white">
           <div className="container mx-auto px-4">
             <h2 className="text-2xl font-bold mb-2">Pengumuman</h2>
-            <p className="text-secondary mb-8">Tetap terinformasi dengan pengumuman dan pembaruan terbaru</p>
+            <p className="text-secondary mb-8">
+              Tetap terinformasi dengan pengumuman dan pembaruan terbaru
+            </p>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <AnnouncementCard
                 title="Warning: System Emergency Maintenance"
@@ -91,23 +93,22 @@ const Index = () => {
                 { label: "Terarsip", value: 180 },
               ]}
             />
-            <StatsCard
-              title="Tim Kerja"
-              value={15}
-            />
+            <StatsCard title="Tim Kerja" value={15} />
           </div>
         </section>
 
         {/* Latest Posts Section */}
         <section className="py-12 container mx-auto px-4">
-          <div className="flex justify-between items-center mb-8">
-            <h2 className="text-2xl font-bold">Postingan Terbaru</h2>
+            <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-8">
+            <h2 className="text-2xl font-bold mb-4 md:mb-0">
+              Postingan Terbaru
+            </h2>
             <Input
               type="search"
               placeholder="Cari postingan..."
-              className="max-w-xs"
+              className="w-full md:w-1/2 lg:w-1/3"
             />
-          </div>
+            </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <PostCard
               title="Post 1 Headline"
@@ -123,6 +124,46 @@ const Index = () => {
               title="Post 3 Headline"
               date="Jum, 27 Des 2024"
               image="https://loremflickr.com/800/600"
+            />
+            <PostCard
+              title="Post 4 Headline"
+              date="Jum, 13 Des 2023"
+              image="https://picsum.photos/800/600"
+            />
+            <PostCard
+              title="Post 5 Headline"
+              date="Jum, 20 Des 2024"
+              image="https://random-image-pepebigotes.vercel.app/api/random-image"
+            />
+            <PostCard
+              title="Post 6 Headline"
+              date="Jum, 27 Des 2024"
+              image="https://loremflickr.com/800/600"
+            />
+            <PostCard
+              title="Post 7 Headline"
+              date="Jum, 13 Des 2023"
+              image="https://picsum.photos/800/600"
+            />
+            <PostCard
+              title="Post 8 Headline"
+              date="Jum, 20 Des 2024"
+              image="https://random-image-pepebigotes.vercel.app/api/random-image"
+            />
+            <PostCard
+              title="Post 9 Headline"
+              date="Jum, 27 Des 2024"
+              image="https://loremflickr.com/800/600"
+            />
+            <PostCard
+              title="Post 10 Headline"
+              date="Jum, 13 Des 2023"
+              image="https://picsum.photos/800/600"
+            />
+            <PostCard
+              title="Post 11 Headline"
+              date="Jum, 20 Des 2024"
+              image="https://random-image-pepebigotes.vercel.app/api/random-image"
             />
           </div>
         </section>
