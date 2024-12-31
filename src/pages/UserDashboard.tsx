@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
+import { Header } from "@/components/Header";
 import { UserDashboardWelcome } from "@/components/user-dashboard/UserDashboardWelcome";
 import { UserDashboardSearch } from "@/components/user-dashboard/UserDashboardSearch";
 import { UserAnnouncementViewer } from "@/components/user-dashboard/UserAnnouncementViewer";
@@ -42,7 +43,8 @@ const UserDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto px-4 py-8">
+      <Header />
+      <main className="container mx-auto px-4 py-8">
         <UserDashboardWelcome profile={profile} />
         <UserDashboardSearch />
         <div className="grid gap-6 mt-8">
@@ -50,7 +52,7 @@ const UserDashboard = () => {
           <UserEmployeeDirectory />
           <UserPostManager userId={session?.user?.id} />
         </div>
-      </div>
+      </main>
     </div>
   );
 };
