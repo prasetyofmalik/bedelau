@@ -47,20 +47,36 @@ export default function Login() {
         throw new Error("No user data returned");
       }
 
-      // Then fetch their profile with proper authentication
-      const { data: profile, error: profileError } = await supabase
+      // Then fetch their profile
+      let { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select('role')
         .eq('id', authData.user.id)
         .single();
 
-      if (profileError) {
+      // If no profile exists, create one with default role 'user'
+      if (!profile) {
+        const { data: newProfile, error: insertError } = await supabase
+          .from('profiles')
+          .insert([
+            { 
+              id: authData.user.id,
+              role: 'user',
+              email: authData.user.email
+            }
+          ])
+          .select('role')
+          .single();
+
+        if (insertError) {
+          console.error('Profile creation error:', insertError);
+          throw new Error("Error creating user profile");
+        }
+
+        profile = newProfile;
+      } else if (profileError) {
         console.error('Profile fetch error:', profileError);
         throw new Error("Error fetching user profile");
-      }
-
-      if (!profile) {
-        throw new Error("No profile found");
       }
 
       toast({
