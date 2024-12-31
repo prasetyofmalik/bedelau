@@ -33,21 +33,35 @@ export default function Login() {
   async function onSubmit(values: LoginFormValues) {
     setIsLoading(true);
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
+      // First, sign in the user
+      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
         email: values.email,
         password: values.password,
       });
 
-      if (error) {
-        throw error;
+      if (authError) {
+        throw authError;
       }
 
-      // Check user role from metadata
-      const { data: profile } = await supabase
+      if (!authData.user) {
+        throw new Error("No user data returned");
+      }
+
+      // Then fetch their profile with proper authentication
+      const { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select('role')
-        .eq('id', data.user.id)
+        .eq('id', authData.user.id)
         .single();
+
+      if (profileError) {
+        console.error('Profile fetch error:', profileError);
+        throw new Error("Error fetching user profile");
+      }
+
+      if (!profile) {
+        throw new Error("No profile found");
+      }
 
       toast({
         title: "Login successful",
@@ -55,12 +69,13 @@ export default function Login() {
       });
 
       // Redirect based on role
-      if (profile?.role === 'admin') {
+      if (profile.role === 'admin') {
         navigate('/admin');
       } else {
         navigate('/user');
       }
     } catch (error) {
+      console.error('Login error:', error);
       toast({
         variant: "destructive",
         title: "Login failed",
