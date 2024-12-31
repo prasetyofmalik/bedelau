@@ -44,14 +44,17 @@ export function LoginForm() {
       }
 
       // Then fetch their profile
+      let userProfile = null;
       const { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select('role')
         .eq('id', authData.user.id)
         .maybeSingle();
 
-      // If no profile exists or there was an error fetching it, create one with default role 'user'
-      if (!profile || profileError) {
+      if (profile && !profileError) {
+        userProfile = profile;
+      } else {
+        // Create new profile if none exists
         const { data: newProfile, error: insertError } = await supabase
           .from('profiles')
           .insert([
@@ -69,9 +72,7 @@ export function LoginForm() {
           throw new Error("Error creating user profile");
         }
 
-        if (newProfile) {
-          profile = newProfile;
-        }
+        userProfile = newProfile;
       }
 
       toast({
@@ -80,7 +81,7 @@ export function LoginForm() {
       });
 
       // Redirect based on role
-      if (profile?.role === 'admin') {
+      if (userProfile?.role === 'admin') {
         navigate('/admin');
       } else {
         navigate('/user');
