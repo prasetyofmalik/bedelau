@@ -52,19 +52,21 @@ export default function Login() {
         .from('profiles')
         .select('role')
         .eq('id', authData.user.id)
-        .single();
+        .maybeSingle(); // Use maybeSingle() instead of single()
 
-      // If no profile exists, create one with default role 'user'
-      if (!profile) {
+      // If no profile exists or there was an error fetching it, create one with default role 'user'
+      if (!profile || profileError) {
         const { data: newProfile, error: insertError } = await supabase
           .from('profiles')
-          .insert([
+          .upsert([ // Use upsert instead of insert
             { 
               id: authData.user.id,
               role: 'user',
               email: authData.user.email
             }
-          ])
+          ], {
+            onConflict: 'id'
+          })
           .select('role')
           .single();
 
@@ -74,9 +76,6 @@ export default function Login() {
         }
 
         profile = newProfile;
-      } else if (profileError) {
-        console.error('Profile fetch error:', profileError);
-        throw new Error("Error fetching user profile");
       }
 
       toast({
