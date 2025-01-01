@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LucideIcon } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface TeamCardProps {
   name: string;
@@ -8,8 +9,19 @@ interface TeamCardProps {
 }
 
 export function TeamCard({ name, icon: Icon, color }: TeamCardProps) {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    if (name === "Subbagian Umum") {
+      navigate('/monitoring/general-subsection');
+    }
+  };
+
   return (
-    <Card className="hover:shadow-lg transition-shadow">
+    <Card 
+      className="hover:shadow-lg transition-shadow cursor-pointer" 
+      onClick={handleClick}
+    >
       <CardHeader className="space-y-1">
         <CardTitle className="flex items-center gap-2">
           <Icon className={`h-6 w-6 ${color}`} />
