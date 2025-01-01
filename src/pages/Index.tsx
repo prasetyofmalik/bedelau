@@ -172,6 +172,7 @@ const Index = () => {
             <StatsCard
               title="Jumlah Tim Kerja"
               value={7}
+              redirectTo="/monitoring"
             />
           </div>
         </section>

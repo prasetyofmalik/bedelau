@@ -1,14 +1,27 @@
 import { Card } from "@/components/ui/card";
+import { useNavigate } from "react-router-dom";
 
 interface StatsCardProps {
   title: string;
   value: number;
   subStats?: { label: string; value: number }[];
+  redirectTo?: string;
 }
 
-export const StatsCard = ({ title, value, subStats }: StatsCardProps) => {
+export const StatsCard = ({ title, value, subStats, redirectTo }: StatsCardProps) => {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    if (redirectTo) {
+      navigate(redirectTo);
+    }
+  };
+
   return (
-    <Card className="p-6 hover:shadow-lg transition-shadow duration-200">
+    <Card 
+      className={`p-6 hover:shadow-lg transition-shadow duration-200 ${redirectTo ? 'cursor-pointer' : ''}`}
+      onClick={handleClick}
+    >
       <h3 className="text-secondary text-sm font-medium">{title}</h3>
       <p className="text-3xl font-bold mt-2">{value}</p>
       {subStats && (
