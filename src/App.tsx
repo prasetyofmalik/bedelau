@@ -9,6 +9,7 @@ import Login from "./pages/Login";
 import AdminDashboard from "./pages/AdminDashboard";
 import UserDashboard from "./pages/UserDashboard";
 import Monitoring from "./pages/Monitoring";
+import GeneralSubsection from "./pages/GeneralSubsection";
 
 const queryClient = new QueryClient();
 
@@ -24,6 +25,7 @@ const App = () => (
           <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
           <Route path="/user" element={<ProtectedRoute><UserDashboard /></ProtectedRoute>} />
           <Route path="/monitoring" element={<ProtectedRoute><Monitoring /></ProtectedRoute>} />
+          <Route path="/general-subsection" element={<ProtectedRoute><GeneralSubsection /></ProtectedRoute>} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
