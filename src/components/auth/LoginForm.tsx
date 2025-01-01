@@ -76,8 +76,8 @@ export function LoginForm() {
       }
 
       toast({
-        title: "Login successful",
-        description: "Redirecting to dashboard...",
+        title: "Login berhasil",
+        description: "Mengarahkan ke dasbor...",
       });
 
       // Redirect based on role
@@ -90,8 +90,8 @@ export function LoginForm() {
       console.error('Login error:', error);
       toast({
         variant: "destructive",
-        title: "Login failed",
-        description: error instanceof Error ? error.message : "Please check your credentials and try again",
+        title: "Login gagal",
+        description: error instanceof Error ? error.message : "Kredensial tidak valid. Silakan periksa dan coba kembali.",
       });
     }
   }
@@ -108,7 +108,7 @@ export function LoginForm() {
               <FormControl>
                 <Input
                   type="email"
-                  placeholder="Enter your email"
+                  placeholder="Masukkan email"
                   {...field}
                 />
               </FormControl>
@@ -122,11 +122,11 @@ export function LoginForm() {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Password</FormLabel>
+              <FormLabel>Kata Sandi</FormLabel>
               <FormControl>
                 <Input
                   type="password"
-                  placeholder="Enter your password"
+                  placeholder="Masukkan kata sandi"
                   {...field}
                 />
               </FormControl>
@@ -139,7 +139,7 @@ export function LoginForm() {
           type="submit"
           className="w-full"
         >
-          Sign in
+          Masuk
         </Button>
       </form>
     </Form>

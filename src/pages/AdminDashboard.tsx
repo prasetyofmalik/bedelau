@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
@@ -56,9 +55,9 @@ export default function AdminDashboard() {
         
         <Tabs defaultValue="announcements" className="mt-8">
           <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="announcements">Announcements</TabsTrigger>
-            <TabsTrigger value="employees">Employees</TabsTrigger>
-            <TabsTrigger value="posts">Posts</TabsTrigger>
+            <TabsTrigger value="announcements">Pengumuman</TabsTrigger>
+            <TabsTrigger value="employees">Pegawai</TabsTrigger>
+            <TabsTrigger value="posts">Postingan</TabsTrigger>
           </TabsList>
           
           <TabsContent value="announcements">

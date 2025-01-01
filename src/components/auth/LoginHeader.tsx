@@ -1,9 +1,9 @@
 export function LoginHeader() {
   return (
     <div className="text-center">
-      <h1 className="text-2xl font-bold tracking-tight">Welcome back</h1>
+      <h1 className="text-2xl font-bold tracking-tight">Selamat Datang!</h1>
       <p className="text-sm text-muted-foreground mt-2">
-        Enter your credentials to access your account
+        Masuk untuk melanjutkan
       </p>
     </div>
   );

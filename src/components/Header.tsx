@@ -40,15 +40,16 @@ export const Header = () => {
     try {
       await supabase.auth.signOut();
       toast({
-        title: "Logged out successfully",
-        description: "Redirecting to home page...",
+      title: "Berhasil keluar",
+      description: "Mengarahkan ke beranda...",
       });
       navigate('/');
+      window.location.reload();
     } catch (error) {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to log out. Please try again.",
+        description: "Gagal keluar. Tolong coba lagi.",
       });
     }
   };
@@ -66,14 +67,14 @@ export const Header = () => {
           <div className="hidden md:flex items-center space-x-6">
             {session && profile?.role === 'admin' && (
               <>
-                <Button variant="ghost" asChild>
+                {/* <Button variant="ghost" asChild>
                   <Link to="/admin/personnel" className="flex items-center gap-2">
                     <Users className="h-4 w-4" />
-                    Personnel
+                    Kepegawaian
                   </Link>
-                </Button>
+                </Button> */}
                 <Button variant="ghost" asChild>
-                  <Link to="/admin/monitoring" className="flex items-center gap-2">
+                  <Link to="/monitoring" className="flex items-center gap-2">
                     <Monitor className="h-4 w-4" />
                     Monitoring
                   </Link>
@@ -81,12 +82,13 @@ export const Header = () => {
               </>
             )}
             {session && (
-              <Button variant="ghost" asChild>
-                <Link to="/notifications" className="flex items-center gap-2">
-                  <Bell className="h-4 w-4" />
-                  Notifications
-                </Link>
-              </Button>
+              <></>
+              // <Button variant="ghost" asChild>
+              //   <Link to="/notifications" className="flex items-center gap-2">
+              //     <Bell className="h-4 w-4" />
+              //     Notifikasi
+              //   </Link>
+              // </Button>
             )}
           </div>
 
@@ -99,17 +101,17 @@ export const Header = () => {
                       <User className="h-5 w-5" />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuContent align="end" className="w-56 bg-white">
                     <DropdownMenuItem onClick={handleLogout} className="text-red-600">
                       <LogOut className="mr-2 h-4 w-4" />
-                      <span>Log out</span>
+                      <span>Keluar</span>
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
             ) : (
               <Button variant="default" asChild>
-                <Link to="/login">Login</Link>
+                <Link to="/login">Masuk</Link>
               </Button>
             )}
           </div>
