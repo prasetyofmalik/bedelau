@@ -17,7 +17,7 @@ export function UserAnnouncementViewer() {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-2xl font-semibold">Latest Announcements</h2>
+      <h2 className="text-2xl font-semibold">Pengumuman Terbaru</h2>
       <div className="grid gap-4 md:grid-cols-2">
         {announcements?.map((announcement) => (
           <AnnouncementCard

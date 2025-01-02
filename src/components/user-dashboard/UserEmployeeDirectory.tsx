@@ -23,7 +23,7 @@ export function UserEmployeeDirectory() {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-2xl font-semibold">Team Directory</h2>
+      <h2 className="text-2xl font-semibold">Daftar Pegawai</h2>
       <div className="bg-white rounded-lg shadow">
         <Table>
           <TableHeader>

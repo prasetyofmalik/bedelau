@@ -28,10 +28,10 @@ export function UserPostManager({ userId }: UserPostManagerProps) {
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-semibold">My Posts</h2>
+        <h2 className="text-2xl font-semibold">Postingan Saya</h2>
         <Button onClick={() => setIsCreating(true)}>
           <Plus className="mr-2 h-4 w-4" />
-          New Post
+          Postingan Baru
         </Button>
       </div>
 
