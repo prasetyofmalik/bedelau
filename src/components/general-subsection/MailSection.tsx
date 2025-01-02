@@ -5,10 +5,12 @@ import { Plus, Search, FileDown } from "lucide-react";
 import { useIncomingMails, useOutgoingMails } from "./hooks/useMails";
 import { IncomingMailTable } from "./IncomingMailTable";
 import { OutgoingMailTable } from "./OutgoingMailTable";
+import { AddMailForm } from "./AddMailForm";
 
 export function IncomingMailSection() {
   const [searchQuery, setSearchQuery] = useState("");
-  const { data: mails = [], isLoading } = useIncomingMails(searchQuery);
+  const [isAddMailOpen, setIsAddMailOpen] = useState(false);
+  const { data: mails = [], isLoading, refetch } = useIncomingMails(searchQuery);
 
   return (
     <div className="space-y-6">
@@ -29,7 +31,7 @@ export function IncomingMailSection() {
             <FileDown className="mr-2 h-4 w-4" />
             Export
           </Button>
-          <Button>
+          <Button onClick={() => setIsAddMailOpen(true)}>
             <Plus className="mr-2 h-4 w-4" />
             Tambah Surat Masuk
           </Button>
@@ -43,13 +45,21 @@ export function IncomingMailSection() {
           <IncomingMailTable mails={mails} />
         )}
       </div>
+
+      <AddMailForm
+        type="incoming"
+        isOpen={isAddMailOpen}
+        onClose={() => setIsAddMailOpen(false)}
+        onSuccess={refetch}
+      />
     </div>
   );
 }
 
 export function OutgoingMailSection() {
   const [searchQuery, setSearchQuery] = useState("");
-  const { data: mails = [], isLoading } = useOutgoingMails(searchQuery);
+  const [isAddMailOpen, setIsAddMailOpen] = useState(false);
+  const { data: mails = [], isLoading, refetch } = useOutgoingMails(searchQuery);
 
   return (
     <div className="space-y-6">
@@ -70,7 +80,7 @@ export function OutgoingMailSection() {
             <FileDown className="mr-2 h-4 w-4" />
             Export
           </Button>
-          <Button>
+          <Button onClick={() => setIsAddMailOpen(true)}>
             <Plus className="mr-2 h-4 w-4" />
             Tambah Surat Keluar
           </Button>
@@ -84,6 +94,13 @@ export function OutgoingMailSection() {
           <OutgoingMailTable mails={mails} />
         )}
       </div>
+
+      <AddMailForm
+        type="outgoing"
+        isOpen={isAddMailOpen}
+        onClose={() => setIsAddMailOpen(false)}
+        onSuccess={refetch}
+      />
     </div>
   );
 }
