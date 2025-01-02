@@ -11,23 +11,74 @@ import {
 } from "@/components/ui/table";
 import { Plus, Search, FileDown, Pencil, Trash2 } from "lucide-react";
 
+// Define letter types and which ones require replies
+const LETTER_TYPES = {
+  REQUEST: { label: "Surat Permohonan", requiresReply: true },
+  NOTIFICATION: { label: "Surat Pemberitahuan", requiresReply: false },
+  INVITATION: { label: "Surat Undangan", requiresReply: true },
+  REPORT: { label: "Surat Laporan", requiresReply: false },
+  DECREE: { label: "Surat Keputusan", requiresReply: false },
+};
+
 export function IncomingMailSection() {
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Temporary mock data
+  // Temporary mock data with letter types
   const mails = [
     {
       id: 1,
       number: "001/IN/2024",
       date: "2024-03-20",
       sender: "Department A",
-      classification: "Urgent",
+      classification: "REQUEST",
       disposition: "To be reviewed",
       dispositionDate: "2024-03-21",
-      replyDate: "2024-03-22",
-      status: "Replied",
+      replyDate: null,
+      status: "Belum Dibalas",
+    },
+    {
+      id: 2,
+      number: "002/IN/2024",
+      date: "2024-03-21",
+      sender: "Department B",
+      classification: "NOTIFICATION",
+      disposition: "For archive",
+      dispositionDate: "2024-03-22",
+      replyDate: "-",
+      status: "Tidak Memerlukan Balasan",
+    },
+    {
+      id: 3,
+      number: "003/IN/2024",
+      date: "2024-03-22",
+      sender: "Department C",
+      classification: "INVITATION",
+      disposition: "To be reviewed",
+      dispositionDate: "2024-03-23",
+      replyDate: "2024-03-24",
+      status: "Sudah Dibalas",
     },
   ];
+
+  const getLetterStatus = (mail) => {
+    const letterType = LETTER_TYPES[mail.classification];
+    
+    if (!letterType.requiresReply) {
+      return "Tidak Memerlukan Balasan";
+    }
+    
+    return mail.replyDate ? "Sudah Dibalas" : "Belum Dibalas";
+  };
+
+  const getReplyDate = (mail) => {
+    const letterType = LETTER_TYPES[mail.classification];
+    
+    if (!letterType.requiresReply) {
+      return "-";
+    }
+    
+    return mail.replyDate || "Belum dibalas";
+  };
 
   return (
     <div className="space-y-6">
@@ -76,11 +127,11 @@ export function IncomingMailSection() {
                 <TableCell>{mail.number}</TableCell>
                 <TableCell>{mail.date}</TableCell>
                 <TableCell>{mail.sender}</TableCell>
-                <TableCell>{mail.classification}</TableCell>
+                <TableCell>{LETTER_TYPES[mail.classification].label}</TableCell>
                 <TableCell>{mail.disposition}</TableCell>
                 <TableCell>{mail.dispositionDate}</TableCell>
-                <TableCell>{mail.replyDate}</TableCell>
-                <TableCell>{mail.status}</TableCell>
+                <TableCell>{getReplyDate(mail)}</TableCell>
+                <TableCell>{getLetterStatus(mail)}</TableCell>
                 <TableCell>
                   <div className="flex gap-2">
                     <Button variant="ghost" size="icon">
