@@ -13,18 +13,22 @@ export default function GeneralSubsection() {
           <h1 className="text-3xl font-bold">Subbagian Umum</h1>
         </div>
 
-        <Tabs defaultValue="incoming" className="space-y-4">
-          <TabsList>
-            <TabsTrigger value="incoming">Surat Masuk</TabsTrigger>
-            <TabsTrigger value="outgoing">Surat Keluar</TabsTrigger>
-          </TabsList>
-          <TabsContent value="incoming">
-            <IncomingMailSection />
-          </TabsContent>
-          <TabsContent value="outgoing">
-            <OutgoingMailSection />
-          </TabsContent>
-        </Tabs>
+        <div className="space-y-6">
+          <h2 className="text-2xl font-semibold">Rekap Surat Masuk dan Surat Keluar</h2>
+          
+          <Tabs defaultValue="incoming" className="space-y-4">
+            <TabsList>
+              <TabsTrigger value="incoming">Surat Masuk</TabsTrigger>
+              <TabsTrigger value="outgoing">Surat Keluar</TabsTrigger>
+            </TabsList>
+            <TabsContent value="incoming">
+              <IncomingMailSection />
+            </TabsContent>
+            <TabsContent value="outgoing">
+              <OutgoingMailSection />
+            </TabsContent>
+          </Tabs>
+        </div>
       </div>
     </div>
   );
