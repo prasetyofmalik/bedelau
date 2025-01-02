@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { Header } from "@/components/Header";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { IncomingMailSection } from "@/components/general-subsection/IncomingMailSection";
-import { OutgoingMailSection } from "@/components/general-subsection/OutgoingMailSection";
+import { IncomingMailSection, OutgoingMailSection } from "@/components/general-subsection/MailSection";
 
 export default function GeneralSubsection() {
   return (
