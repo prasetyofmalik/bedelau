@@ -1,9 +1,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-} from "@/components/ui/form";
+import { Form } from "@/components/ui/form";
 import {
   Dialog,
   DialogContent,
@@ -14,6 +12,7 @@ import { IncomingMailFormFields } from "./IncomingMailFormFields";
 import { OutgoingMailFormFields } from "./OutgoingMailFormFields";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
+import { IncomingMailFormData, OutgoingMailFormData } from "./form-types";
 
 type MailFormType = "incoming" | "outgoing";
 
@@ -27,27 +26,41 @@ interface AddMailFormProps {
 export function AddMailForm({ type, isOpen, onClose, onSuccess }: AddMailFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   
-  const form = useForm({
-    defaultValues: type === "incoming" ? {
-      number: "",
-      date: "",
-      sender: "",
-      classification: "",
-      disposition: "",
-      disposition_date: "",
-    } : {
-      number: "",
-      date: "",
-      origin: "",
-      description: "",
-      status: "",
-      reference: "",
-    },
-  });
+  const form = type === "incoming" 
+    ? useForm<IncomingMailFormData>({
+        defaultValues: {
+          number: "",
+          date: "",
+          sender: "",
+          classification: "",
+          disposition: "",
+          disposition_date: "",
+        },
+      })
+    : useForm<OutgoingMailFormData>({
+        defaultValues: {
+          number: "",
+          date: "",
+          origin: "",
+          description: "",
+          status: "",
+          reference: "",
+        },
+      });
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: IncomingMailFormData | OutgoingMailFormData) => {
     setIsSubmitting(true);
     try {
+      if (type === "outgoing" && (data as OutgoingMailFormData).reference) {
+        // Update the referenced incoming mail's reply_date
+        const { error: updateError } = await supabase
+          .from("incoming_mails")
+          .update({ reply_date: (data as OutgoingMailFormData).date })
+          .eq("number", (data as OutgoingMailFormData).reference);
+
+        if (updateError) throw updateError;
+      }
+
       const { error } = await supabase
         .from(type === "incoming" ? "incoming_mails" : "outgoing_mails")
         .insert([data]);
