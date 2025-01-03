@@ -39,7 +39,7 @@ const UserDashboard = () => {
     }
   }, [session, navigate]);
 
-  // if (!profile) return null;
+  if (!profile) return null;
 
   return (
     <div className="min-h-screen bg-gray-50">

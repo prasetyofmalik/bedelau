@@ -11,46 +11,46 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2 } from "lucide-react";
 
 export default function AdminDashboard() {
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
   // Fetch user session and profile
-  // const { data: profile, isLoading } = useQuery({
-  //   queryKey: ['profile'],
-  //   queryFn: async () => {
-  //     const { data: { session } } = await supabase.auth.getSession();
-  //     if (!session) {
-  //       navigate('/login');
-  //       return null;
-  //     }
+  const { data: profile, isLoading } = useQuery({
+    queryKey: ['profile'],
+    queryFn: async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        navigate('/login');
+        return null;
+      }
       
-  //     const { data: profile } = await supabase
-  //       .from('profiles')
-  //       .select('*')
-  //       .eq('id', session.user.id)
-  //       .single();
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', session.user.id)
+        .single();
         
-  //     if (profile?.role !== 'admin') {
-  //       navigate('/');
-  //       return null;
-  //     }
+      if (profile?.role !== 'admin') {
+        navigate('/');
+        return null;
+      }
       
-  //     return profile;
-  //   },
-  // });
+      return profile;
+    },
+  });
 
-  // if (isLoading) {
-  //   return (
-  //     <div className="flex h-screen items-center justify-center">
-  //       <Loader2 className="h-8 w-8 animate-spin" />
-  //     </div>
-  //   );
-  // }
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
       <Header />
       <main className="container mx-auto px-4 py-8">
-        {/* <DashboardWelcome profile={profile} /> */}
+        <DashboardWelcome profile={profile} />
         <DashboardSearch />
         
         <Tabs defaultValue="announcements" className="mt-8">

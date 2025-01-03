@@ -28,7 +28,7 @@ export const Footer = () => {
           </div>
         </div>
         <div className="border-t border-gray-800 mt-8 pt-8 text-center text-sm">
-          <p>© 2024 SAMS - Sistem Aplikasi Manajemen Siak. All rights reserved.</p>
+          <p>© 2025 SAMS - Sistem Aplikasi Manajemen Siak. (Versi: 2.0). All rights reserved.</p>
         </div>
       </div>
     </footer>
