@@ -1,8 +1,7 @@
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { DISPOSITION_OPTIONS } from "./constants";
-import { LETTER_TYPES } from "./types";
+import { LETTER_TYPES, DISPOSITION_OPTIONS } from "./types";
 
 export function IncomingMailFormFields({ form }: { form: any }) {
   return (

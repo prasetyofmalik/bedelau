@@ -2,12 +2,9 @@ import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/comp
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { STATUS_OPTIONS } from "./constants";
-import { useIncomingLettersForReference } from "./hooks/useIncomingLettersForReference";
+import { STATUS_OPTIONS, TEAM_OPTIONS } from "./types";
 
 export function OutgoingMailFormFields({ form }: { form: any }) {
-  const { data: incomingLetters = [], isLoading } = useIncomingLettersForReference();
-
   return (
     <>
       <FormField
@@ -44,9 +41,20 @@ export function OutgoingMailFormFields({ form }: { form: any }) {
         render={({ field }) => (
           <FormItem>
             <FormLabel>Asal Tim</FormLabel>
-            <FormControl>
-              <Input placeholder="Masukkan asal tim" {...field} />
-            </FormControl>
+            <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <FormControl>
+                <SelectTrigger className="bg-white">
+                  <SelectValue placeholder="Pilih asal tim" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent className="bg-white">
+                {TEAM_OPTIONS.map((option) => (
+                  <SelectItem key={option} value={option}>
+                    {option}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <FormMessage />
           </FormItem>
         )}
@@ -96,22 +104,10 @@ export function OutgoingMailFormFields({ form }: { form: any }) {
         name="reference"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Referensi Surat Masuk</FormLabel>
-            <Select onValueChange={field.onChange} defaultValue={field.value}>
-              <FormControl>
-                <SelectTrigger className="bg-white">
-                  <SelectValue placeholder="Pilih surat masuk yang akan dibalas" />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent className="bg-white">
-                <SelectItem value="">Tidak ada referensi</SelectItem>
-                {incomingLetters.map((letter) => (
-                  <SelectItem key={letter.id} value={letter.number}>
-                    {letter.number} - {letter.sender}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <FormLabel>Referensi</FormLabel>
+            <FormControl>
+              <Input placeholder="Masukkan referensi" {...field} />
+            </FormControl>
             <FormMessage />
           </FormItem>
         )}

@@ -26,3 +26,31 @@ export const LETTER_TYPES = {
   REPORT: { label: "Surat Laporan", requiresReply: false },
   DECREE: { label: "Surat Keputusan", requiresReply: false },
 } as const;
+
+export const DISPOSITION_OPTIONS = [
+  "Segera",
+  "Penting",
+  "Biasa",
+  "Rahasia",
+] as const;
+
+export const STATUS_OPTIONS = [
+  "Draft",
+  "Dalam Review",
+  "Disetujui",
+  "Ditolak",
+  "Selesai",
+] as const;
+
+export const TEAM_OPTIONS = [
+  "UMUM",
+  "SS (Statistik Sektoral)",
+  "NASA",
+  "ANSOS",
+  "PJD",
+  "NEODIST",
+  "KAPE",
+  "RB (REFORMASI BIROKRASI)",
+  "HUMAS",
+  "SAKIP",
+] as const;
