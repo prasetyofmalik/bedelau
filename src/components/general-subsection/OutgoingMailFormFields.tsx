@@ -2,7 +2,8 @@ import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/comp
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { STATUS_OPTIONS, TEAM_OPTIONS } from "./types";
+import { Checkbox } from "@/components/ui/checkbox";
+import { TEAM_OPTIONS } from "./types";
 
 export function OutgoingMailFormFields({ form }: { form: any }) {
   return (
@@ -40,11 +41,11 @@ export function OutgoingMailFormFields({ form }: { form: any }) {
         name="origin"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Asal Tim</FormLabel>
+            <FormLabel>Sumber</FormLabel>
             <Select onValueChange={field.onChange} defaultValue={field.value}>
               <FormControl>
                 <SelectTrigger className="bg-white">
-                  <SelectValue placeholder="Pilih asal tim" />
+                  <SelectValue placeholder="Pilih sumber tim" />
                 </SelectTrigger>
               </FormControl>
               <SelectContent className="bg-white">
@@ -65,9 +66,9 @@ export function OutgoingMailFormFields({ form }: { form: any }) {
         name="description"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Deskripsi</FormLabel>
+            <FormLabel>Uraian</FormLabel>
             <FormControl>
-              <Textarea placeholder="Masukkan deskripsi surat" {...field} />
+              <Textarea placeholder="Masukkan uraian surat" {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -76,42 +77,39 @@ export function OutgoingMailFormFields({ form }: { form: any }) {
 
       <FormField
         control={form.control}
-        name="status"
+        name="is_reply_letter"
         render={({ field }) => (
-          <FormItem>
-            <FormLabel>Status</FormLabel>
-            <Select onValueChange={field.onChange} defaultValue={field.value}>
+          <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+            <FormControl>
+              <Checkbox
+                checked={field.value}
+                onCheckedChange={field.onChange}
+              />
+            </FormControl>
+            <div className="space-y-1 leading-none">
+              <FormLabel>
+                Surat Balasan
+              </FormLabel>
+            </div>
+          </FormItem>
+        )}
+      />
+
+      {form.watch("is_reply_letter") && (
+        <FormField
+          control={form.control}
+          name="reference"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Referensi</FormLabel>
               <FormControl>
-                <SelectTrigger className="bg-white">
-                  <SelectValue placeholder="Pilih status" />
-                </SelectTrigger>
+                <Input placeholder="Masukkan referensi" {...field} />
               </FormControl>
-              <SelectContent className="bg-white">
-                {STATUS_OPTIONS.map((option) => (
-                  <SelectItem key={option} value={option}>
-                    {option}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={form.control}
-        name="reference"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Referensi</FormLabel>
-            <FormControl>
-              <Input placeholder="Masukkan referensi" {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      )}
     </>
   );
 }

@@ -21,9 +21,9 @@ export function OutgoingMailTable({ mails }: OutgoingMailTableProps) {
         <TableRow>
           <TableHead>No. Surat</TableHead>
           <TableHead>Tanggal</TableHead>
-          <TableHead>Asal Tim</TableHead>
-          <TableHead>Deskripsi</TableHead>
-          <TableHead>Status</TableHead>
+          <TableHead>Sumber</TableHead>
+          <TableHead>Uraian</TableHead>
+          <TableHead>Surat Balasan</TableHead>
           <TableHead>Referensi</TableHead>
           <TableHead>Aksi</TableHead>
         </TableRow>
@@ -35,7 +35,7 @@ export function OutgoingMailTable({ mails }: OutgoingMailTableProps) {
             <TableCell>{mail.date}</TableCell>
             <TableCell>{mail.origin}</TableCell>
             <TableCell>{mail.description}</TableCell>
-            <TableCell>{mail.status}</TableCell>
+            <TableCell>{mail.is_reply_letter ? "Ya" : "Tidak"}</TableCell>
             <TableCell>{mail.reference}</TableCell>
             <TableCell>
               <div className="flex gap-2">

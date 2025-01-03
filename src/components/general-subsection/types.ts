@@ -15,7 +15,7 @@ export type OutgoingMail = {
   date: string;
   origin: string;
   description: string;
-  status: string;
+  is_reply_letter: boolean;
   reference: string;
 };
 
@@ -32,14 +32,6 @@ export const DISPOSITION_OPTIONS = [
   "Penting",
   "Biasa",
   "Rahasia",
-] as const;
-
-export const STATUS_OPTIONS = [
-  "Draft",
-  "Dalam Review",
-  "Disetujui",
-  "Ditolak",
-  "Selesai",
 ] as const;
 
 export const TEAM_OPTIONS = [
