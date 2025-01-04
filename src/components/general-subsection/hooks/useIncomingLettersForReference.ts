@@ -7,12 +7,12 @@ export const useIncomingLettersForReference = () => {
     queryKey: ["incoming-letters-for-reference"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("incoming_mails")
-        .select("id, number")
+        .from("outgoing_mails")
+        .select("number")
         .order("date", { ascending: false });
 
       if (error) throw error;
-      return data as Pick<IncomingMail, "id" | "number">[];
+      return data as Pick<IncomingMail, "number">[];
     },
   });
 };
