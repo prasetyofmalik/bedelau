@@ -58,10 +58,17 @@ export function AddMailForm({ type, isOpen, onClose, onSuccess, initialData }: A
     try {
       const table = type === "incoming" ? "incoming_mails" : "outgoing_mails";
       
+      // Clean up date fields - convert empty strings to null
+      const cleanedData = {
+        ...data,
+        date: data.date || null,
+        disposition_date: data.disposition_date || null
+      };
+      
       if (initialData?.id) {
         const { error } = await supabase
           .from(table)
-          .update(data)
+          .update(cleanedData)
           .eq('id', initialData.id);
 
         if (error) throw error;
@@ -69,7 +76,7 @@ export function AddMailForm({ type, isOpen, onClose, onSuccess, initialData }: A
       } else {
         const { error } = await supabase
           .from(table)
-          .insert([data]);
+          .insert([cleanedData]);
 
         if (error) throw error;
         toast.success(`${type === "incoming" ? "Surat masuk" : "Surat keluar"} berhasil ditambahkan`);
