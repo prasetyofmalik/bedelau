@@ -9,12 +9,18 @@ import {
 import { Button } from "@/components/ui/button";
 import { Pencil, Trash2 } from "lucide-react";
 import { IncomingMail, LETTER_TYPES } from "./types";
+import { supabase } from "@/lib/supabase";
+import { useToast } from "@/hooks/use-toast";
 
 interface IncomingMailTableProps {
   mails: IncomingMail[];
+  onEdit: (mail: IncomingMail) => void;
+  refetch: () => void;
 }
 
-export function IncomingMailTable({ mails }: IncomingMailTableProps) {
+export function IncomingMailTable({ mails, onEdit, refetch }: IncomingMailTableProps) {
+  const { toast } = useToast();
+
   const getLetterStatus = (mail: IncomingMail) => {
     const letterType = LETTER_TYPES[mail.classification];
     
@@ -33,6 +39,28 @@ export function IncomingMailTable({ mails }: IncomingMailTableProps) {
     }
     
     return mail.reply_date || "Belum dibalas";
+  };
+
+  const handleDelete = async (id: string) => {
+    const { error } = await supabase
+      .from('incoming_mails')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Gagal menghapus surat masuk",
+      });
+      return;
+    }
+
+    toast({
+      title: "Berhasil",
+      description: "Surat masuk berhasil dihapus",
+    });
+    refetch();
   };
 
   return (
@@ -63,10 +91,14 @@ export function IncomingMailTable({ mails }: IncomingMailTableProps) {
             <TableCell>{getLetterStatus(mail)}</TableCell>
             <TableCell>
               <div className="flex gap-2">
-                <Button variant="ghost" size="icon">
+                <Button variant="ghost" size="icon" onClick={() => onEdit(mail)}>
                   <Pencil className="h-4 w-4" />
                 </Button>
-                <Button variant="ghost" size="icon">
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  onClick={() => handleDelete(mail.id)}
+                >
                   <Trash2 className="h-4 w-4" />
                 </Button>
               </div>

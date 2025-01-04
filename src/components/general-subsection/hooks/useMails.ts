@@ -31,7 +31,7 @@ export const useOutgoingMails = (searchQuery: string = "") => {
     queryFn: async () => {
       let query = supabase
         .from("outgoing_mails")
-        .select("*")
+        .select("id,number,date,origin,description,reference,is_reply_letter")
         .order("date", { ascending: false });
 
       if (searchQuery) {

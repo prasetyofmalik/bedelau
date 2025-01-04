@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,6 +14,7 @@ import { IncomingMailFormFields } from "./IncomingMailFormFields";
 import { OutgoingMailFormFields } from "./OutgoingMailFormFields";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
+import { IncomingMail, OutgoingMail } from "./types";
 
 type MailFormType = "incoming" | "outgoing";
 
@@ -22,9 +23,10 @@ interface AddMailFormProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
+  initialData?: IncomingMail | OutgoingMail;
 }
 
-export function AddMailForm({ type, isOpen, onClose, onSuccess }: AddMailFormProps) {
+export function AddMailForm({ type, isOpen, onClose, onSuccess, initialData }: AddMailFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   const form = useForm({
@@ -40,26 +42,44 @@ export function AddMailForm({ type, isOpen, onClose, onSuccess }: AddMailFormPro
       date: "",
       origin: "",
       description: "",
-      status: "",
+      is_reply_letter: false,
       reference: "",
     },
   });
 
+  useEffect(() => {
+    if (initialData) {
+      form.reset(initialData);
+    }
+  }, [initialData, form]);
+
   const onSubmit = async (data: any) => {
     setIsSubmitting(true);
     try {
-      const { error } = await supabase
-        .from(type === "incoming" ? "incoming_mails" : "outgoing_mails")
-        .insert([data]);
+      const table = type === "incoming" ? "incoming_mails" : "outgoing_mails";
+      
+      if (initialData?.id) {
+        const { error } = await supabase
+          .from(table)
+          .update(data)
+          .eq('id', initialData.id);
 
-      if (error) throw error;
+        if (error) throw error;
+        toast.success(`${type === "incoming" ? "Surat masuk" : "Surat keluar"} berhasil diperbarui`);
+      } else {
+        const { error } = await supabase
+          .from(table)
+          .insert([data]);
 
-      toast.success(`${type === "incoming" ? "Surat masuk" : "Surat keluar"} berhasil ditambahkan`);
+        if (error) throw error;
+        toast.success(`${type === "incoming" ? "Surat masuk" : "Surat keluar"} berhasil ditambahkan`);
+      }
+
       onSuccess();
       onClose();
     } catch (error) {
-      console.error("Error adding mail:", error);
-      toast.error("Gagal menambahkan surat");
+      console.error("Error saving mail:", error);
+      toast.error(`Gagal ${initialData?.id ? "memperbarui" : "menambahkan"} surat`);
     } finally {
       setIsSubmitting(false);
     }
@@ -70,7 +90,7 @@ export function AddMailForm({ type, isOpen, onClose, onSuccess }: AddMailFormPro
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle>
-            Tambah {type === "incoming" ? "Surat Masuk" : "Surat Keluar"}
+            {initialData?.id ? "Edit" : "Tambah"} {type === "incoming" ? "Surat Masuk" : "Surat Keluar"}
           </DialogTitle>
         </DialogHeader>
 
