@@ -58,12 +58,17 @@ export function AddMailForm({ type, isOpen, onClose, onSuccess, initialData }: A
     try {
       const table = type === "incoming" ? "incoming_mails" : "outgoing_mails";
       
-      // Clean up date fields - convert empty strings to null
-      const cleanedData = {
-        ...data,
-        date: data.date || null,
-        disposition_date: data.disposition_date || null
-      };
+      // Clean up date fields only for incoming mails
+      const cleanedData = type === "incoming" 
+        ? {
+            ...data,
+            date: data.date || null,
+            disposition_date: data.disposition_date || null
+          }
+        : {
+            ...data,
+            date: data.date || null
+          };
       
       if (initialData?.id) {
         const { error } = await supabase
