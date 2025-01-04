@@ -5,9 +5,18 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { TEAM_OPTIONS } from "./types";
 import { useIncomingLettersForReference } from "./hooks/useIncomingLettersForReference";
+import { useEffect } from "react";
 
 export function OutgoingMailFormFields({ form }: { form: any }) {
   const { data: referenceLetters = [] } = useIncomingLettersForReference();
+
+  // Reset reference field when is_reply_letter changes to false
+  useEffect(() => {
+    const isReplyLetter = form.watch("is_reply_letter");
+    if (!isReplyLetter) {
+      form.setValue("reference", null);
+    }
+  }, [form.watch("is_reply_letter")]);
 
   return (
     <>
