@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
-import { IncomingMail, LETTER_TYPES } from "../types";
+import { IncomingMail } from "../types";
 
 export const useIncomingLettersForReference = () => {
   return useQuery({
@@ -8,16 +8,11 @@ export const useIncomingLettersForReference = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("incoming_mails")
-        .select("*")
-        .is("reply_date", null)
+        .select("id, number")
         .order("date", { ascending: false });
 
       if (error) throw error;
-
-      // Filter for letters that require replies
-      return (data as IncomingMail[]).filter(
-        (mail) => LETTER_TYPES[mail.classification].requiresReply
-      );
+      return data as Pick<IncomingMail, "id" | "number">[];
     },
   });
 };

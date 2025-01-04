@@ -4,8 +4,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { TEAM_OPTIONS } from "./types";
+import { useIncomingLettersForReference } from "./hooks/useIncomingLettersForReference";
 
 export function OutgoingMailFormFields({ form }: { form: any }) {
+  const { data: referenceLetters = [] } = useIncomingLettersForReference();
+
   return (
     <>
       <FormField
@@ -102,9 +105,20 @@ export function OutgoingMailFormFields({ form }: { form: any }) {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Referensi</FormLabel>
-              <FormControl>
-                <Input placeholder="Masukkan referensi" {...field} />
-              </FormControl>
+              <Select onValueChange={field.onChange} value={field.value}>
+                <FormControl>
+                  <SelectTrigger className="bg-white">
+                    <SelectValue placeholder="Pilih surat referensi" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent className="bg-white">
+                  {referenceLetters.map((letter) => (
+                    <SelectItem key={letter.id} value={letter.id}>
+                      {letter.number}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}
