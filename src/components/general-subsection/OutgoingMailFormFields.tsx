@@ -122,7 +122,7 @@ export function OutgoingMailFormFields({ form }: { form: any }) {
                 </FormControl>
                 <SelectContent className="bg-white">
                   {referenceLetters.map((letter) => (
-                    <SelectItem key={letter.id} value={letter.id}>
+                    <SelectItem key={letter.number} value={letter.number}>
                       {letter.number}
                     </SelectItem>
                   ))}
