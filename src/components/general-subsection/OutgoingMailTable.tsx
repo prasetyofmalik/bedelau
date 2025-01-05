@@ -88,13 +88,13 @@ export function OutgoingMailTable({ mails, onEdit, refetch }: OutgoingMailTableP
             Tanggal <ArrowUpDown className="inline h-4 w-4 ml-1" />
           </TableHead>
           <TableHead onClick={() => handleSort('origin')} className="cursor-pointer hover:bg-muted">
-            Asal Tim <ArrowUpDown className="inline h-4 w-4 ml-1" />
+            Sumber <ArrowUpDown className="inline h-4 w-4 ml-1" />
           </TableHead>
           <TableHead onClick={() => handleSort('destination')} className="cursor-pointer hover:bg-muted">
             Tujuan <ArrowUpDown className="inline h-4 w-4 ml-1" />
           </TableHead>
           <TableHead onClick={() => handleSort('description')} className="cursor-pointer hover:bg-muted">
-            Deskripsi <ArrowUpDown className="inline h-4 w-4 ml-1" />
+            Uraian <ArrowUpDown className="inline h-4 w-4 ml-1" />
           </TableHead>
           <TableHead onClick={() => handleSort('is_reply_letter')} className="cursor-pointer hover:bg-muted">
             Surat Balasan <ArrowUpDown className="inline h-4 w-4 ml-1" />
