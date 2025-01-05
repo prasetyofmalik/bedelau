@@ -6,6 +6,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { TEAM_OPTIONS } from "./types";
 import { useIncomingLettersForReference } from "./hooks/useIncomingLettersForReference";
 import { useEffect } from "react";
+import { supabase } from "@/lib/supabase";
 
 export function OutgoingMailFormFields({ form }: { form: any }) {
   const { data: referenceLetters = [] } = useIncomingLettersForReference();
@@ -15,8 +16,31 @@ export function OutgoingMailFormFields({ form }: { form: any }) {
     const isReplyLetter = form.watch("is_reply_letter");
     if (!isReplyLetter) {
       form.setValue("reference", null);
+      form.setValue("destination", "");
     }
   }, [form.watch("is_reply_letter")]);
+
+  // Set destination from sender when reference changes
+  useEffect(() => {
+    const reference = form.watch("reference");
+    if (reference) {
+      const referencedLetter = referenceLetters.find(letter => letter.number === reference);
+      if (referencedLetter) {
+        form.setValue("destination", referencedLetter.sender);
+      }
+    }
+  }, [form.watch("reference"), referenceLetters]);
+
+  // Set employee_id from session when component mounts
+  useEffect(() => {
+    const setEmployeeId = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user?.id) {
+        form.setValue("employee_id", session.user.id);
+      }
+    };
+    setEmployeeId();
+  }, []);
 
   return (
     <>
@@ -81,6 +105,20 @@ export function OutgoingMailFormFields({ form }: { form: any }) {
             <FormLabel>Uraian</FormLabel>
             <FormControl>
               <Textarea placeholder="Masukkan uraian surat" {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="destination"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Tujuan</FormLabel>
+            <FormControl>
+              <Input placeholder="Masukkan tujuan surat" {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>

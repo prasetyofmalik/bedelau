@@ -13,12 +13,12 @@ export const useIncomingLettersForReference = () => {
 
       const { data, error } = await supabase
         .from("incoming_mails")
-        .select("number")
+        .select("number,sender")
         .in("classification", letterTypesRequiringReply)
         .order("date", { ascending: false });
 
       if (error) throw error;
-      return data as Pick<IncomingMail, "number">[];
+      return data as Pick<IncomingMail, "number" | "sender">[];
     },
   });
 };

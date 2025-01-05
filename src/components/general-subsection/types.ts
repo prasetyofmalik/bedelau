@@ -17,6 +17,8 @@ export type OutgoingMail = {
   description: string;
   is_reply_letter: boolean;
   reference: string;
+  destination: string;
+  employee_id: string;
 };
 
 export const LETTER_TYPES = {
