@@ -102,6 +102,9 @@ export function OutgoingMailTable({ mails, onEdit, refetch }: OutgoingMailTableP
           <TableHead onClick={() => handleSort('reference')} className="cursor-pointer hover:bg-muted">
             Referensi <ArrowUpDown className="inline h-4 w-4 ml-1" />
           </TableHead>
+          <TableHead onClick={() => handleSort('employee_name')} className="cursor-pointer hover:bg-muted">
+            Pembuat <ArrowUpDown className="inline h-4 w-4 ml-1" />
+          </TableHead>
           <TableHead>Aksi</TableHead>
         </TableRow>
       </TableHeader>
@@ -115,6 +118,7 @@ export function OutgoingMailTable({ mails, onEdit, refetch }: OutgoingMailTableP
             <TableCell>{mail.description}</TableCell>
             <TableCell>{mail.is_reply_letter ? "Ya" : "Tidak"}</TableCell>
             <TableCell>{mail.reference}</TableCell>
+            <TableCell>{mail.employee_name}</TableCell>
             <TableCell>
               <div className="flex gap-2">
                 <Button variant="ghost" size="icon" onClick={() => onEdit(mail)}>

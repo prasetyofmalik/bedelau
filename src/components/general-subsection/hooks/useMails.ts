@@ -31,7 +31,12 @@ export const useOutgoingMails = (searchQuery: string = "") => {
     queryFn: async () => {
       let query = supabase
         .from("outgoing_mails")
-        .select("id,number,date,origin,description,reference,is_reply_letter")
+        .select(`
+          *,
+          profiles:employee_id (
+            full_name
+          )
+        `)
         .order("date", { ascending: false });
 
       if (searchQuery) {
@@ -43,7 +48,12 @@ export const useOutgoingMails = (searchQuery: string = "") => {
       const { data, error } = await query;
 
       if (error) throw error;
-      return data as OutgoingMail[];
+
+      // Transform the data to match our OutgoingMail type
+      return data.map((mail: any) => ({
+        ...mail,
+        employee_name: mail.profiles?.full_name,
+      })) as OutgoingMail[];
     },
   });
 };

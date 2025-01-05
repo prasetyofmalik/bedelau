@@ -19,6 +19,7 @@ export type OutgoingMail = {
   reference: string;
   destination: string;
   employee_id: string;
+  employee_name?: string; // Added this field for the joined data
 };
 
 export const LETTER_TYPES = {
