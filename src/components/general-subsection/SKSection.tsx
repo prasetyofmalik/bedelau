@@ -10,7 +10,7 @@ import { SK } from "./types";
 export function SKSection() {
   const [isAddSKOpen, setIsAddSKOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedSK, setSelectedSK] = useState<SK | undefined>();
+  const [selectedSK, setSelectedSK] = useState<SK | null>(null);
 
   const { data: sks = [], isLoading, refetch } = useMails<SK>({
     table: "sk_documents",
@@ -25,7 +25,7 @@ export function SKSection() {
 
   const handleClose = () => {
     setIsAddSKOpen(false);
-    setSelectedSK(undefined);
+    setSelectedSK(null);
   };
 
   return (
@@ -38,9 +38,6 @@ export function SKSection() {
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full sm:w-[300px]"
           />
-          <Button variant="outline" size="icon" className="w-full sm:w-auto">
-            <Search className="h-4 w-4" />
-          </Button>
         </div>
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
           <Button variant="outline" className="w-full sm:w-auto">

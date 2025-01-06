@@ -18,7 +18,12 @@ export function useMails<T extends IncomingMail | OutgoingMail | SK>({
     queryFn: async () => {
       let query = supabase
         .from(table)
-        .select("*")
+        .select(`
+          *,
+          profiles:employee_id (
+            full_name
+          )
+        `)
         .order("date", { ascending: false });
 
       if (searchQuery && searchFields.length > 0) {
@@ -31,7 +36,12 @@ export function useMails<T extends IncomingMail | OutgoingMail | SK>({
       const { data, error } = await query;
 
       if (error) throw error;
-      return data as T[];
+
+      // Transform the data to include employee_name
+      return data.map((item: any) => ({
+        ...item,
+        employee_name: item.profiles?.full_name,
+      })) as T[];
     },
   });
 }
