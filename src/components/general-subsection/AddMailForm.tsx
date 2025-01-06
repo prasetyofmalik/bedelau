@@ -9,9 +9,11 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { IncomingMailFormFields } from "./IncomingMailFormFields";
 import { OutgoingMailFormFields } from "./OutgoingMailFormFields";
+import { SKFormFields } from "./SKFormFields";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
 import { IncomingMail, OutgoingMail, SK, MailFormType } from "./types";
@@ -106,21 +108,6 @@ export function AddMailForm({ type, isOpen, onClose, onSuccess, initialData }: A
           .insert([cleanedData]);
 
         if (error) throw error;
-
-        // If this is an outgoing mail that's a reply to an incoming mail
-        if (type === "outgoing" && data.is_reply_letter && data.reference) {
-          // Update the referenced incoming mail's reply_date
-          const { error: updateError } = await supabase
-            .from('incoming_mails')
-            .update({ reply_date: data.date })
-            .eq('number', data.reference);
-
-          if (updateError) {
-            console.error("Error updating incoming mail reply date:", updateError);
-            toast.error("Gagal memperbarui tanggal balasan surat masuk");
-          }
-        }
-
         toast.success(`${type === "incoming" ? "Surat masuk" : type === "outgoing" ? "Surat keluar" : "SK"} berhasil ditambahkan`);
       }
 
@@ -145,6 +132,11 @@ export function AddMailForm({ type, isOpen, onClose, onSuccess, initialData }: A
               "SK"
             }
           </DialogTitle>
+          <DialogDescription>
+            {type === "incoming" ? "Isi detail surat masuk di bawah ini" :
+             type === "outgoing" ? "Isi detail surat keluar di bawah ini" :
+             "Isi detail SK di bawah ini"}
+          </DialogDescription>
         </DialogHeader>
 
         <Form {...form}>

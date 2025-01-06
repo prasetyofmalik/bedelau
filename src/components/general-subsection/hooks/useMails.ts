@@ -16,21 +16,19 @@ export function useMails<T extends IncomingMail | OutgoingMail | SK>({
   return useQuery({
     queryKey: [table, searchQuery],
     queryFn: async () => {
-      let query = supabase.from(table);
+      let query = supabase.from(table).select('*');
 
       // Only join with profiles for outgoing_mails and sk_documents
       if (table === "outgoing_mails" || table === "sk_documents") {
-        query = query.select(`
-          *,
-          profiles:employee_id (
-            full_name
-          )
-        `);
-      } else {
-        query = query.select('*');
+        query = supabase
+          .from(table)
+          .select(`
+            *,
+            profiles:employee_id (
+              full_name
+            )
+          `);
       }
-
-      query = query.order("date", { ascending: false });
 
       if (searchQuery && searchFields.length > 0) {
         const searchConditions = searchFields.map(
@@ -39,7 +37,7 @@ export function useMails<T extends IncomingMail | OutgoingMail | SK>({
         query = query.or(searchConditions.join(","));
       }
 
-      const { data, error } = await query;
+      const { data, error } = await query.order('date', { ascending: false });
 
       if (error) throw error;
 

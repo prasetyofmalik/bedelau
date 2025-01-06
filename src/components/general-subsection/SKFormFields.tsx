@@ -1,21 +1,12 @@
-import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
+import { FormField, FormItem, FormLabel, FormControl } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { useEffect } from "react";
-import { supabase } from "@/lib/supabase";
+import { UseFormReturn } from "react-hook-form";
 
-export function SKFormFields({ form }: { form: any }) {
-  // Set employee_id from session when component mounts
-  useEffect(() => {
-    const setEmployeeId = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session?.user?.id) {
-        form.setValue("employee_id", session.user.id);
-      }
-    };
-    setEmployeeId();
-  }, []);
+interface SKFormFieldsProps {
+  form: UseFormReturn<any>;
+}
 
+export function SKFormFields({ form }: SKFormFieldsProps) {
   return (
     <>
       <FormField
@@ -27,7 +18,6 @@ export function SKFormFields({ form }: { form: any }) {
             <FormControl>
               <Input placeholder="Masukkan nomor SK" {...field} />
             </FormControl>
-            <FormMessage />
           </FormItem>
         )}
       />
@@ -39,9 +29,8 @@ export function SKFormFields({ form }: { form: any }) {
           <FormItem>
             <FormLabel>Bulan/Tahun</FormLabel>
             <FormControl>
-              <Input type="month" {...field} />
+              <Input placeholder="YYYY-MM" {...field} />
             </FormControl>
-            <FormMessage />
           </FormItem>
         )}
       />
@@ -55,7 +44,6 @@ export function SKFormFields({ form }: { form: any }) {
             <FormControl>
               <Input type="date" {...field} />
             </FormControl>
-            <FormMessage />
           </FormItem>
         )}
       />
@@ -67,9 +55,8 @@ export function SKFormFields({ form }: { form: any }) {
           <FormItem>
             <FormLabel>Uraian</FormLabel>
             <FormControl>
-              <Textarea placeholder="Masukkan uraian SK" {...field} />
+              <Input placeholder="Masukkan uraian SK" {...field} />
             </FormControl>
-            <FormMessage />
           </FormItem>
         )}
       />
@@ -81,9 +68,8 @@ export function SKFormFields({ form }: { form: any }) {
           <FormItem>
             <FormLabel>Link Dokumen</FormLabel>
             <FormControl>
-              <Input placeholder="Masukkan link Google Drive" {...field} />
+              <Input placeholder="Masukkan link dokumen" {...field} />
             </FormControl>
-            <FormMessage />
           </FormItem>
         )}
       />
