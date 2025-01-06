@@ -8,7 +8,14 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LogOut, User, Users, Monitor, Bell } from "lucide-react";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { LogOut, User, Monitor, Menu } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 export const Header = () => {
@@ -56,6 +63,27 @@ export const Header = () => {
     }
   };
 
+  const navigateToRole = () => {
+    if (profile?.role === "admin") {
+      navigate("/admin");
+    } else {
+      navigate("/user");
+    }
+  };
+
+  const NavigationLinks = () => (
+    <>
+      {session && (
+        <Button variant="ghost" asChild>
+          <Link to="/monitoring" className="flex items-center gap-2">
+            <Monitor className="h-4 w-4" />
+            Monitoring
+          </Link>
+        </Button>
+      )}
+    </>
+  );
+
   return (
     <header className="border-b bg-white sticky top-0 z-50">
       <div className="container mx-auto px-4 py-4">
@@ -70,38 +98,33 @@ export const Header = () => {
             </Link>
           </div>
 
+          {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-6">
-            {session && profile?.role === "admin" && (
-              <>
-                {/* <Button variant="ghost" asChild>
-                  <Link to="/admin/personnel" className="flex items-center gap-2">
-                    <Users className="h-4 w-4" />
-                    Kepegawaian
-                  </Link>
-                </Button> */}
-              </>
-            )}
-            {session && (
-              <>
-                <Button variant="ghost" asChild>
-                  <Link to="/monitoring" className="flex items-center gap-2">
-                    <Monitor className="h-4 w-4" />
-                    Monitoring
-                  </Link>
-                </Button>
-                {/* <Button variant="ghost" asChild>
-                  <Link to="/notifications" className="flex items-center gap-2">
-                    <Bell className="h-4 w-4" />
-                    Notifikasi
-                  </Link>
-                </Button> */}
-              </>
-            )}
+            <NavigationLinks />
           </div>
 
           <div className="flex items-center space-x-4">
             {session ? (
               <div className="flex items-center gap-4">
+                {/* Mobile Navigation */}
+                <div className="md:hidden">
+                  <Sheet>
+                    <SheetTrigger asChild>
+                      <Button variant="ghost" size="icon">
+                        <Menu className="h-5 w-5" />
+                      </Button>
+                    </SheetTrigger>
+                    <SheetContent side="left">
+                      <SheetHeader>
+                        <SheetTitle>Menu</SheetTitle>
+                      </SheetHeader>
+                      <div className="flex flex-col gap-4 mt-4">
+                        <NavigationLinks />
+                      </div>
+                    </SheetContent>
+                  </Sheet>
+                </div>
+
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="icon">
@@ -109,6 +132,10 @@ export const Header = () => {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-56 bg-white">
+                    <DropdownMenuItem onClick={navigateToRole}>
+                      <User className="mr-2 h-4 w-4" />
+                      <span>Dashboard</span>
+                    </DropdownMenuItem>
                     <DropdownMenuItem
                       onClick={handleLogout}
                       className="text-red-600"
