@@ -1,15 +1,14 @@
-export type IncomingMail = {
+export interface IncomingMail {
   id: string;
   number: string;
   date: string;
   sender: string;
-  classification: keyof typeof LETTER_TYPES;
+  classification: string;
   disposition: string;
   disposition_date: string;
-  reply_date: string | null;
-};
+}
 
-export type OutgoingMail = {
+export interface OutgoingMail {
   id: string;
   number: string;
   date: string;
@@ -17,35 +16,24 @@ export type OutgoingMail = {
   description: string;
   is_reply_letter: boolean;
   reference: string;
-  destination: string;
   employee_id: string;
-  employee_name?: string; // Added this field for the joined data
-};
+  employee_name?: string;
+}
 
-export const LETTER_TYPES = {
-  REQUEST: { label: "Surat Permohonan", requiresReply: true },
-  NOTIFICATION: { label: "Surat Pemberitahuan", requiresReply: false },
-  INVITATION: { label: "Surat Undangan", requiresReply: true },
-  REPORT: { label: "Surat Laporan", requiresReply: false },
-  DECREE: { label: "Surat Keputusan", requiresReply: false },
-} as const;
-
-export const DISPOSITION_OPTIONS = [
-  "Segera",
-  "Penting",
-  "Biasa",
-  "Rahasia",
-] as const;
+export interface SK {
+  id: string;
+  number: string;
+  month_year: string;
+  date: string;
+  description: string;
+  employee_id: string;
+  employee_name?: string;
+  link: string;
+}
 
 export const TEAM_OPTIONS = [
-  "UMUM",
-  "SS (Statistik Sektoral)",
-  "NASA",
-  "ANSOS",
-  "PJD",
-  "NEODIST",
-  "KAPE",
-  "RB (REFORMASI BIROKRASI)",
-  "HUMAS",
-  "SAKIP",
-] as const;
+  "Team A",
+  "Team B",
+  "Team C",
+  "Team D",
+];
