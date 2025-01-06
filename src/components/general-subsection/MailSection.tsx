@@ -34,9 +34,9 @@ export function IncomingMailSection() {
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full sm:w-[300px]"
           />
-          <Button variant="outline" size="icon" className="w-full sm:w-auto">
+          {/* <Button variant="outline" size="icon" className="w-full sm:w-auto">
             <Search className="h-4 w-4" />
-          </Button>
+          </Button> */}
         </div>
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
           <Button variant="outline" className="w-full sm:w-auto">
@@ -99,9 +99,9 @@ export function OutgoingMailSection() {
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full sm:w-[300px]"
           />
-          <Button variant="outline" size="icon" className="w-full sm:w-auto">
+          {/* <Button variant="outline" size="icon" className="w-full sm:w-auto">
             <Search className="h-4 w-4" />
-          </Button>
+          </Button> */}
         </div>
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
           <Button variant="outline" className="w-full sm:w-auto">
