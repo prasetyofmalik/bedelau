@@ -16,15 +16,21 @@ export function useMails<T extends IncomingMail | OutgoingMail | SK>({
   return useQuery({
     queryKey: [table, searchQuery],
     queryFn: async () => {
-      let query = supabase
-        .from(table)
-        .select(`
+      let query = supabase.from(table);
+
+      // Only join with profiles for outgoing_mails and sk_documents
+      if (table === "outgoing_mails" || table === "sk_documents") {
+        query = query.select(`
           *,
           profiles:employee_id (
             full_name
           )
-        `)
-        .order("date", { ascending: false });
+        `);
+      } else {
+        query = query.select('*');
+      }
+
+      query = query.order("date", { ascending: false });
 
       if (searchQuery && searchFields.length > 0) {
         const searchConditions = searchFields.map(
@@ -37,11 +43,15 @@ export function useMails<T extends IncomingMail | OutgoingMail | SK>({
 
       if (error) throw error;
 
-      // Transform the data to include employee_name
-      return data.map((item: any) => ({
-        ...item,
-        employee_name: item.profiles?.full_name,
-      })) as T[];
+      // Transform the data to include employee_name for outgoing_mails and sk_documents
+      if (table === "outgoing_mails" || table === "sk_documents") {
+        return data.map((item: any) => ({
+          ...item,
+          employee_name: item.profiles?.full_name,
+        })) as T[];
+      }
+
+      return data as T[];
     },
   });
 }
