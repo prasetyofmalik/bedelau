@@ -29,9 +29,12 @@ export function IncomingMailTable({ mails, onEdit, refetch }: IncomingMailTableP
   const [sortConfig, setSortConfig] = useState<SortConfig>(null);
 
   const getLetterStatus = (mail: IncomingMail) => {
+    if (!mail.classification || !LETTER_TYPES[mail.classification]) {
+      return "Status Tidak Diketahui";
+    }
+
     const letterType = LETTER_TYPES[mail.classification];
-    
-    if (!letterType?.requiresReply) {
+    if (!letterType.requiresReply) {
       return "Tidak Memerlukan Balasan";
     }
     
@@ -39,9 +42,12 @@ export function IncomingMailTable({ mails, onEdit, refetch }: IncomingMailTableP
   };
 
   const getReplyDate = (mail: IncomingMail) => {
+    if (!mail.classification || !LETTER_TYPES[mail.classification]) {
+      return "-";
+    }
+
     const letterType = LETTER_TYPES[mail.classification];
-    
-    if (!letterType?.requiresReply) {
+    if (!letterType.requiresReply) {
       return "-";
     }
     
@@ -132,7 +138,11 @@ export function IncomingMailTable({ mails, onEdit, refetch }: IncomingMailTableP
             <TableCell>{mail.number}</TableCell>
             <TableCell>{mail.date}</TableCell>
             <TableCell>{mail.sender}</TableCell>
-            <TableCell>{LETTER_TYPES[mail.classification]?.label || 'Unknown'}</TableCell>
+            <TableCell>
+              {mail.classification && LETTER_TYPES[mail.classification] 
+                ? LETTER_TYPES[mail.classification].label 
+                : 'Klasifikasi Tidak Diketahui'}
+            </TableCell>
             <TableCell>{mail.disposition}</TableCell>
             <TableCell>{mail.disposition_date}</TableCell>
             <TableCell>{getReplyDate(mail)}</TableCell>
