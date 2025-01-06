@@ -26,31 +26,31 @@ export function IncomingMailSection() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div className="flex gap-4 items-center">
+      <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center w-full sm:w-auto">
           <Input
             placeholder="Cari surat masuk..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-[300px]"
+            className="w-full sm:w-[300px]"
           />
-          <Button variant="outline" size="icon">
+          <Button variant="outline" size="icon" className="w-full sm:w-auto">
             <Search className="h-4 w-4" />
           </Button>
         </div>
-        <div className="flex gap-2">
-          <Button variant="outline">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+          <Button variant="outline" className="w-full sm:w-auto">
             <FileDown className="mr-2 h-4 w-4" />
             Export
           </Button>
-          <Button onClick={() => setIsAddMailOpen(true)}>
+          <Button onClick={() => setIsAddMailOpen(true)} className="w-full sm:w-auto">
             <Plus className="mr-2 h-4 w-4" />
             Tambah Surat Masuk
           </Button>
         </div>
       </div>
 
-      <div className="border rounded-lg">
+      <div className="border rounded-lg overflow-x-auto">
         {isLoading ? (
           <div className="p-8 text-center">Loading...</div>
         ) : (
@@ -91,31 +91,31 @@ export function OutgoingMailSection() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div className="flex gap-4 items-center">
+      <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center w-full sm:w-auto">
           <Input
             placeholder="Cari surat keluar..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-[300px]"
+            className="w-full sm:w-[300px]"
           />
-          <Button variant="outline" size="icon">
+          <Button variant="outline" size="icon" className="w-full sm:w-auto">
             <Search className="h-4 w-4" />
           </Button>
         </div>
-        <div className="flex gap-2">
-          <Button variant="outline">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+          <Button variant="outline" className="w-full sm:w-auto">
             <FileDown className="mr-2 h-4 w-4" />
             Export
           </Button>
-          <Button onClick={() => setIsAddMailOpen(true)}>
+          <Button onClick={() => setIsAddMailOpen(true)} className="w-full sm:w-auto">
             <Plus className="mr-2 h-4 w-4" />
             Tambah Surat Keluar
           </Button>
         </div>
       </div>
 
-      <div className="border rounded-lg">
+      <div className="border rounded-lg overflow-x-auto">
         {isLoading ? (
           <div className="p-8 text-center">Loading...</div>
         ) : (
