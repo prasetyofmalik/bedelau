@@ -57,7 +57,9 @@ export function AddMailForm({ type, isOpen, onClose, onSuccess, initialData }: A
 
   useEffect(() => {
     if (initialData) {
-      form.reset(initialData);
+      // Remove computed fields before setting form data
+      const { employee_name, ...cleanedData } = initialData;
+      form.reset(cleanedData);
     }
   }, [initialData, form]);
 
@@ -82,6 +84,8 @@ export function AddMailForm({ type, isOpen, onClose, onSuccess, initialData }: A
             ...data,
             date: data.date || null
           };
+          // Remove computed fields
+          delete cleanedData.employee_name;
           break;
         case "sk":
           table = "sk_documents";
@@ -89,6 +93,8 @@ export function AddMailForm({ type, isOpen, onClose, onSuccess, initialData }: A
             ...data,
             date: data.date || null
           };
+          // Remove computed fields
+          delete cleanedData.employee_name;
           break;
         default:
           throw new Error("Invalid mail type");
