@@ -1,6 +1,6 @@
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { StatsCard } from "@/components/StatsCard";
+import { StatsSection } from "@/components/home/StatsSection";
 import { AnnouncementCard } from "@/components/AnnouncementCard";
 import { PostCard } from "@/components/PostCard";
 import { Button } from "@/components/ui/button";
@@ -108,6 +108,9 @@ const Index = () => {
           </div>
         </section>
 
+        {/* Stats Section */}
+        <StatsSection />
+
         {/* Announcements Section */}
         <section className="py-12 bg-white">
           <div className="container mx-auto px-4">
@@ -147,33 +150,6 @@ const Index = () => {
                 description="New printers have been installed on each floor. Please check your email for usage guidelines."
               />
             </div>
-          </div>
-        </section>
-
-        {/* Stats Section */}
-        <section className="py-12 container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <StatsCard
-              title="Jumlah Pegawai"
-              value={240}
-              subStats={[
-                { label: "Pria", value: 110 },
-                { label: "Wanita", value: 130 },
-              ]}
-            />
-            <StatsCard
-              title="Jumlah Surat"
-              value={204}
-              subStats={[
-                { label: "Masuk", value: 24 },
-                { label: "Keluar", value: 180 },
-              ]}
-            />
-            <StatsCard
-              title="Jumlah Tim Kerja"
-              value={7}
-              redirectTo="/monitoring"
-            />
           </div>
         </section>
 
