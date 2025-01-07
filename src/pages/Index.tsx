@@ -33,7 +33,7 @@ const Index = () => {
     {
       title: "Post 3 Headline",
       date: "Jum, 27 Des 2024",
-      image: "https://loremflickr.com/800/600",
+      image: "https://picsum.photos/seed/picsum/800/600/?blur",
     },
     {
       title: "Post 4 Headline",
@@ -48,7 +48,7 @@ const Index = () => {
     {
       title: "Post 6 Headline",
       date: "Jum, 27 Des 2024",
-      image: "https://loremflickr.com/800/600",
+      image: "https://picsum.photos/seed/picsum/800/600/?blur",
     },
     {
       title: "Post 7 Headline",
@@ -63,7 +63,7 @@ const Index = () => {
     {
       title: "Post 9 Headline",
       date: "Jum, 27 Des 2024",
-      image: "https://loremflickr.com/800/600",
+      image: "https://picsum.photos/seed/picsum/800/600/?blur",
     },
     {
       title: "Post 10 Headline",
