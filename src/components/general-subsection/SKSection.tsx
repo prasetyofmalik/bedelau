@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Plus, Search, FileDown } from "lucide-react";
+import { Plus, FileDown } from "lucide-react";
 import { SKTable } from "./SKTable";
 import { AddMailForm } from "./AddMailForm";
 import { useMails } from "./hooks/useMails";
 import { SK } from "./types";
+import { exportToExcel } from "@/utils/excelExport";
 
 export function SKSection() {
   const [isAddSKOpen, setIsAddSKOpen] = useState(false);
@@ -17,6 +18,18 @@ export function SKSection() {
     searchQuery,
     searchFields: ["number", "description", "month_year"],
   });
+
+  const handleExport = () => {
+    const exportData = sks.map(sk => ({
+      'Nomor SK': sk.number,
+      'Bulan/Tahun': sk.month_year,
+      'Tanggal SK': sk.date,
+      'Uraian': sk.description,
+      'Pembuat': sk.employee_name,
+      'Link': sk.link
+    }));
+    exportToExcel(exportData, 'sk-documents');
+  };
 
   const handleEdit = (sk: SK) => {
     setSelectedSK(sk);
@@ -40,7 +53,7 @@ export function SKSection() {
           />
         </div>
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-          <Button variant="outline" className="w-full sm:w-auto">
+          <Button variant="outline" className="w-full sm:w-auto" onClick={handleExport}>
             <FileDown className="mr-2 h-4 w-4" />
             Export
           </Button>

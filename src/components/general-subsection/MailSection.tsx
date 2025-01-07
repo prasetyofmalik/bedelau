@@ -7,12 +7,26 @@ import { IncomingMailTable } from "./IncomingMailTable";
 import { OutgoingMailTable } from "./OutgoingMailTable";
 import { AddMailForm } from "./AddMailForm";
 import { IncomingMail, OutgoingMail } from "./types";
+import { exportToExcel } from "@/utils/excelExport";
 
 export function IncomingMailSection() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isAddMailOpen, setIsAddMailOpen] = useState(false);
   const [editingMail, setEditingMail] = useState<IncomingMail | null>(null);
   const { data: mails = [], isLoading, refetch } = useIncomingMails(searchQuery);
+
+  const handleExport = () => {
+    const exportData = mails.map(mail => ({
+      'Nomor Surat': mail.number,
+      'Tanggal': mail.date,
+      'Pengirim': mail.sender,
+      'Klasifikasi': mail.classification,
+      'Disposisi': mail.disposition,
+      'Tanggal Disposisi': mail.disposition_date,
+      'Tanggal Balasan': mail.reply_date || '-'
+    }));
+    exportToExcel(exportData, 'surat-masuk');
+  };
 
   const handleEdit = (mail: IncomingMail) => {
     setEditingMail(mail);
@@ -34,12 +48,9 @@ export function IncomingMailSection() {
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full sm:w-[300px]"
           />
-          {/* <Button variant="outline" size="icon" className="w-full sm:w-auto">
-            <Search className="h-4 w-4" />
-          </Button> */}
         </div>
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-          <Button variant="outline" className="w-full sm:w-auto">
+          <Button variant="outline" className="w-full sm:w-auto" onClick={handleExport}>
             <FileDown className="mr-2 h-4 w-4" />
             Export
           </Button>
@@ -79,6 +90,20 @@ export function OutgoingMailSection() {
   const [editingMail, setEditingMail] = useState<OutgoingMail | null>(null);
   const { data: mails = [], isLoading, refetch } = useOutgoingMails(searchQuery);
 
+  const handleExport = () => {
+    const exportData = mails.map(mail => ({
+      'Nomor Surat': mail.number,
+      'Tanggal': mail.date,
+      'Sumber': mail.origin,
+      'Tujuan': mail.destination,
+      'Uraian': mail.description,
+      'Surat Balasan': mail.is_reply_letter ? 'Ya' : 'Tidak',
+      'Referensi': mail.reference,
+      'Pembuat': mail.employee_name
+    }));
+    exportToExcel(exportData, 'surat-keluar');
+  };
+
   const handleEdit = (mail: OutgoingMail) => {
     setEditingMail(mail);
     setIsAddMailOpen(true);
@@ -99,12 +124,9 @@ export function OutgoingMailSection() {
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full sm:w-[300px]"
           />
-          {/* <Button variant="outline" size="icon" className="w-full sm:w-auto">
-            <Search className="h-4 w-4" />
-          </Button> */}
         </div>
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-          <Button variant="outline" className="w-full sm:w-auto">
+          <Button variant="outline" className="w-full sm:w-auto" onClick={handleExport}>
             <FileDown className="mr-2 h-4 w-4" />
             Export
           </Button>
