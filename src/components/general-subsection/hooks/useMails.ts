@@ -18,18 +18,6 @@ export function useMails<T extends IncomingMail | OutgoingMail | SK>({
     queryFn: async () => {
       let query = supabase.from(table).select('*');
 
-      // Only join with profiles for outgoing_mails and sk_documents
-      if (table === "outgoing_mails" || table === "sk_documents") {
-        query = supabase
-          .from(table)
-          .select(`
-            *,
-            profiles:employee_id (
-              full_name
-            )
-          `);
-      }
-
       if (searchQuery && searchFields.length > 0) {
         const searchConditions = searchFields.map(
           field => `${field}.ilike.%${searchQuery}%`
@@ -41,12 +29,27 @@ export function useMails<T extends IncomingMail | OutgoingMail | SK>({
 
       if (error) throw error;
 
-      // Transform the data to include employee_name for outgoing_mails and sk_documents
+      // For outgoing_mails and sk_documents, fetch employee names separately
       if (table === "outgoing_mails" || table === "sk_documents") {
-        return data.map((item: any) => ({
-          ...item,
-          employee_name: item.profiles?.full_name,
-        })) as T[];
+        const employeeIds = data.map((item: any) => item.employee_id).filter(Boolean);
+        
+        if (employeeIds.length > 0) {
+          const { data: profiles } = await supabase
+            .from('profiles')
+            .select('id, full_name')
+            .in('id', employeeIds);
+
+          // Create a map of employee_id to full_name
+          const employeeMap = new Map(
+            profiles?.map(profile => [profile.id, profile.full_name]) || []
+          );
+
+          // Add employee_name to each item
+          return data.map((item: any) => ({
+            ...item,
+            employee_name: employeeMap.get(item.employee_id) || null,
+          })) as T[];
+        }
       }
 
       return data as T[];
