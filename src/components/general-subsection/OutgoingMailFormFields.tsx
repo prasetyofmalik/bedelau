@@ -1,49 +1,24 @@
-import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { TEAM_OPTIONS } from "./types";
-import { useIncomingLettersForReference } from "./hooks/useIncomingLettersForReference";
-import { useEffect } from "react";
-import { supabase } from "@/lib/supabase";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { LETTER_CLASSIFICATIONS, DELIVERY_METHODS } from "./OutgoingMailTable";
 
 export function OutgoingMailFormFields({ form }: { form: any }) {
-  const { data: referenceLetters = [] } = useIncomingLettersForReference();
-
-  // Reset reference field when is_reply_letter changes to false
-  useEffect(() => {
-    const isReplyLetter = form.watch("is_reply_letter");
-    if (!isReplyLetter) {
-      form.setValue("reference", null);
-      form.setValue("destination", "");
-    }
-  }, [form.watch("is_reply_letter")]);
-
-  // Set destination from sender when reference changes
-  useEffect(() => {
-    const reference = form.watch("reference");
-    if (reference) {
-      const referencedLetter = referenceLetters.find(letter => letter.number === reference);
-      if (referencedLetter) {
-        form.setValue("destination", referencedLetter.sender);
-      }
-    }
-  }, [form.watch("reference"), referenceLetters]);
-
-  // Set employee_id from session when component mounts
-  useEffect(() => {
-    const setEmployeeId = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session?.user?.id) {
-        form.setValue("employee_id", session.user.id);
-      }
-    };
-    setEmployeeId();
-  }, []);
-
   return (
-    <>
+    <div className="space-y-4">
       <FormField
         control={form.control}
         name="number"
@@ -78,33 +53,8 @@ export function OutgoingMailFormFields({ form }: { form: any }) {
         render={({ field }) => (
           <FormItem>
             <FormLabel>Sumber</FormLabel>
-            <Select onValueChange={field.onChange} defaultValue={field.value}>
-              <FormControl>
-                <SelectTrigger className="bg-white">
-                  <SelectValue placeholder="Pilih sumber tim" />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent className="bg-white">
-                {TEAM_OPTIONS.map((option) => (
-                  <SelectItem key={option} value={option}>
-                    {option}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={form.control}
-        name="description"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Uraian</FormLabel>
             <FormControl>
-              <Textarea placeholder="Masukkan uraian surat" {...field} />
+              <Input placeholder="Masukkan sumber surat" {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -127,6 +77,70 @@ export function OutgoingMailFormFields({ form }: { form: any }) {
 
       <FormField
         control={form.control}
+        name="description"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Uraian</FormLabel>
+            <FormControl>
+              <Input placeholder="Masukkan uraian surat" {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="classification"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Klasifikasi</FormLabel>
+            <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <FormControl>
+                <SelectTrigger>
+                  <SelectValue placeholder="Pilih klasifikasi surat" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                {Object.entries(LETTER_CLASSIFICATIONS).map(([value, label]) => (
+                  <SelectItem key={value} value={value}>
+                    {label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="delivery_method"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Metode Pengiriman</FormLabel>
+            <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <FormControl>
+                <SelectTrigger>
+                  <SelectValue placeholder="Pilih metode pengiriman" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                {Object.entries(DELIVERY_METHODS).map(([value, label]) => (
+                  <SelectItem key={value} value={value}>
+                    {label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
         name="is_reply_letter"
         render={({ field }) => (
           <FormItem className="flex flex-row items-start space-x-3 space-y-0">
@@ -136,41 +150,39 @@ export function OutgoingMailFormFields({ form }: { form: any }) {
                 onCheckedChange={field.onChange}
               />
             </FormControl>
-            <div className="space-y-1 leading-none">
-              <FormLabel>
-                Surat Balasan
-              </FormLabel>
-            </div>
+            <FormLabel>Surat Balasan</FormLabel>
+            <FormMessage />
           </FormItem>
         )}
       />
 
-      {form.watch("is_reply_letter") && (
-        <FormField
-          control={form.control}
-          name="reference"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Referensi</FormLabel>
-              <Select onValueChange={field.onChange} value={field.value}>
-                <FormControl>
-                  <SelectTrigger className="bg-white">
-                    <SelectValue placeholder="Pilih surat referensi" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent className="bg-white">
-                  {referenceLetters.map((letter) => (
-                    <SelectItem key={letter.number} value={letter.number}>
-                      {letter.number}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-      )}
-    </>
+      <FormField
+        control={form.control}
+        name="reference"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Referensi</FormLabel>
+            <FormControl>
+              <Input placeholder="Masukkan referensi surat" {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="link"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Link File</FormLabel>
+            <FormControl>
+              <Input placeholder="Masukkan link file surat" {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+    </div>
   );
 }

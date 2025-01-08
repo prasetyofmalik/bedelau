@@ -7,7 +7,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Pencil, Trash2, ArrowUpDown } from "lucide-react";
+import { Pencil, Trash2, ArrowUpDown, ExternalLink } from "lucide-react";
 import { OutgoingMail } from "./types";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/hooks/use-toast";
@@ -25,6 +25,21 @@ type SortConfig = {
   key: keyof OutgoingMail;
   direction: 'asc' | 'desc';
 } | null;
+
+export const LETTER_CLASSIFICATIONS = {
+  'invitation': 'Surat Undangan',
+  'assignment': 'Surat Tugas',
+  'official': 'Surat Dinas (Permintaan Data, Usulan)',
+  'statement': 'Surat Pernyataan',
+  'reference': 'Surat Keterangan',
+  'cover': 'Surat Pengantar',
+  'other': 'Lainnya'
+};
+
+export const DELIVERY_METHODS = {
+  'srikandi': 'via Srikandi application',
+  'manual': 'manual'
+};
 
 export function OutgoingMailTable({ mails, onEdit, refetch }: OutgoingMailTableProps) {
   const { toast } = useToast();
@@ -107,6 +122,12 @@ export function OutgoingMailTable({ mails, onEdit, refetch }: OutgoingMailTableP
           <TableHead onClick={() => handleSort('description')} className="cursor-pointer hover:bg-muted">
             Uraian <ArrowUpDown className="inline h-4 w-4 ml-1" />
           </TableHead>
+          <TableHead onClick={() => handleSort('classification')} className="cursor-pointer hover:bg-muted">
+            Klasifikasi <ArrowUpDown className="inline h-4 w-4 ml-1" />
+          </TableHead>
+          <TableHead onClick={() => handleSort('delivery_method')} className="cursor-pointer hover:bg-muted">
+            Metode Pengiriman <ArrowUpDown className="inline h-4 w-4 ml-1" />
+          </TableHead>
           <TableHead onClick={() => handleSort('is_reply_letter')} className="cursor-pointer hover:bg-muted">
             Surat Balasan <ArrowUpDown className="inline h-4 w-4 ml-1" />
           </TableHead>
@@ -116,6 +137,7 @@ export function OutgoingMailTable({ mails, onEdit, refetch }: OutgoingMailTableP
           <TableHead onClick={() => handleSort('employee_name')} className="cursor-pointer hover:bg-muted">
             Pembuat <ArrowUpDown className="inline h-4 w-4 ml-1" />
           </TableHead>
+          <TableHead>Link</TableHead>
           <TableHead>Aksi</TableHead>
         </TableRow>
       </TableHeader>
@@ -127,9 +149,23 @@ export function OutgoingMailTable({ mails, onEdit, refetch }: OutgoingMailTableP
             <TableCell>{mail.origin}</TableCell>
             <TableCell>{mail.destination}</TableCell>
             <TableCell>{mail.description}</TableCell>
+            <TableCell>{LETTER_CLASSIFICATIONS[mail.classification as keyof typeof LETTER_CLASSIFICATIONS] || '-'}</TableCell>
+            <TableCell>{DELIVERY_METHODS[mail.delivery_method as keyof typeof DELIVERY_METHODS] || '-'}</TableCell>
             <TableCell>{mail.is_reply_letter ? "Ya" : "Tidak"}</TableCell>
             <TableCell>{mail.reference}</TableCell>
             <TableCell>{mail.employee_name}</TableCell>
+            <TableCell>
+              {mail.link && (
+                <a 
+                  href={mail.link} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:text-blue-800"
+                >
+                  <ExternalLink className="h-4 w-4" />
+                </a>
+              )}
+            </TableCell>
             <TableCell>
               <div className="flex gap-2">
                 <Button variant="ghost" size="icon" onClick={() => onEdit(mail)}>

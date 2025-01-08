@@ -43,9 +43,13 @@ export function AddMailForm({ type, isOpen, onClose, onSuccess, initialData }: A
         number: "",
         date: "",
         origin: "",
+        destination: "",
         description: "",
         is_reply_letter: false,
         reference: "",
+        classification: "",
+        delivery_method: "",
+        link: "",
       } : {
         number: "",
         date: "",
