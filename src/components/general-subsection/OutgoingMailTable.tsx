@@ -114,7 +114,7 @@ export function OutgoingMailTable({ mails, onEdit, refetch }: OutgoingMailTableP
             Tanggal <ArrowUpDown className="inline h-4 w-4 ml-1" />
           </TableHead>
           <TableHead onClick={() => handleSort('origin')} className="cursor-pointer hover:bg-muted">
-            Sumber <ArrowUpDown className="inline h-4 w-4 ml-1" />
+            Pengirim <ArrowUpDown className="inline h-4 w-4 ml-1" />
           </TableHead>
           <TableHead onClick={() => handleSort('destination')} className="cursor-pointer hover:bg-muted">
             Tujuan <ArrowUpDown className="inline h-4 w-4 ml-1" />

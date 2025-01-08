@@ -94,7 +94,7 @@ export function OutgoingMailSection() {
     const exportData = mails.map(mail => ({
       'Nomor Surat': mail.number,
       'Tanggal': mail.date,
-      'Sumber': mail.origin,
+      'Pengirim': mail.origin,
       'Tujuan': mail.destination,
       'Uraian': mail.description,
       'Surat Balasan': mail.is_reply_letter ? 'Ya' : 'Tidak',

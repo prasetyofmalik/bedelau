@@ -52,7 +52,32 @@ export function OutgoingMailFormFields({ form }: { form: any }) {
         name="origin"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Sumber</FormLabel>
+            <FormLabel>Pengirim</FormLabel>
+            <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <FormControl>
+                <SelectTrigger className="bg-white">
+                  <SelectValue placeholder="Pilih tim pengirim" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent className="bg-white">
+                {TEAM_OPTIONS.map((option) => (
+                  <SelectItem key={option} value={option}>
+                    {option}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="description"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Uraian</FormLabel>
             <FormControl>
               <Input placeholder="Masukkan sumber surat" {...field} />
             </FormControl>
