@@ -20,21 +20,26 @@ export const StatsSection = () => {
     <section className="py-12 container mx-auto px-4">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <StatsCard
-          title="Jumlah Surat"
-          value={stats?.totalCount || 0}
+          title="Jumlah Pegawai"
+          value={240}
           subStats={[
-            { label: "Masuk", value: stats?.incomingCount || 0 },
-            { label: "Keluar", value: stats?.outgoingCount || 0 },
+            { label: "Pria", value: 110 },
+            { label: "Wanita", value: 130 },
           ]}
         />
         <StatsCard
-          title="Surat Masuk"
-          value={stats?.incomingCount || 0}
-          redirectTo="/monitoring/general-subsection"
+          title="Jumlah Tim Kerja"
+          value={7}
+          redirectTo="/monitoring"
         />
         <StatsCard
-          title="Surat Keluar"
-          value={stats?.outgoingCount || 0}
+          title="Jumlah Surat"
+          value={stats?.totalCount || 0}
+          subStats={[
+            { label: "Surat Masuk", value: stats?.incomingCount || 0 },
+            { label: "Surat Keluar", value: stats?.outgoingCount || 0 },
+            { label: "Surat Keputusan", value: stats?.skCount || 0 },
+          ]}
           redirectTo="/monitoring/general-subsection"
         />
       </div>
