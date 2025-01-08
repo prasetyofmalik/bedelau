@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Pencil, Trash2, ArrowUpDown, ExternalLink } from "lucide-react";
-import { OutgoingMail } from "./types";
+import { OutgoingMail, LETTER_CLASSIFICATIONS, DELIVERY_METHODS } from "./types";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
@@ -25,21 +25,6 @@ type SortConfig = {
   key: keyof OutgoingMail;
   direction: 'asc' | 'desc';
 } | null;
-
-export const LETTER_CLASSIFICATIONS = {
-  'invitation': 'Surat Undangan',
-  'assignment': 'Surat Tugas',
-  'official': 'Surat Dinas (Permintaan Data, Usulan)',
-  'statement': 'Surat Pernyataan',
-  'reference': 'Surat Keterangan',
-  'cover': 'Surat Pengantar',
-  'other': 'Lainnya'
-};
-
-export const DELIVERY_METHODS = {
-  'srikandi': 'via Srikandi application',
-  'manual': 'manual'
-};
 
 export function OutgoingMailTable({ mails, onEdit, refetch }: OutgoingMailTableProps) {
   const { toast } = useToast();

@@ -14,7 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { LETTER_CLASSIFICATIONS, DELIVERY_METHODS } from "./OutgoingMailTable";
+import { LETTER_CLASSIFICATIONS, DELIVERY_METHODS, TEAM_OPTIONS } from "./types";
 
 export function OutgoingMailFormFields({ form }: { form: any }) {
   return (
