@@ -12,6 +12,8 @@ import { SK } from "./types";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
+import { format, parseISO } from "date-fns";
+import { id } from "date-fns/locale";
 
 interface SKTableProps {
   sks: SK[];
@@ -27,6 +29,15 @@ type SortConfig = {
 export function SKTable({ sks, onEdit, refetch }: SKTableProps) {
   const { toast } = useToast();
   const [sortConfig, setSortConfig] = useState<SortConfig>(null);
+
+  const formatDate = (dateString: string | null) => {
+    if (!dateString) return "-";
+    try {
+      return format(parseISO(dateString), "d MMMM yyyy", { locale: id });
+    } catch {
+      return dateString;
+    }
+  };
 
   const handleDelete = async (id: string) => {
     const { error } = await supabase
@@ -105,7 +116,7 @@ export function SKTable({ sks, onEdit, refetch }: SKTableProps) {
           <TableRow key={sk.id}>
             <TableCell>{sk.number}</TableCell>
             <TableCell>{sk.month_year}</TableCell>
-            <TableCell>{sk.date}</TableCell>
+            <TableCell>{formatDate(sk.date)}</TableCell>
             <TableCell>{sk.description}</TableCell>
             <TableCell>{sk.employee_name}</TableCell>
             <TableCell>

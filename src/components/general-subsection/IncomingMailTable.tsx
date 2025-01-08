@@ -12,6 +12,8 @@ import { IncomingMail, LETTER_TYPES } from "./types";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
+import { format, parseISO } from "date-fns";
+import { id } from "date-fns/locale";
 
 interface IncomingMailTableProps {
   mails: IncomingMail[];
@@ -27,6 +29,15 @@ type SortConfig = {
 export function IncomingMailTable({ mails, onEdit, refetch }: IncomingMailTableProps) {
   const { toast } = useToast();
   const [sortConfig, setSortConfig] = useState<SortConfig>(null);
+
+  const formatDate = (dateString: string | null) => {
+    if (!dateString) return "-";
+    try {
+      return format(parseISO(dateString), "d MMMM yyyy", { locale: id });
+    } catch {
+      return dateString;
+    }
+  };
 
   const getLetterStatus = (mail: IncomingMail) => {
     if (!mail.classification || !LETTER_TYPES[mail.classification]) {
@@ -136,7 +147,7 @@ export function IncomingMailTable({ mails, onEdit, refetch }: IncomingMailTableP
         {sortedMails.map((mail) => (
           <TableRow key={mail.id}>
             <TableCell>{mail.number}</TableCell>
-            <TableCell>{mail.date}</TableCell>
+            <TableCell>{formatDate(mail.date)}</TableCell>
             <TableCell>{mail.sender}</TableCell>
             <TableCell>
               {mail.classification && LETTER_TYPES[mail.classification] 
@@ -144,8 +155,8 @@ export function IncomingMailTable({ mails, onEdit, refetch }: IncomingMailTableP
                 : 'Klasifikasi Tidak Diketahui'}
             </TableCell>
             <TableCell>{mail.disposition}</TableCell>
-            <TableCell>{mail.disposition_date}</TableCell>
-            <TableCell>{getReplyDate(mail)}</TableCell>
+            <TableCell>{formatDate(mail.disposition_date)}</TableCell>
+            <TableCell>{formatDate(mail.reply_date)}</TableCell>
             <TableCell>{getLetterStatus(mail)}</TableCell>
             <TableCell>
               <div className="flex gap-2">

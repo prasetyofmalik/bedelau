@@ -12,6 +12,8 @@ import { OutgoingMail } from "./types";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
+import { format, parseISO } from "date-fns";
+import { id } from "date-fns/locale";
 
 interface OutgoingMailTableProps {
   mails: OutgoingMail[];
@@ -27,6 +29,15 @@ type SortConfig = {
 export function OutgoingMailTable({ mails, onEdit, refetch }: OutgoingMailTableProps) {
   const { toast } = useToast();
   const [sortConfig, setSortConfig] = useState<SortConfig>(null);
+
+  const formatDate = (dateString: string | null) => {
+    if (!dateString) return "-";
+    try {
+      return format(parseISO(dateString), "d MMMM yyyy", { locale: id });
+    } catch {
+      return dateString;
+    }
+  };
 
   const handleDelete = async (id: string) => {
     const { error } = await supabase
@@ -112,7 +123,7 @@ export function OutgoingMailTable({ mails, onEdit, refetch }: OutgoingMailTableP
         {sortedMails.map((mail) => (
           <TableRow key={mail.id}>
             <TableCell>{mail.number}</TableCell>
-            <TableCell>{mail.date}</TableCell>
+            <TableCell>{formatDate(mail.date)}</TableCell>
             <TableCell>{mail.origin}</TableCell>
             <TableCell>{mail.destination}</TableCell>
             <TableCell>{mail.description}</TableCell>
