@@ -104,14 +104,14 @@ export function OutgoingMailTable({ mails, onEdit, refetch }: OutgoingMailTableP
           <TableHead onClick={() => handleSort('destination')} className="cursor-pointer hover:bg-muted">
             Tujuan <ArrowUpDown className="inline h-4 w-4 ml-1" />
           </TableHead>
-          <TableHead onClick={() => handleSort('description')} className="cursor-pointer hover:bg-muted">
-            Uraian <ArrowUpDown className="inline h-4 w-4 ml-1" />
-          </TableHead>
           <TableHead onClick={() => handleSort('classification')} className="cursor-pointer hover:bg-muted">
             Klasifikasi <ArrowUpDown className="inline h-4 w-4 ml-1" />
           </TableHead>
+          <TableHead onClick={() => handleSort('description')} className="cursor-pointer hover:bg-muted">
+            Uraian <ArrowUpDown className="inline h-4 w-4 ml-1" />
+          </TableHead>
           <TableHead onClick={() => handleSort('delivery_method')} className="cursor-pointer hover:bg-muted">
-            Metode Pengiriman <ArrowUpDown className="inline h-4 w-4 ml-1" />
+            Keterangan <ArrowUpDown className="inline h-4 w-4 ml-1" />
           </TableHead>
           <TableHead onClick={() => handleSort('is_reply_letter')} className="cursor-pointer hover:bg-muted">
             Surat Balasan <ArrowUpDown className="inline h-4 w-4 ml-1" />
@@ -133,8 +133,8 @@ export function OutgoingMailTable({ mails, onEdit, refetch }: OutgoingMailTableP
             <TableCell>{formatDate(mail.date)}</TableCell>
             <TableCell>{mail.origin}</TableCell>
             <TableCell>{mail.destination}</TableCell>
-            <TableCell>{mail.description}</TableCell>
             <TableCell>{LETTER_CLASSIFICATIONS[mail.classification as keyof typeof LETTER_CLASSIFICATIONS] || '-'}</TableCell>
+            <TableCell>{mail.description}</TableCell>
             <TableCell>{DELIVERY_METHODS[mail.delivery_method as keyof typeof DELIVERY_METHODS] || '-'}</TableCell>
             <TableCell>{mail.is_reply_letter ? "Ya" : "Tidak"}</TableCell>
             <TableCell>{mail.reference}</TableCell>

@@ -14,9 +14,24 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { LETTER_CLASSIFICATIONS, DELIVERY_METHODS, TEAM_OPTIONS } from "./types";
+import {
+  LETTER_CLASSIFICATIONS,
+  DELIVERY_METHODS,
+  TEAM_OPTIONS,
+} from "./types";
+import { useIncomingLettersForReference } from "./hooks/useIncomingLettersForReference";
+import { useEffect } from "react";
 
 export function OutgoingMailFormFields({ form }: { form: any }) {
+  const { data: referenceLetters = [] } = useIncomingLettersForReference();
+  // Reset reference field when is_reply_letter changes to false
+  useEffect(() => {
+    const isReplyLetter = form.watch("is_reply_letter");
+    if (!isReplyLetter) {
+      form.setValue("reference", null);
+    }
+  }, [form.watch("is_reply_letter")]);
+
   return (
     <div className="space-y-4">
       <FormField
@@ -74,40 +89,12 @@ export function OutgoingMailFormFields({ form }: { form: any }) {
 
       <FormField
         control={form.control}
-        name="description"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Uraian</FormLabel>
-            <FormControl>
-              <Input placeholder="Masukkan sumber surat" {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={form.control}
         name="destination"
         render={({ field }) => (
           <FormItem>
             <FormLabel>Tujuan</FormLabel>
             <FormControl>
-              <Input placeholder="Masukkan tujuan surat" {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={form.control}
-        name="description"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Uraian</FormLabel>
-            <FormControl>
-              <Input placeholder="Masukkan uraian surat" {...field} />
+              <Input placeholder="Masukkan alamat pengiriman surat" {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -122,18 +109,34 @@ export function OutgoingMailFormFields({ form }: { form: any }) {
             <FormLabel>Klasifikasi</FormLabel>
             <Select onValueChange={field.onChange} defaultValue={field.value}>
               <FormControl>
-                <SelectTrigger>
+                <SelectTrigger className="bg-white">
                   <SelectValue placeholder="Pilih klasifikasi surat" />
                 </SelectTrigger>
               </FormControl>
-              <SelectContent>
-                {Object.entries(LETTER_CLASSIFICATIONS).map(([value, label]) => (
-                  <SelectItem key={value} value={value}>
-                    {label}
-                  </SelectItem>
-                ))}
+              <SelectContent className="bg-white">
+                {Object.entries(LETTER_CLASSIFICATIONS).map(
+                  ([value, label]) => (
+                    <SelectItem key={value} value={value}>
+                      {label}
+                    </SelectItem>
+                  )
+                )}
               </SelectContent>
             </Select>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="description"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Uraian</FormLabel>
+            <FormControl>
+              <Input placeholder="Masukkan sumber surat" {...field} />
+            </FormControl>
             <FormMessage />
           </FormItem>
         )}
@@ -144,14 +147,14 @@ export function OutgoingMailFormFields({ form }: { form: any }) {
         name="delivery_method"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Metode Pengiriman</FormLabel>
+            <FormLabel>Keterangan</FormLabel>
             <Select onValueChange={field.onChange} defaultValue={field.value}>
               <FormControl>
-                <SelectTrigger>
+                <SelectTrigger className="bg-white">
                   <SelectValue placeholder="Pilih metode pengiriman" />
                 </SelectTrigger>
               </FormControl>
-              <SelectContent>
+              <SelectContent className="bg-white">
                 {Object.entries(DELIVERY_METHODS).map(([value, label]) => (
                   <SelectItem key={value} value={value}>
                     {label}
@@ -159,37 +162,6 @@ export function OutgoingMailFormFields({ form }: { form: any }) {
                 ))}
               </SelectContent>
             </Select>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={form.control}
-        name="is_reply_letter"
-        render={({ field }) => (
-          <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-            <FormControl>
-              <Checkbox
-                checked={field.value}
-                onCheckedChange={field.onChange}
-              />
-            </FormControl>
-            <FormLabel>Surat Balasan</FormLabel>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={form.control}
-        name="reference"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Referensi</FormLabel>
-            <FormControl>
-              <Input placeholder="Masukkan referensi surat" {...field} />
-            </FormControl>
             <FormMessage />
           </FormItem>
         )}
@@ -208,6 +180,51 @@ export function OutgoingMailFormFields({ form }: { form: any }) {
           </FormItem>
         )}
       />
+
+      <FormField
+        control={form.control}
+        name="is_reply_letter"
+        render={({ field }) => (
+          <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+            <FormControl>
+              <Checkbox
+                checked={field.value}
+                onCheckedChange={field.onChange}
+              />
+            </FormControl>
+            <div className="space-y-1 leading-none">
+              <FormLabel>Surat Balasan</FormLabel>
+            </div>
+          </FormItem>
+        )}
+      />
+
+      {form.watch("is_reply_letter") && (
+        <FormField
+          control={form.control}
+          name="reference"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Referensi</FormLabel>
+              <Select onValueChange={field.onChange} value={field.value}>
+                <FormControl>
+                  <SelectTrigger className="bg-white">
+                    <SelectValue placeholder="Pilih surat referensi" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent className="bg-white">
+                  {referenceLetters.map((letter) => (
+                    <SelectItem key={letter.number} value={letter.number}>
+                      {letter.number}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      )}
     </div>
   );
 }

@@ -39,13 +39,12 @@ export interface SK {
 export type MailFormType = "incoming" | "outgoing" | "sk";
 
 export const LETTER_TYPES = {
-  'invitation': { label: 'Surat Undangan', requiresReply: true },
-  'assignment': { label: 'Surat Tugas', requiresReply: false },
   'official': { label: 'Surat Dinas (Permintaan Data, Usulan)', requiresReply: true },
-  'statement': { label: 'Surat Pernyataan', requiresReply: false },
-  'reference': { label: 'Surat Keterangan', requiresReply: false },
-  'cover': { label: 'Surat Pengantar', requiresReply: false },
-  'other': { label: 'Lainnya', requiresReply: false }
+  'sim': { label: 'Surat Izin Magang (SIM)', requiresReply: true },
+  'sk': { label: 'Surat Keputusan (SK)', requiresReply: false },
+  'se': { label: 'Surat Edaran (SE)', requiresReply: false },
+  'invitation': { label: 'Surat Undangan', requiresReply: false },
+  'other': { label: 'Lainnya', requiresReply: false },
 } as const;
 
 export const LETTER_CLASSIFICATIONS = {
@@ -59,27 +58,25 @@ export const LETTER_CLASSIFICATIONS = {
 } as const;
 
 export const DELIVERY_METHODS = {
-  'srikandi': 'via Srikandi application',
-  'manual': 'manual'
+  'srikandi': 'Via SRIKANDI',
+  'manual': 'Manual'
 } as const;
 
 export const DISPOSITION_OPTIONS = [
   'Tindak Lanjuti',
-  'Koordinasikan',
-  'Pantau Progresnya',
-  'Buatkan Laporan',
-  'Untuk Diketahui',
-  'Untuk Ditindaklanjuti',
-  'Hadir',
-  'Wakili',
-  'Siapkan',
+  'Arsipkan',
   'Lainnya'
 ] as const;
 
 export const TEAM_OPTIONS = [
-  'Tim Analis Data',
-  'Tim Pengembangan Sistem',
-  'Tim Pengelola Infrastruktur',
-  'Tim Pengelola Layanan',
-  'Tim Tata Kelola TI'
+  'Umum',
+  'SS (Statistik Sektoral)',
+  'NASA',
+  'ANSOS',
+  'PJD',
+  'NEODIST',
+  'KAPE',
+  'RB (Reformasi Birokrasi)',
+  'Humas',
+  'SAKIP',
 ] as const;

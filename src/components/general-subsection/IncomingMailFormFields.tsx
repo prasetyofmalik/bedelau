@@ -78,7 +78,7 @@ export function IncomingMailFormFields({ form }: { form: any }) {
         name="disposition"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="after:content-[''] after:ml-0.5">Disposisi (Opsional)</FormLabel>
+            <FormLabel className="after:content-[''] after:ml-0.5">Disposisi</FormLabel>
             <Select onValueChange={field.onChange} defaultValue={field.value}>
               <FormControl>
                 <SelectTrigger className="bg-white">
@@ -103,7 +103,7 @@ export function IncomingMailFormFields({ form }: { form: any }) {
         name="disposition_date"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="after:content-[''] after:ml-0.5">Tanggal Disposisi (Opsional)</FormLabel>
+            <FormLabel className="after:content-[''] after:ml-0.5">Tanggal Disposisi</FormLabel>
             <FormControl>
               <Input type="date" {...field} />
             </FormControl>
