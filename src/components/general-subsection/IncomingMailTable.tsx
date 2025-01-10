@@ -7,7 +7,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Pencil, Trash2, ArrowUpDown } from "lucide-react";
+import { Pencil, Trash2, ArrowUp, ArrowDown } from "lucide-react";
 import { IncomingMail, LETTER_TYPES } from "./types";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/hooks/use-toast";
@@ -29,6 +29,7 @@ type SortConfig = {
 export function IncomingMailTable({ mails, onEdit, refetch }: IncomingMailTableProps) {
   const { toast } = useToast();
   const [sortConfig, setSortConfig] = useState<SortConfig>(null);
+  const [hoveredColumn, setHoveredColumn] = useState<keyof IncomingMail | null>(null);
 
   const formatDate = (dateString: string | null) => {
     if (!dateString) return "-";
@@ -99,6 +100,15 @@ export function IncomingMailTable({ mails, onEdit, refetch }: IncomingMailTableP
     });
   };
 
+  const renderSortIcon = (columnKey: keyof IncomingMail) => {
+    if (sortConfig?.key === columnKey) {
+      return sortConfig.direction === 'asc' ? 
+        <ArrowUp className="inline h-4 w-4 ml-1" /> : 
+        <ArrowDown className="inline h-4 w-4 ml-1" />;
+    }
+    return hoveredColumn === columnKey ? <ArrowUp className="inline h-4 w-4 ml-1 opacity-50" /> : null;
+  };
+
   const sortedMails = [...mails].sort((a, b) => {
     if (!sortConfig) return 0;
 
@@ -118,29 +128,69 @@ export function IncomingMailTable({ mails, onEdit, refetch }: IncomingMailTableP
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead onClick={() => handleSort('number')} className="cursor-pointer hover:bg-muted">
-            No. Surat <ArrowUpDown className="inline h-4 w-4 ml-1" />
+          <TableHead 
+            onClick={() => handleSort('number')} 
+            onMouseEnter={() => setHoveredColumn('number')}
+            onMouseLeave={() => setHoveredColumn(null)}
+            className="cursor-pointer hover:bg-muted"
+          >
+            No. Surat {renderSortIcon('number')}
           </TableHead>
-          <TableHead onClick={() => handleSort('date')} className="cursor-pointer hover:bg-muted">
-            Tanggal <ArrowUpDown className="inline h-4 w-4 ml-1" />
+          <TableHead 
+            onClick={() => handleSort('date')}
+            onMouseEnter={() => setHoveredColumn('date')}
+            onMouseLeave={() => setHoveredColumn(null)}
+            className="cursor-pointer hover:bg-muted"
+          >
+            Tanggal {renderSortIcon('date')}
           </TableHead>
-          <TableHead onClick={() => handleSort('sender')} className="cursor-pointer hover:bg-muted">
-            Pengirim <ArrowUpDown className="inline h-4 w-4 ml-1" />
+          <TableHead 
+            onClick={() => handleSort('sender')}
+            onMouseEnter={() => setHoveredColumn('sender')}
+            onMouseLeave={() => setHoveredColumn(null)}
+            className="cursor-pointer hover:bg-muted"
+          >
+            Pengirim {renderSortIcon('sender')}
           </TableHead>
-          <TableHead onClick={() => handleSort('classification')} className="cursor-pointer hover:bg-muted">
-            Klasifikasi <ArrowUpDown className="inline h-4 w-4 ml-1" />
+          <TableHead 
+            onClick={() => handleSort('classification')}
+            onMouseEnter={() => setHoveredColumn('classification')}
+            onMouseLeave={() => setHoveredColumn(null)}
+            className="cursor-pointer hover:bg-muted"
+          >
+            Klasifikasi {renderSortIcon('classification')}
           </TableHead>
-          <TableHead onClick={() => handleSort('disposition')} className="cursor-pointer hover:bg-muted">
-            Disposisi <ArrowUpDown className="inline h-4 w-4 ml-1" />
+          <TableHead 
+            onClick={() => handleSort('disposition')}
+            onMouseEnter={() => setHoveredColumn('disposition')}
+            onMouseLeave={() => setHoveredColumn(null)}
+            className="cursor-pointer hover:bg-muted"
+          >
+            Disposisi {renderSortIcon('disposition')}
           </TableHead>
-          <TableHead onClick={() => handleSort('disposition_date')} className="cursor-pointer hover:bg-muted">
-            Tgl Disposisi <ArrowUpDown className="inline h-4 w-4 ml-1" />
+          <TableHead 
+            onClick={() => handleSort('disposition_date')}
+            onMouseEnter={() => setHoveredColumn('disposition_date')}
+            onMouseLeave={() => setHoveredColumn(null)}
+            className="cursor-pointer hover:bg-muted"
+          >
+            Tgl Disposisi {renderSortIcon('disposition_date')}
           </TableHead>
-          <TableHead onClick={() => handleSort('recipient')} className="cursor-pointer hover:bg-muted">
-            Penerima <ArrowUpDown className="inline h-4 w-4 ml-1" />
+          <TableHead 
+            onClick={() => handleSort('recipient')}
+            onMouseEnter={() => setHoveredColumn('recipient')}
+            onMouseLeave={() => setHoveredColumn(null)}
+            className="cursor-pointer hover:bg-muted"
+          >
+            Penerima {renderSortIcon('recipient')}
           </TableHead>
-          <TableHead onClick={() => handleSort('reply_date')} className="cursor-pointer hover:bg-muted">
-            Tgl Balasan <ArrowUpDown className="inline h-4 w-4 ml-1" />
+          <TableHead 
+            onClick={() => handleSort('reply_date')}
+            onMouseEnter={() => setHoveredColumn('reply_date')}
+            onMouseLeave={() => setHoveredColumn(null)}
+            className="cursor-pointer hover:bg-muted"
+          >
+            Tgl Balasan {renderSortIcon('reply_date')}
           </TableHead>
           <TableHead>Status</TableHead>
           <TableHead>Aksi</TableHead>
