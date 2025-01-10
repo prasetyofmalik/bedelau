@@ -136,6 +136,9 @@ export function IncomingMailTable({ mails, onEdit, refetch }: IncomingMailTableP
           <TableHead onClick={() => handleSort('disposition_date')} className="cursor-pointer hover:bg-muted">
             Tgl Disposisi <ArrowUpDown className="inline h-4 w-4 ml-1" />
           </TableHead>
+          <TableHead onClick={() => handleSort('recipient')} className="cursor-pointer hover:bg-muted">
+            Penerima <ArrowUpDown className="inline h-4 w-4 ml-1" />
+          </TableHead>
           <TableHead onClick={() => handleSort('reply_date')} className="cursor-pointer hover:bg-muted">
             Tgl Balasan <ArrowUpDown className="inline h-4 w-4 ml-1" />
           </TableHead>
@@ -156,6 +159,7 @@ export function IncomingMailTable({ mails, onEdit, refetch }: IncomingMailTableP
             </TableCell>
             <TableCell>{mail.disposition}</TableCell>
             <TableCell>{formatDate(mail.disposition_date)}</TableCell>
+            <TableCell>{mail.recipient}</TableCell>
             <TableCell>{formatDate(mail.reply_date)}</TableCell>
             <TableCell>{getLetterStatus(mail)}</TableCell>
             <TableCell>

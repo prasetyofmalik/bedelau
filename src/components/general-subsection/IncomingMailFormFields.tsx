@@ -1,7 +1,7 @@
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { LETTER_TYPES, DISPOSITION_OPTIONS } from "./types";
+import { LETTER_TYPES, DISPOSITION_OPTIONS, TEAM_OPTIONS } from "./types";
 
 export function IncomingMailFormFields({ form }: { form: any }) {
   return (
@@ -107,6 +107,31 @@ export function IncomingMailFormFields({ form }: { form: any }) {
             <FormControl>
               <Input type="date" {...field} />
             </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="recipient"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Penerima</FormLabel>
+            <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <FormControl>
+                <SelectTrigger className="bg-white">
+                  <SelectValue placeholder="Pilih penerima" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent className="bg-white">
+                {TEAM_OPTIONS.map((option) => (
+                  <SelectItem key={option} value={option}>
+                    {option}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <FormMessage />
           </FormItem>
         )}

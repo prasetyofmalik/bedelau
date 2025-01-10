@@ -22,6 +22,7 @@ export interface IncomingMail {
   classification: string;
   disposition: string;
   disposition_date: string | null;
+  recipient: string;
   reply_date?: string | null;
 }
 
