@@ -121,7 +121,7 @@ export function IncomingMailFormFields({ form }: { form: any }) {
             <Select onValueChange={field.onChange} defaultValue={field.value}>
               <FormControl>
                 <SelectTrigger className="bg-white">
-                  <SelectValue placeholder="Pilih penerima" />
+                  <SelectValue placeholder="Pilih tim penerima" />
                 </SelectTrigger>
               </FormControl>
               <SelectContent className="bg-white">
