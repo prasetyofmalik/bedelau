@@ -6,6 +6,27 @@ import { supabase } from "@/lib/supabase";
 export const StatsSection = () => {
   const { data: stats, isLoading: isMailStatsLoading } = useMailStats();
   
+  const { data: session } = useQuery({
+    queryKey: ['session'],
+    queryFn: async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      return session;
+    },
+  });
+
+  const { data: profile } = useQuery({
+    queryKey: ['profile', session?.user?.id],
+    enabled: !!session?.user?.id,
+    queryFn: async () => {
+      const { data } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', session?.user?.id)
+        .single();
+      return data;
+    },
+  });
+  
   const { data: employeeStats, isLoading: isEmployeeStatsLoading } = useQuery({
     queryKey: ['employeeStats'],
     queryFn: async () => {
@@ -38,6 +59,8 @@ export const StatsSection = () => {
     );
   }
 
+  const employeeRedirectPath = profile?.role === 'admin' ? '/admin' : '/user';
+
   return (
     <section className="py-12 container mx-auto px-4">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -48,6 +71,7 @@ export const StatsSection = () => {
             { label: "Pria", value: employeeStats?.male || 0 },
             { label: "Wanita", value: employeeStats?.female || 0 },
           ]}
+          redirectTo={employeeRedirectPath}
         />
         <StatsCard
           title="Jumlah Tim Kerja"
