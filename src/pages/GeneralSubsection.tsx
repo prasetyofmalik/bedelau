@@ -18,40 +18,42 @@ export default function GeneralSubsection() {
         </div>
 
         <div className="space-y-6">
-          <div className="flex justify-between items-center">
-            <h2 className="text-2xl font-semibold">Rekap Surat Masuk, Surat Keluar, dan SK</h2>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setIsRecapVisible(!isRecapVisible)}
-              className="ml-2 rounded-full hover:bg-gray-100"
-            >
-              {isRecapVisible ? (
-                <ChevronUp className="h-4 w-4" />
-              ) : (
-                <ChevronDown className="h-4 w-4" />
-              )}
-            </Button>
+          <div className="bg-white rounded-lg border border-gray-200 p-6">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-semibold">Rekap Surat Masuk, Surat Keluar, dan SK</h2>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setIsRecapVisible(!isRecapVisible)}
+                className="ml-2 rounded-full hover:bg-gray-100"
+              >
+                {isRecapVisible ? (
+                  <ChevronUp className="h-4 w-4" />
+                ) : (
+                  <ChevronDown className="h-4 w-4" />
+                )}
+              </Button>
+            </div>
+            
+            {isRecapVisible && (
+              <Tabs defaultValue="incoming" className="space-y-4 mt-4">
+                <TabsList>
+                  <TabsTrigger value="incoming">Surat Masuk</TabsTrigger>
+                  <TabsTrigger value="outgoing">Surat Keluar</TabsTrigger>
+                  <TabsTrigger value="sk">SK</TabsTrigger>
+                </TabsList>
+                <TabsContent value="incoming">
+                  <IncomingMailSection />
+                </TabsContent>
+                <TabsContent value="outgoing">
+                  <OutgoingMailSection />
+                </TabsContent>
+                <TabsContent value="sk">
+                  <SKSection />
+                </TabsContent>
+              </Tabs>
+            )}
           </div>
-          
-          {isRecapVisible && (
-            <Tabs defaultValue="incoming" className="space-y-4">
-              <TabsList>
-                <TabsTrigger value="incoming">Surat Masuk</TabsTrigger>
-                <TabsTrigger value="outgoing">Surat Keluar</TabsTrigger>
-                <TabsTrigger value="sk">SK</TabsTrigger>
-              </TabsList>
-              <TabsContent value="incoming">
-                <IncomingMailSection />
-              </TabsContent>
-              <TabsContent value="outgoing">
-                <OutgoingMailSection />
-              </TabsContent>
-              <TabsContent value="sk">
-                <SKSection />
-              </TabsContent>
-            </Tabs>
-          )}
         </div>
       </div>
     </div>
