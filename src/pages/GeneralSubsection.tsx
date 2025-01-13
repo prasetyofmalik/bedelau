@@ -36,19 +36,34 @@ export default function GeneralSubsection() {
             </div>
             
             {isRecapVisible && (
-              <Tabs defaultValue="incoming" className="space-y-4 mt-4">
-                <TabsList>
-                  <TabsTrigger value="incoming">Surat Masuk</TabsTrigger>
-                  <TabsTrigger value="outgoing">Surat Keluar</TabsTrigger>
-                  <TabsTrigger value="sk">SK</TabsTrigger>
+              <Tabs defaultValue="incoming" className="space-y-6 mt-6">
+                <TabsList className="w-full border-b border-gray-200 space-x-8 p-0 h-auto bg-transparent">
+                  <TabsTrigger 
+                    value="incoming"
+                    className="px-4 py-3 data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none rounded-none bg-transparent font-medium"
+                  >
+                    Surat Masuk
+                  </TabsTrigger>
+                  <TabsTrigger 
+                    value="outgoing"
+                    className="px-4 py-3 data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none rounded-none bg-transparent font-medium"
+                  >
+                    Surat Keluar
+                  </TabsTrigger>
+                  <TabsTrigger 
+                    value="sk"
+                    className="px-4 py-3 data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none rounded-none bg-transparent font-medium"
+                  >
+                    SK
+                  </TabsTrigger>
                 </TabsList>
-                <TabsContent value="incoming">
+                <TabsContent value="incoming" className="mt-6">
                   <IncomingMailSection />
                 </TabsContent>
-                <TabsContent value="outgoing">
+                <TabsContent value="outgoing" className="mt-6">
                   <OutgoingMailSection />
                 </TabsContent>
-                <TabsContent value="sk">
+                <TabsContent value="sk" className="mt-6">
                   <SKSection />
                 </TabsContent>
               </Tabs>
