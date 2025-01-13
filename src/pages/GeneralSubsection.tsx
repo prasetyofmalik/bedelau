@@ -22,9 +22,9 @@ export default function GeneralSubsection() {
             <h2 className="text-2xl font-semibold">Rekap Surat Masuk, Surat Keluar, dan SK</h2>
             <Button
               variant="ghost"
-              size="sm"
+              size="icon"
               onClick={() => setIsRecapVisible(!isRecapVisible)}
-              className="ml-2"
+              className="ml-2 rounded-full hover:bg-gray-100"
             >
               {isRecapVisible ? (
                 <ChevronUp className="h-4 w-4" />
