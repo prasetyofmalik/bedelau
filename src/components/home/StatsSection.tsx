@@ -15,8 +15,8 @@ export const StatsSection = () => {
         .eq('role', 'employee');
 
       const totalEmployees = employees?.length || 0;
-      const maleEmployees = employees?.filter(emp => emp.gender === 'male').length || 0;
-      const femaleEmployees = employees?.filter(emp => emp.gender === 'female').length || 0;
+      const maleEmployees = employees?.filter(emp => emp.gender === 'l').length || 0;
+      const femaleEmployees = employees?.filter(emp => emp.gender === 'p').length || 0;
 
       return {
         total: totalEmployees,
