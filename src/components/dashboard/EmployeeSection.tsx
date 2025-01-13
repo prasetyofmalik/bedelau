@@ -13,12 +13,12 @@ import { supabase } from "@/lib/supabase";
 
 export function EmployeeSection() {
   const { data: employees } = useQuery({
-    queryKey: ['employees'],
+    queryKey: ["employees"],
     queryFn: async () => {
       const { data } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('role', 'employee');
+        .from("profiles")
+        .select("*")
+        .eq("role", "employee");
       return data;
     },
   });
@@ -32,29 +32,42 @@ export function EmployeeSection() {
           Tambah Pegawai
         </Button>
       </div>
-
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Name</TableHead>
-            <TableHead>Email</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {employees?.map((employee) => (
-            <TableRow key={employee.id}>
-              <TableCell>{employee.full_name}</TableCell>
-              <TableCell>{employee.email}</TableCell>
-              <TableCell>Active</TableCell>
-              <TableCell>
-                <Button variant="ghost" size="sm">Edit</Button>
-              </TableCell>
+      <div className="bg-white rounded-lg shadow">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Nama</TableHead>
+              <TableHead>No. HP</TableHead>
+              <TableHead>NIP BPS</TableHead>
+              <TableHead>NIP</TableHead>
+              <TableHead>Jabatan</TableHead>
+              <TableHead>Golongan</TableHead>
+              <TableHead>Kode Gol</TableHead>
+              <TableHead>Rekening</TableHead>
+              <TableHead>NPWP</TableHead>
+              <TableHead>NIK</TableHead>
+              <TableHead>Email</TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+          <TableBody>
+            {employees?.map((employee) => (
+              <TableRow key={employee.id}>
+                <TableCell>{employee.full_name}</TableCell>
+                <TableCell>{employee.no_hp}</TableCell>
+                <TableCell>{employee.nip_bps}</TableCell>
+                <TableCell>{employee.nip}</TableCell>
+                <TableCell>{employee.jabatan}</TableCell>
+                <TableCell>{employee.gol}</TableCell>
+                <TableCell>{employee.kode_gol}</TableCell>
+                <TableCell>{employee.rekening}</TableCell>
+                <TableCell>{employee.npwp}</TableCell>
+                <TableCell>{employee.nik}</TableCell>
+                <TableCell>{employee.email}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
     </div>
   );
 }

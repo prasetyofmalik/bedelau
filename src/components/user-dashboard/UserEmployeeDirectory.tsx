@@ -28,17 +28,17 @@ export function UserEmployeeDirectory() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Name</TableHead>
+              <TableHead>Nama</TableHead>
+              <TableHead>NIP</TableHead>
               <TableHead>Email</TableHead>
-              <TableHead>Department</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {employees?.map((employee) => (
               <TableRow key={employee.id}>
                 <TableCell>{employee.full_name}</TableCell>
+                <TableCell>{employee.nip}</TableCell>
                 <TableCell>{employee.email}</TableCell>
-                <TableCell>{employee.department || 'General'}</TableCell>
               </TableRow>
             ))}
           </TableBody>

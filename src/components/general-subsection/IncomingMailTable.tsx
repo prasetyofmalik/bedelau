@@ -47,7 +47,7 @@ export function IncomingMailTable({ mails, onEdit, refetch }: IncomingMailTableP
 
     const letterType = LETTER_TYPES[mail.classification];
     if (!letterType.requiresReply) {
-      return "Tidak Memerlukan Balasan";
+      return "Tidak Butuh Balasan";
     }
     
     return mail.reply_date ? "Sudah Dibalas" : "Belum Dibalas";

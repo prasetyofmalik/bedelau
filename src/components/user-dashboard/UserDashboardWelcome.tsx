@@ -19,7 +19,7 @@ export function UserDashboardWelcome({ profile }: UserDashboardWelcomeProps) {
           ]}
         />
         <StatsCard
-          title="Pengumuaman"
+          title="Pengumuman"
           value={5}
           subStats={[
             { label: "Belum dibaca", value: 2 },

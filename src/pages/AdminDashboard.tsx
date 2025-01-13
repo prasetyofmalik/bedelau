@@ -15,25 +15,27 @@ export default function AdminDashboard() {
 
   // Fetch user session and profile
   const { data: profile, isLoading } = useQuery({
-    queryKey: ['profile'],
+    queryKey: ["profile"],
     queryFn: async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       if (!session) {
-        navigate('/login');
+        navigate("/login");
         return null;
       }
-      
+
       const { data: profile } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', session.user.id)
+        .from("profiles")
+        .select("*")
+        .eq("id", session.user.id)
         .single();
-        
-      if (profile?.role !== 'admin') {
-        navigate('/');
+
+      if (profile?.role !== "admin") {
+        navigate("/");
         return null;
       }
-      
+
       return profile;
     },
   });
@@ -47,28 +49,43 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gray-50">
       <Header />
       <main className="container mx-auto px-4 py-8">
         <DashboardWelcome profile={profile} />
         <DashboardSearch />
-        
-        <Tabs defaultValue="announcements" className="mt-8">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="announcements">Pengumuman</TabsTrigger>
-            <TabsTrigger value="employees">Pegawai</TabsTrigger>
-            <TabsTrigger value="posts">Postingan</TabsTrigger>
+
+        <Tabs defaultValue="employees" className="space-y-6 mt-8">
+          <TabsList className="w-full border-b border-gray-200 space-x-8 p-0 h-auto bg-transparent">
+            <TabsTrigger
+              value="announcements"
+              className="px-4 py-3 data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none rounded-none bg-transparent font-medium"
+            >
+              Pengumuman
+            </TabsTrigger>
+            <TabsTrigger
+              value="employees"
+              className="px-4 py-3 data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none rounded-none bg-transparent font-medium"
+            >
+              Pegawai
+            </TabsTrigger>
+            <TabsTrigger
+              value="posts"
+              className="px-4 py-3 data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none rounded-none bg-transparent font-medium"
+            >
+              Postingan
+            </TabsTrigger>
           </TabsList>
-          
-          <TabsContent value="announcements">
+
+          <TabsContent value="announcements" className="mt-6">
             <AnnouncementSection />
           </TabsContent>
-          
-          <TabsContent value="employees">
+
+          <TabsContent value="employees" className="mt-6">
             <EmployeeSection />
           </TabsContent>
-          
-          <TabsContent value="posts">
+
+          <TabsContent value="posts" className="mt-6">
             <PostSection />
           </TabsContent>
         </Tabs>
