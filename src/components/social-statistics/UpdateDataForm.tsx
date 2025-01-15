@@ -29,17 +29,22 @@ import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
 import { UpdateDataFormProps } from "./types";
 
-export function UpdateDataForm({ isOpen, onClose, onSuccess, initialData }: UpdateDataFormProps) {
+export function UpdateDataForm({
+  isOpen,
+  onClose,
+  onSuccess,
+  initialData,
+}: UpdateDataFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+
   const { data: samples = [] } = useQuery({
-    queryKey: ['ssn_m25_samples'],
+    queryKey: ["ssn_m25_samples"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('ssn_m25_samples')
-        .select('sample_code')
-        .order('sample_code');
-      
+        .from("ssn_m25_samples")
+        .select("sample_code")
+        .order("sample_code");
+
       if (error) throw error;
       return data;
     },
@@ -51,26 +56,26 @@ export function UpdateDataForm({ isOpen, onClose, onSuccess, initialData }: Upda
       families_before: initialData?.families_before || 0,
       families_after: initialData?.families_after || 0,
       households_after: initialData?.households_after || 0,
-    }
+    },
   });
 
   const onSubmit = async (data: any) => {
     setIsSubmitting(true);
     try {
-      const status = data.families_after > 0 ? 'completed' : 'not_started';
+      const status = data.families_after > 0 ? "completed" : "not_started";
       const updateData = { ...data, status };
 
       if (initialData?.id) {
         const { error } = await supabase
-          .from('ssn_m25_updates')
+          .from("ssn_m25_updates")
           .update(updateData)
-          .eq('id', initialData.id);
+          .eq("id", initialData.id);
 
         if (error) throw error;
         toast.success("Data pemutakhiran berhasil diperbarui");
       } else {
         const { error } = await supabase
-          .from('ssn_m25_updates')
+          .from("ssn_m25_updates")
           .insert([updateData]);
 
         if (error) throw error;
@@ -81,7 +86,11 @@ export function UpdateDataForm({ isOpen, onClose, onSuccess, initialData }: Upda
       onClose();
     } catch (error) {
       console.error("Error saving update data:", error);
-      toast.error(`Gagal ${initialData?.id ? "memperbarui" : "menambahkan"} data pemutakhiran`);
+      toast.error(
+        `Gagal ${
+          initialData?.id ? "memperbarui" : "menambahkan"
+        } data pemutakhiran`
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -114,13 +123,13 @@ export function UpdateDataForm({ isOpen, onClose, onSuccess, initialData }: Upda
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Pilih NKS" />
+                        <SelectValue placeholder="Pilih Nomor Kode Sampel" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
                       {samples.map((sample) => (
-                        <SelectItem 
-                          key={sample.sample_code} 
+                        <SelectItem
+                          key={sample.sample_code}
                           value={sample.sample_code}
                         >
                           {sample.sample_code}
@@ -138,13 +147,20 @@ export function UpdateDataForm({ isOpen, onClose, onSuccess, initialData }: Upda
               name="families_before"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Jumlah Keluarga Sebelum Pemutakhiran (Blok II)</FormLabel>
+                  <FormLabel>
+                    Jumlah Keluarga Sebelum Pemutakhiran (Blok II)
+                  </FormLabel>
                   <FormControl>
-                    <Input 
-                      type="number" 
-                      placeholder="Masukkan jumlah keluarga sebelum pemutakhiran"
+                    <Input
+                      type="number"
                       {...field}
-                      onChange={e => field.onChange(Number(e.target.value))}
+                      onChange={(e) => {
+                        const value = Number(e.target.value);
+                        if (value >= 0) {
+                          field.onChange(value);
+                        }
+                      }}
+                      min="0"
                     />
                   </FormControl>
                   <FormMessage />
@@ -157,13 +173,20 @@ export function UpdateDataForm({ isOpen, onClose, onSuccess, initialData }: Upda
               name="families_after"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Jumlah Keluarga Hasil pemutakhiran (Blok II)</FormLabel>
+                  <FormLabel>
+                    Jumlah Keluarga Hasil pemutakhiran (Blok II)
+                  </FormLabel>
                   <FormControl>
-                    <Input 
-                      type="number" 
-                      placeholder="Masukkan jumlah keluarga hasil pemutakhiran"
+                    <Input
+                      type="number"
                       {...field}
-                      onChange={e => field.onChange(Number(e.target.value))}
+                      onChange={(e) => {
+                        const value = Number(e.target.value);
+                        if (value >= 0) {
+                          field.onChange(value);
+                        }
+                      }}
+                      min="0"
                     />
                   </FormControl>
                   <FormMessage />
@@ -176,13 +199,20 @@ export function UpdateDataForm({ isOpen, onClose, onSuccess, initialData }: Upda
               name="households_after"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Jumlah Rumah Tangga Hasil Pemutakhiran (Blok II)</FormLabel>
+                  <FormLabel>
+                    Jumlah Rumah Tangga Hasil Pemutakhiran (Blok II)
+                  </FormLabel>
                   <FormControl>
-                    <Input 
-                      type="number" 
-                      placeholder="Masukkan jumlah rumah tangga hasil pemutakhiran"
+                    <Input
+                      type="number"
                       {...field}
-                      onChange={e => field.onChange(Number(e.target.value))}
+                      onChange={(e) => {
+                        const value = Number(e.target.value);
+                        if (value >= 0) {
+                          field.onChange(value);
+                        }
+                      }}
+                      min="0"
                     />
                   </FormControl>
                   <FormMessage />

@@ -15,7 +15,7 @@ export function UpdateTable({ updates, onEdit, refetch }: UpdateTableProps) {
   const getStatusBadge = (status?: string) => {
     switch (status) {
       case 'completed':
-        return <Badge className="bg-green-500">Sudah Input Pemutakhiran</Badge>;
+        return <Badge className="bg-green-500">Selesai Input</Badge>;
       case 'in_progress':
         return <Badge className="bg-yellow-500">Belum Selesai</Badge>;
       default:
@@ -31,13 +31,13 @@ export function UpdateTable({ updates, onEdit, refetch }: UpdateTableProps) {
             <TableHead>Kecamatan</TableHead>
             <TableHead>Desa/Kelurahan</TableHead>
             <TableHead>NKS</TableHead>
-            <TableHead>Jumlah RT Susenas Maret 2023</TableHead>
+            <TableHead>Perkiraan Jumlah Ruta</TableHead>
             <TableHead>PML</TableHead>
             <TableHead>PCL</TableHead>
             <TableHead>Status Pemutakhiran</TableHead>
             <TableHead>Jumlah Keluarga Sebelum (Blok II)</TableHead>
             <TableHead>Jumlah Keluarga Hasil (Blok II)</TableHead>
-            <TableHead>Jumlah RT Hasil (Blok II)</TableHead>
+            <TableHead>Jumlah Ruta Hasil (Blok II)</TableHead>
             <TableHead>Aksi</TableHead>
           </TableRow>
         </TableHeader>
