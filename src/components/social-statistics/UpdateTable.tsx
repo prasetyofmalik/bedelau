@@ -8,15 +8,10 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Pencil } from "lucide-react";
-import { UpdateData } from "./types";
+import { UpdateData, UpdateTableProps } from "./types";
 import { Badge } from "@/components/ui/badge";
 
-interface UpdateTableProps {
-  updates: UpdateData[];
-  onEdit: (data: UpdateData) => void;
-}
-
-export function UpdateTable({ updates, onEdit }: UpdateTableProps) {
+export function UpdateTable({ updates, onEdit, refetch }: UpdateTableProps) {
   const getStatusBadge = (status?: string) => {
     switch (status) {
       case 'completed':
