@@ -10,25 +10,33 @@ import { exportToExcel } from "@/utils/excelExport";
 
 export function DashboardSsnM25Section() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [isAddMailOpen, setIsAddMailOpen] = useState(false);
-  const [editingMail, setEditingMail] = useState<IncomingMail | null>(null);
-  const {
-    data: mails = [],
-    isLoading,
-    refetch,
-  } = useIncomingMails(searchQuery);
+
+  const { data: updates = [], isLoading, refetch } = useQuery({
+    queryKey: ['ssn_m25_updates', searchQuery],
+    queryFn: async () => {
+      const query = supabase
+        .from('ssn_m25_updates')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (searchQuery) {
+        query.ilike('sample_code', `%${searchQuery}%`);
+      }
+
+      const { data, error } = await query;
+      if (error) throw error;
+      return data;
+    },
+  });
 
   const handleExport = () => {
-    const exportData = mails.map((mail) => ({
-      "Nomor Surat": mail.number,
-      Tanggal: mail.date,
-      Pengirim: mail.sender,
-      Klasifikasi: mail.classification,
-      Disposisi: mail.disposition,
-      "Tanggal Disposisi": mail.disposition_date,
-      "Tanggal Balasan": mail.reply_date || "-",
+    const exportData = updates.map((update) => ({
+      "NKS": update.sample_code,
+      "Jumlah Keluarga Sebelum": update.families_before,
+      "Jumlah Keluarga Setelah": update.families_after,
+      "Jumlah Rumah Tangga": update.households_after,
     }));
-    exportToExcel(exportData, "surat-masuk");
+    exportToExcel(exportData, "pemutakhiran-data");
   };
 
   return (
@@ -58,11 +66,7 @@ export function DashboardSsnM25Section() {
         {isLoading ? (
           <div className="p-8 text-center">Loading...</div>
         ) : (
-          <IncomingMailTable 
-            mails={mails} 
-            onEdit={setEditingMail}
-            refetch={refetch}
-          />
+          <div>Table implementation will be added</div>
         )}
       </div>
     </div>
@@ -175,10 +179,7 @@ export function InputPclSsnM25Section() {
               <FileDown className="mr-2 h-4 w-4" />
               Export
             </Button>
-            <Button
-              onClick={() => setIsAddMailOpen(true)}
-              className="w-full sm:w-auto"
-            >
+            <Button className="w-full sm:w-auto">
               <Plus className="mr-2 h-4 w-4" />
               Tambah Progress
             </Button>
@@ -189,20 +190,9 @@ export function InputPclSsnM25Section() {
           {isLoading ? (
             <div className="p-8 text-center">Loading...</div>
           ) : (
-            <OutgoingMailTable 
-              mails={mails} 
-              onEdit={setEditingMail}
-              refetch={refetch}
-            />
+            <div>Table implementation will be added</div>
           )}
         </div>
-
-        <AddMailForm
-          type="outgoing"
-          isOpen={isAddMailOpen}
-          onClose={handleClose}
-          onSuccess={refetch}
-        />
       </div>
     </>
   );
@@ -210,29 +200,33 @@ export function InputPclSsnM25Section() {
 
 export function InputPmlSsnM25Section() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [isAddMailOpen, setIsAddMailOpen] = useState(false);
-  const {
-    data: mails = [],
-    isLoading,
-    refetch,
-  } = useOutgoingMails(searchQuery);
+
+  const { data: updates = [], isLoading, refetch } = useQuery({
+    queryKey: ['ssn_m25_updates', searchQuery],
+    queryFn: async () => {
+      const query = supabase
+        .from('ssn_m25_updates')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (searchQuery) {
+        query.ilike('sample_code', `%${searchQuery}%`);
+      }
+
+      const { data, error } = await query;
+      if (error) throw error;
+      return data;
+    },
+  });
 
   const handleExport = () => {
-    const exportData = mails.map((mail) => ({
-      "Nomor Surat": mail.number,
-      Tanggal: mail.date,
-      Pengirim: mail.origin,
-      Tujuan: mail.destination,
-      Uraian: mail.description,
-      "Surat Balasan": mail.is_reply_letter ? "Ya" : "Tidak",
-      Referensi: mail.reference,
-      Pembuat: mail.employee_name,
+    const exportData = updates.map((update) => ({
+      "NKS": update.sample_code,
+      "Jumlah Keluarga Sebelum": update.families_before,
+      "Jumlah Keluarga Setelah": update.families_after,
+      "Jumlah Rumah Tangga": update.households_after,
     }));
-    exportToExcel(exportData, "surat-keluar");
-  };
-
-  const handleClose = () => {
-    setIsAddMailOpen(false);
+    exportToExcel(exportData, "pemutakhiran-data");
   };
 
   return (
@@ -257,10 +251,7 @@ export function InputPmlSsnM25Section() {
               <FileDown className="mr-2 h-4 w-4" />
               Export
             </Button>
-            <Button
-              onClick={() => setIsAddMailOpen(true)}
-              className="w-full sm:w-auto"
-            >
+            <Button className="w-full sm:w-auto">
               <Plus className="mr-2 h-4 w-4" />
               Tambah Progress
             </Button>
@@ -271,20 +262,9 @@ export function InputPmlSsnM25Section() {
           {isLoading ? (
             <div className="p-8 text-center">Loading...</div>
           ) : (
-            <OutgoingMailTable 
-              mails={mails} 
-              onEdit={handleEdit}
-              refetch={refetch}
-            />
+            <div>Table implementation will be added</div>
           )}
         </div>
-
-        <AddMailForm
-          type="outgoing"
-          isOpen={isAddMailOpen}
-          onClose={handleClose}
-          onSuccess={refetch}
-        />
       </div>
 
       <div className="space-y-6 mt-10">
@@ -307,10 +287,7 @@ export function InputPmlSsnM25Section() {
               <FileDown className="mr-2 h-4 w-4" />
               Export
             </Button>
-            <Button
-              onClick={() => setIsAddMailOpen(true)}
-              className="w-full sm:w-auto"
-            >
+            <Button className="w-full sm:w-auto">
               <Plus className="mr-2 h-4 w-4" />
               Tambah Fenomena
             </Button>
@@ -321,20 +298,9 @@ export function InputPmlSsnM25Section() {
           {isLoading ? (
             <div className="p-8 text-center">Loading...</div>
           ) : (
-            <OutgoingMailTable 
-              mails={mails} 
-              onEdit={handleEdit}
-              refetch={refetch}
-            />
+            <div>Table implementation will be added</div>
           )}
         </div>
-
-        <AddMailForm
-          type="outgoing"
-          isOpen={isAddMailOpen}
-          onClose={handleClose}
-          onSuccess={refetch}
-        />
       </div>
     </>
   );
