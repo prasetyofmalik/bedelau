@@ -6,7 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { UpdateDataForm } from "./UpdateDataForm";
 import { UpdateTable } from "./UpdateTable";
-import { UpdateData } from "./types";
+import { UpdateData, SampleData } from "./types";
 import { exportToExcel } from "@/utils/excelExport";
 
 export function PclSection() {
@@ -19,7 +19,17 @@ export function PclSection() {
     queryFn: async () => {
       const query = supabase
         .from('ssn_m25_updates')
-        .select('*')
+        .select(`
+          *,
+          ssn_m25_samples!inner(
+            sample_code,
+            kecamatan,
+            desa_kelurahan,
+            households_before,
+            pml,
+            pcl
+          )
+        `)
         .order('created_at', { ascending: false });
 
       if (searchQuery) {
@@ -28,13 +38,22 @@ export function PclSection() {
 
       const { data, error } = await query;
       if (error) throw error;
-      return data;
+
+      return data.map((item: any) => ({
+        ...item,
+        ...item.ssn_m25_samples,
+      }));
     },
   });
 
   const handleExport = () => {
     const exportData = updates.map((update) => ({
       "NKS": update.sample_code,
+      "Kecamatan": update.kecamatan,
+      "Desa/Kelurahan": update.desa_kelurahan,
+      "Jumlah RT Susenas Maret 2023": update.households_before,
+      "PML": update.pml,
+      "PCL": update.pcl,
       "Jumlah Keluarga Sebelum": update.families_before,
       "Jumlah Keluarga Setelah": update.families_after,
       "Jumlah Rumah Tangga": update.households_after,

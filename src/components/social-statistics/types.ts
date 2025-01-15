@@ -1,3 +1,14 @@
+export interface SampleData {
+  id: string;
+  sample_code: string;
+  kecamatan: string;
+  desa_kelurahan: string;
+  households_before: number;
+  pml: string;
+  pcl: string;
+  created_at?: string;
+}
+
 export interface UpdateData {
   id?: number;
   sample_code: string;
@@ -5,11 +16,6 @@ export interface UpdateData {
   families_after: number;
   households_after: number;
   created_at?: string;
-  kecamatan?: string;
-  desa_kelurahan?: string;
-  households_before?: number;
-  pml?: string;
-  pcl?: string;
   status?: 'not_started' | 'in_progress' | 'completed';
 }
 
@@ -21,7 +27,7 @@ export interface UpdateDataFormProps {
 }
 
 export interface UpdateTableProps {
-  updates: UpdateData[];
+  updates: (UpdateData & SampleData)[];
   onEdit: (data: UpdateData) => void;
   refetch: () => void;
 }

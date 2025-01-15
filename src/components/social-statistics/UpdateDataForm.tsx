@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -16,6 +17,13 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
@@ -24,6 +32,19 @@ import { UpdateDataFormProps } from "./types";
 export function UpdateDataForm({ isOpen, onClose, onSuccess, initialData }: UpdateDataFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   
+  const { data: samples = [] } = useQuery({
+    queryKey: ['ssn_m25_samples'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('ssn_m25_samples')
+        .select('sample_code')
+        .order('sample_code');
+      
+      if (error) throw error;
+      return data;
+    },
+  });
+
   const form = useForm({
     defaultValues: {
       sample_code: initialData?.sample_code || "",
@@ -80,6 +101,38 @@ export function UpdateDataForm({ isOpen, onClose, onSuccess, initialData }: Upda
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="sample_code"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>NKS</FormLabel>
+                  <Select
+                    disabled={!!initialData}
+                    onValueChange={field.onChange}
+                    value={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Pilih NKS" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {samples.map((sample) => (
+                        <SelectItem 
+                          key={sample.sample_code} 
+                          value={sample.sample_code}
+                        >
+                          {sample.sample_code}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             <FormField
               control={form.control}
               name="families_before"
