@@ -53,19 +53,6 @@ export function IncomingMailTable({ mails, onEdit, refetch }: IncomingMailTableP
     return mail.reply_date ? "Sudah Dibalas" : "Belum Dibalas";
   };
 
-  const getReplyDate = (mail: IncomingMail) => {
-    if (!mail.classification || !LETTER_TYPES[mail.classification]) {
-      return "-";
-    }
-
-    const letterType = LETTER_TYPES[mail.classification];
-    if (!letterType.requiresReply) {
-      return "-";
-    }
-    
-    return mail.reply_date || "Belum dibalas";
-  };
-
   const handleDelete = async (id: string) => {
     const { error } = await supabase
       .from('incoming_mails')
