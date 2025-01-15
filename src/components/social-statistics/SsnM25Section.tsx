@@ -1,15 +1,11 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus, Search, FileDown } from "lucide-react";
-import {
-  useIncomingMails,
-  useOutgoingMails,
-} from "../general-subsection/hooks/useMails";
-import { IncomingMailTable } from "../general-subsection/IncomingMailTable";
-import { OutgoingMailTable } from "../general-subsection/OutgoingMailTable";
-import { AddMailForm } from "../general-subsection/AddMailForm";
-import { IncomingMail, OutgoingMail } from "../general-subsection/types";
+import { Plus, FileDown } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/lib/supabase";
+import { UpdateDataForm } from "./UpdateDataForm";
+import { UpdateData } from "./types";
 import { exportToExcel } from "@/utils/excelExport";
 
 export function DashboardSsnM25Section() {
@@ -59,15 +55,15 @@ export function DashboardSsnM25Section() {
       </div>
 
       <div className="border rounded-lg overflow-x-auto">
-        {/* {isLoading ? (
+        {isLoading ? (
           <div className="p-8 text-center">Loading...</div>
         ) : (
           <IncomingMailTable 
             mails={mails} 
-            onEdit={handleEdit}
+            onEdit={setEditingMail}
             refetch={refetch}
           />
-        )} */}
+        )}
       </div>
     </div>
   );
@@ -75,29 +71,40 @@ export function DashboardSsnM25Section() {
 
 export function InputPclSsnM25Section() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [isAddMailOpen, setIsAddMailOpen] = useState(false);
-  const {
-    data: mails = [],
-    isLoading,
-    refetch,
-  } = useOutgoingMails(searchQuery);
+  const [isAddUpdateOpen, setIsAddUpdateOpen] = useState(false);
+  const [editingUpdate, setEditingUpdate] = useState<UpdateData | null>(null);
+
+  const { data: updates = [], isLoading, refetch } = useQuery({
+    queryKey: ['ssn_m25_updates', searchQuery],
+    queryFn: async () => {
+      const query = supabase
+        .from('ssn_m25_updates')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (searchQuery) {
+        query.ilike('sample_code', `%${searchQuery}%`);
+      }
+
+      const { data, error } = await query;
+      if (error) throw error;
+      return data;
+    },
+  });
 
   const handleExport = () => {
-    const exportData = mails.map((mail) => ({
-      "Nomor Surat": mail.number,
-      Tanggal: mail.date,
-      Pengirim: mail.origin,
-      Tujuan: mail.destination,
-      Uraian: mail.description,
-      "Surat Balasan": mail.is_reply_letter ? "Ya" : "Tidak",
-      Referensi: mail.reference,
-      Pembuat: mail.employee_name,
+    const exportData = updates.map((update) => ({
+      "NKS": update.sample_code,
+      "Jumlah Keluarga Sebelum": update.families_before,
+      "Jumlah Keluarga Setelah": update.families_after,
+      "Jumlah Rumah Tangga": update.households_after,
     }));
-    exportToExcel(exportData, "surat-keluar");
+    exportToExcel(exportData, "pemutakhiran-data");
   };
 
   const handleClose = () => {
-    setIsAddMailOpen(false);
+    setIsAddUpdateOpen(false);
+    setEditingUpdate(null);
   };
 
   return (
@@ -123,7 +130,7 @@ export function InputPclSsnM25Section() {
               Export
             </Button>
             <Button
-              onClick={() => setIsAddMailOpen(true)}
+              onClick={() => setIsAddUpdateOpen(true)}
               className="w-full sm:w-auto"
             >
               <Plus className="mr-2 h-4 w-4" />
@@ -133,22 +140,18 @@ export function InputPclSsnM25Section() {
         </div>
 
         <div className="border rounded-lg overflow-x-auto">
-          {/* {isLoading ? (
-          <div className="p-8 text-center">Loading...</div>
-        ) : (
-          <OutgoingMailTable 
-            mails={mails} 
-            onEdit={handleEdit}
-            refetch={refetch}
-          />
-        )} */}
+          {isLoading ? (
+            <div className="p-8 text-center">Loading...</div>
+          ) : (
+            <div>Table implementation will be added</div>
+          )}
         </div>
 
-        <AddMailForm
-          type="outgoing"
-          isOpen={isAddMailOpen}
+        <UpdateDataForm
+          isOpen={isAddUpdateOpen}
           onClose={handleClose}
           onSuccess={refetch}
+          initialData={editingUpdate}
         />
       </div>
 
@@ -183,15 +186,15 @@ export function InputPclSsnM25Section() {
         </div>
 
         <div className="border rounded-lg overflow-x-auto">
-          {/* {isLoading ? (
-          <div className="p-8 text-center">Loading...</div>
-        ) : (
-          <OutgoingMailTable 
-            mails={mails} 
-            onEdit={handleEdit}
-            refetch={refetch}
-          />
-        )} */}
+          {isLoading ? (
+            <div className="p-8 text-center">Loading...</div>
+          ) : (
+            <OutgoingMailTable 
+              mails={mails} 
+              onEdit={setEditingMail}
+              refetch={refetch}
+            />
+          )}
         </div>
 
         <AddMailForm
@@ -265,15 +268,15 @@ export function InputPmlSsnM25Section() {
         </div>
 
         <div className="border rounded-lg overflow-x-auto">
-          {/* {isLoading ? (
-          <div className="p-8 text-center">Loading...</div>
-        ) : (
-          <OutgoingMailTable 
-            mails={mails} 
-            onEdit={handleEdit}
-            refetch={refetch}
-          />
-        )} */}
+          {isLoading ? (
+            <div className="p-8 text-center">Loading...</div>
+          ) : (
+            <OutgoingMailTable 
+              mails={mails} 
+              onEdit={handleEdit}
+              refetch={refetch}
+            />
+          )}
         </div>
 
         <AddMailForm
@@ -315,15 +318,15 @@ export function InputPmlSsnM25Section() {
         </div>
 
         <div className="border rounded-lg overflow-x-auto">
-          {/* {isLoading ? (
-          <div className="p-8 text-center">Loading...</div>
-        ) : (
-          <OutgoingMailTable 
-            mails={mails} 
-            onEdit={handleEdit}
-            refetch={refetch}
-          />
-        )} */}
+          {isLoading ? (
+            <div className="p-8 text-center">Loading...</div>
+          ) : (
+            <OutgoingMailTable 
+              mails={mails} 
+              onEdit={handleEdit}
+              refetch={refetch}
+            />
+          )}
         </div>
 
         <AddMailForm
