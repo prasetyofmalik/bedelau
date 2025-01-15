@@ -20,6 +20,7 @@ export interface IncomingMail {
   date: string | null;
   sender: string;
   classification: string;
+  created_at: string;
   disposition: string;
   disposition_date: string | null;
   recipient: string;

@@ -161,6 +161,14 @@ export function IncomingMailTable({ mails, onEdit, refetch }: IncomingMailTableP
             Klasifikasi {renderSortIcon('classification')}
           </TableHead>
           <TableHead 
+            onClick={() => handleSort('created_at')}
+            onMouseEnter={() => setHoveredColumn('created_at')}
+            onMouseLeave={() => setHoveredColumn(null)}
+            className="cursor-pointer hover:bg-muted"
+          >
+            Tgl Diterima {renderSortIcon('created_at')}
+          </TableHead>
+          <TableHead 
             onClick={() => handleSort('disposition')}
             onMouseEnter={() => setHoveredColumn('disposition')}
             onMouseLeave={() => setHoveredColumn(null)}
@@ -207,6 +215,7 @@ export function IncomingMailTable({ mails, onEdit, refetch }: IncomingMailTableP
                 ? LETTER_TYPES[mail.classification].label 
                 : 'Klasifikasi Tidak Diketahui'}
             </TableCell>
+            <TableCell>{formatDate(mail.created_at)}</TableCell>
             <TableCell>{mail.disposition}</TableCell>
             <TableCell>{formatDate(mail.disposition_date)}</TableCell>
             <TableCell>{mail.recipient}</TableCell>
