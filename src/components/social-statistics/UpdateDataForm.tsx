@@ -36,10 +36,13 @@ export function UpdateDataForm({ isOpen, onClose, onSuccess, initialData }: Upda
   const onSubmit = async (data: any) => {
     setIsSubmitting(true);
     try {
+      const status = data.families_after > 0 ? 'completed' : 'not_started';
+      const updateData = { ...data, status };
+
       if (initialData?.id) {
         const { error } = await supabase
           .from('ssn_m25_updates')
-          .update(data)
+          .update(updateData)
           .eq('id', initialData.id);
 
         if (error) throw error;
@@ -47,7 +50,7 @@ export function UpdateDataForm({ isOpen, onClose, onSuccess, initialData }: Upda
       } else {
         const { error } = await supabase
           .from('ssn_m25_updates')
-          .insert([data]);
+          .insert([updateData]);
 
         if (error) throw error;
         toast.success("Data pemutakhiran berhasil ditambahkan");
@@ -77,20 +80,6 @@ export function UpdateDataForm({ isOpen, onClose, onSuccess, initialData }: Upda
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="sample_code"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Nomor Kode Sampel (NKS)</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Masukkan NKS" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
             <FormField
               control={form.control}
               name="families_before"
