@@ -2,6 +2,7 @@ import { StatsCard } from "@/components/StatsCard";
 import { useMailStats } from "@/hooks/useMailStats";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
+import { teams } from "@/components/monitoring/teamsData";
 
 export const StatsSection = () => {
   const { data: stats, isLoading: isMailStatsLoading } = useMailStats();
@@ -75,7 +76,7 @@ export const StatsSection = () => {
         />
         <StatsCard
           title="Jumlah Tim Kerja"
-          value={7}
+          value={teams.length}
           redirectTo="/monitoring"
         />
         <StatsCard
