@@ -122,11 +122,11 @@ export function UpdateDataForm({
                     value={field.value}
                   >
                     <FormControl>
-                      <SelectTrigger>
+                      <SelectTrigger className="bg-white">
                         <SelectValue placeholder="Pilih Nomor Kode Sampel" />
                       </SelectTrigger>
                     </FormControl>
-                    <SelectContent>
+                    <SelectContent className="bg-white">
                       {samples.map((sample) => (
                         <SelectItem
                           key={sample.sample_code}
