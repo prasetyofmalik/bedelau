@@ -43,7 +43,7 @@ export function UpdateTable({ updates, onEdit, refetch }: UpdateTableProps) {
         </TableHeader>
         <TableBody>
           {updates.map((update) => (
-            <TableRow key={update.id}>
+            <TableRow key={update.sample_code}>
               <TableCell>{update.kecamatan}</TableCell>
               <TableCell>{update.desa_kelurahan}</TableCell>
               <TableCell>{update.sample_code}</TableCell>
@@ -51,9 +51,9 @@ export function UpdateTable({ updates, onEdit, refetch }: UpdateTableProps) {
               <TableCell>{update.pml}</TableCell>
               <TableCell>{update.pcl}</TableCell>
               <TableCell>{getStatusBadge(update.status)}</TableCell>
-              <TableCell>{update.families_before}</TableCell>
-              <TableCell>{update.families_after}</TableCell>
-              <TableCell>{update.households_after}</TableCell>
+              <TableCell>{update.families_before || '-'}</TableCell>
+              <TableCell>{update.families_after || '-'}</TableCell>
+              <TableCell>{update.households_after || '-'}</TableCell>
               <TableCell>
                 <Button
                   variant="ghost"

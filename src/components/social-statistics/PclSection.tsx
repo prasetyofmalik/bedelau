@@ -18,19 +18,24 @@ export function PclSection() {
     queryKey: ['ssn_m25_updates', searchQuery],
     queryFn: async () => {
       const query = supabase
-        .from('ssn_m25_updates')
+        .from('ssn_m25_samples')
         .select(`
-          *,
-          ssn_m25_samples!inner(
-            sample_code,
-            kecamatan,
-            desa_kelurahan,
-            households_before,
-            pml,
-            pcl
+          sample_code,
+          kecamatan,
+          desa_kelurahan,
+          households_before,
+          pml,
+          pcl,
+          ssn_m25_updates (
+            id,
+            families_before,
+            families_after,
+            households_after,
+            status,
+            created_at
           )
         `)
-        .order('created_at', { ascending: false });
+        .order('created_at', { foreignTable: 'ssn_m25_updates', ascending: false });
 
       if (searchQuery) {
         query.ilike('sample_code', `%${searchQuery}%`);
@@ -39,9 +44,15 @@ export function PclSection() {
       const { data, error } = await query;
       if (error) throw error;
 
-      return data.map((item: any) => ({
-        ...item,
-        ...item.ssn_m25_samples,
+      // Transform the data to match the expected format
+      return data.map((sample: any) => ({
+        ...sample,
+        id: sample.ssn_m25_updates?.[0]?.id,
+        families_before: sample.ssn_m25_updates?.[0]?.families_before || null,
+        families_after: sample.ssn_m25_updates?.[0]?.families_after || null,
+        households_after: sample.ssn_m25_updates?.[0]?.households_after || null,
+        status: sample.ssn_m25_updates?.[0]?.status || 'not_started',
+        created_at: sample.ssn_m25_updates?.[0]?.created_at,
       }));
     },
   });
@@ -54,9 +65,9 @@ export function PclSection() {
       "Jumlah RT Susenas Maret 2023": update.households_before,
       "PML": update.pml,
       "PCL": update.pcl,
-      "Jumlah Keluarga Sebelum": update.families_before,
-      "Jumlah Keluarga Setelah": update.families_after,
-      "Jumlah Rumah Tangga": update.households_after,
+      "Jumlah Keluarga Sebelum": update.families_before || '-',
+      "Jumlah Keluarga Setelah": update.families_after || '-',
+      "Jumlah Rumah Tangga": update.households_after || '-',
     }));
     exportToExcel(exportData, "pemutakhiran-data");
   };
