@@ -6,68 +6,103 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { UpdateDataForm } from "./UpdateDataForm";
 import { UpdateTable } from "./UpdateTable";
-import { UpdateData, SampleData } from "./types";
+import { UpdateSsnM25Data, SampleSsnM25Data } from "./types";
 import { exportToExcel } from "@/utils/excelExport";
 
 export function PclSection() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery1, setSearchQuery1] = useState("");
   const [isAddUpdateOpen, setIsAddUpdateOpen] = useState(false);
-  const [editingUpdate, setEditingUpdate] = useState<UpdateData | null>(null);
+  const [editingUpdate, setEditingUpdate] = useState<UpdateSsnM25Data | null>(
+    null
+  );
 
-  const { data: updates = [], isLoading, refetch } = useQuery({
-    queryKey: ['ssn_m25_updates', searchQuery],
+  // Query to get all samples
+  const { data: allSamples = [] } = useQuery({
+    queryKey: ["ssn_m25_samples", searchQuery1],
     queryFn: async () => {
-      const query = supabase
-        .from('ssn_m25_samples')
-        .select(`
-          sample_code,
-          kecamatan,
-          desa_kelurahan,
-          households_before,
-          pml,
-          pcl,
-          ssn_m25_updates (
-            id,
-            families_before,
-            families_after,
-            households_after,
-            status,
-            created_at
-          )
-        `)
-        .order('created_at', { foreignTable: 'ssn_m25_updates', ascending: false });
+      let query = supabase.from("ssn_m25_samples").select("*");
 
-      if (searchQuery) {
-        query.ilike('sample_code', `%${searchQuery}%`);
+      if (searchQuery1) {
+        query = query.or(
+          `sample_code.ilike.%${searchQuery1}%, kecamatan.ilike.%${searchQuery1}%, desa_kelurahan.ilike.%${searchQuery1}%, pml.ilike.%${searchQuery1}%, pcl.ilike.%${searchQuery1}%`
+        );
       }
 
       const { data, error } = await query;
-      if (error) throw error;
-
-      // Transform the data to match the expected format
-      return data.map((sample: any) => ({
-        ...sample,
-        id: sample.ssn_m25_updates?.[0]?.id,
-        families_before: sample.ssn_m25_updates?.[0]?.families_before || null,
-        families_after: sample.ssn_m25_updates?.[0]?.families_after || null,
-        households_after: sample.ssn_m25_updates?.[0]?.households_after || null,
-        status: sample.ssn_m25_updates?.[0]?.status || 'not_started',
-        created_at: sample.ssn_m25_updates?.[0]?.created_at,
-      }));
+      if (error) {
+        console.error("Error fetching samples:", error);
+        throw error;
+      }
+      return data;
     },
   });
 
+  // Query to get all updates
+  const {
+    data: updatedSamples = [],
+    isLoading,
+    refetch,
+  } = useQuery({
+    queryKey: ["ssn_m25_updates", searchQuery1],
+    queryFn: async () => {
+      let query = supabase
+        .from("ssn_m25_updates")
+        .select(
+          `
+          id,
+          sample_code,
+          families_before,
+          families_after,
+          households_after,
+          status,
+          created_at
+        `
+        )
+        .order("created_at", { ascending: false });
+
+      const { data: updates, error } = await query;
+      if (error) {
+        console.error("Error fetching updates:", error);
+        throw error;
+      }
+
+      // Create a map of updates by sample_code
+      const updatesMap = new Map();
+      updates?.forEach((update) => {
+        if (!updatesMap.has(update.sample_code)) {
+          updatesMap.set(update.sample_code, update);
+        }
+      });
+
+      // Combine samples with their updates
+      return allSamples.map((sample) => {
+        const update = updatesMap.get(sample.sample_code);
+        return {
+          ...sample,
+          id: update?.id || null,
+          families_before: update?.families_before || null,
+          families_after: update?.families_after || null,
+          households_after: update?.households_after || null,
+          status: update?.status || "not_started",
+          created_at: update?.created_at || null,
+        };
+      });
+    },
+    enabled: allSamples.length > 0, // Only run this query after samples are loaded
+  });
+
   const handleExport = () => {
-    const exportData = updates.map((update) => ({
-      "NKS": update.sample_code,
-      "Kecamatan": update.kecamatan,
+    const exportData = updatedSamples.map((update) => ({
+      NKS: update.sample_code,
+      Kecamatan: update.kecamatan,
       "Desa/Kelurahan": update.desa_kelurahan,
-      "Jumlah RT Susenas Maret 2023": update.households_before,
-      "PML": update.pml,
-      "PCL": update.pcl,
-      "Jumlah Keluarga Sebelum": update.families_before || '-',
-      "Jumlah Keluarga Setelah": update.families_after || '-',
-      "Jumlah Rumah Tangga": update.households_after || '-',
+      "Perkiraan Jumlah Ruta": update.households_before,
+      PML: update.pml,
+      PCL: update.pcl,
+      "Jumlah Keluarga Sebelum": update.families_before || "-",
+      "Jumlah Keluarga Hasil": update.families_after || "-",
+      "Jumlah Ruta Hasil": update.households_after || "-",
     }));
     exportToExcel(exportData, "pemutakhiran-data");
   };
@@ -77,21 +112,21 @@ export function PclSection() {
     setEditingUpdate(null);
   };
 
-  const handleEdit = (data: UpdateData) => {
+  const handleEdit = (data: UpdateSsnM25Data) => {
     setEditingUpdate(data);
     setIsAddUpdateOpen(true);
   };
 
   return (
     <>
-      <div className="space-y-6">
+      <div className="space-y-6 flex flex-col">
         <h3 className="text-xl font-semibold">Pemutakhiran Data</h3>
         <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center w-full sm:w-auto">
             <Input
               placeholder="Cari pemutakhiran..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              value={searchQuery1}
+              onChange={(e) => setSearchQuery1(e.target.value)}
               className="w-full sm:w-[300px]"
             />
           </div>
@@ -114,12 +149,12 @@ export function PclSection() {
           </div>
         </div>
 
-        <div className="border rounded-lg overflow-x-auto">
+        <div className="border rounded-lg overflow-y-auto flex-grow">
           {isLoading ? (
             <div className="p-8 text-center">Loading...</div>
           ) : (
-            <UpdateTable 
-              updates={updates} 
+            <UpdateTable
+              updates={updatedSamples}
               onEdit={handleEdit}
               refetch={refetch}
             />

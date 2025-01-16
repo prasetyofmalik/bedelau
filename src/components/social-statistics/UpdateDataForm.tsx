@@ -27,14 +27,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
-import { UpdateDataFormProps } from "./types";
+import { UpdateSsnM25DataFormProps } from "./types";
 
 export function UpdateDataForm({
   isOpen,
   onClose,
   onSuccess,
   initialData,
-}: UpdateDataFormProps) {
+}: UpdateSsnM25DataFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { data: samples = [] } = useQuery({

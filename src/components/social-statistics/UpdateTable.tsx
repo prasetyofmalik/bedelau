@@ -8,25 +8,27 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Pencil } from "lucide-react";
-import { UpdateData, UpdateTableProps } from "./types";
+import { UpdateSsnM25Data, UpdateSsnM25TableProps } from "./types";
 import { Badge } from "@/components/ui/badge";
 
-export function UpdateTable({ updates, onEdit, refetch }: UpdateTableProps) {
+export function UpdateTable({
+  updates,
+  onEdit,
+  refetch,
+}: UpdateSsnM25TableProps) {
   const getStatusBadge = (status?: string) => {
     switch (status) {
-      case 'completed':
-        return <Badge className="bg-green-500">Selesai Input</Badge>;
-      case 'in_progress':
-        return <Badge className="bg-yellow-500">Belum Selesai</Badge>;
+      case "completed":
+        return <Badge className="bg-green-500">Sudah Input</Badge>;
       default:
         return <Badge className="bg-red-500">Belum Input</Badge>;
     }
   };
 
   return (
-    <div className="rounded-md border">
+    <div className="rounded-md border h-[80vh] overflow-x-auto">
       <Table>
-        <TableHeader>
+        <TableHeader className="bg-yellow-300" style={{ position: 'sticky', top: '0', zIndex: '1 !important' }}>
           <TableRow>
             <TableHead>Kecamatan</TableHead>
             <TableHead>Desa/Kelurahan</TableHead>
@@ -38,7 +40,7 @@ export function UpdateTable({ updates, onEdit, refetch }: UpdateTableProps) {
             <TableHead>Jumlah Keluarga Sebelum (Blok II)</TableHead>
             <TableHead>Jumlah Keluarga Hasil (Blok II)</TableHead>
             <TableHead>Jumlah Ruta Hasil (Blok II)</TableHead>
-            <TableHead>Aksi</TableHead>
+            {/* <TableHead>Aksi</TableHead> */}
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -51,18 +53,18 @@ export function UpdateTable({ updates, onEdit, refetch }: UpdateTableProps) {
               <TableCell>{update.pml}</TableCell>
               <TableCell>{update.pcl}</TableCell>
               <TableCell>{getStatusBadge(update.status)}</TableCell>
-              <TableCell>{update.families_before || '-'}</TableCell>
-              <TableCell>{update.families_after || '-'}</TableCell>
-              <TableCell>{update.households_after || '-'}</TableCell>
-              <TableCell>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => onEdit(update)}
-                >
-                  <Pencil className="h-4 w-4" />
-                </Button>
-              </TableCell>
+              <TableCell>{update.families_before || "-"}</TableCell>
+              <TableCell>{update.families_after || "-"}</TableCell>
+              <TableCell>{update.households_after || "-"}</TableCell>
+              {/* <TableCell>
+        <Button
+        variant="ghost"
+        size="icon"
+        onClick={() => onEdit(update)}
+        >
+        <Pencil className="h-4 w-4" />
+        </Button>
+        </TableCell> */}
             </TableRow>
           ))}
         </TableBody>
