@@ -27,14 +27,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
-import { UpdateSsnM25DataFormProps } from "./types";
+import { CacahSsnM25DataFormProps } from "./types";
 
-export function UpdateDataForm({
+export function CacahDataForm({
   isOpen,
   onClose,
   onSuccess,
   initialData,
-}: UpdateSsnM25DataFormProps) {
+}: CacahSsnM25DataFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { data: samples = [] } = useQuery({
@@ -53,33 +53,33 @@ export function UpdateDataForm({
   const form = useForm({
     defaultValues: {
       sample_code: initialData?.sample_code || "",
-      families_before: initialData?.families_before || 0,
-      families_after: initialData?.families_after || 0,
-      households_after: initialData?.households_after || 0,
+      no_ruta: initialData?.no_ruta || 0,
+      r203_msbp: initialData?.r203_msbp || 0,
+      r203_kp: initialData?.r203_kp || 0,
     },
   });
 
   const onSubmit = async (data: any) => {
     setIsSubmitting(true);
     try {
-      const status = data.families_after > 0 ? "sudah" : "belum";
-      const updateData = { ...data, status };
+      const status = data.no_ruta === 10 ? "sudah" : data.no_ruta > 0 ? "progress" : "belum";
+      const cacahData = { ...data, status };
 
       if (initialData?.id) {
         const { error } = await supabase
-          .from("ssn_m25_updates")
-          .update(updateData)
+          .from("ssn_m25_cacah")
+          .update(cacahData)
           .eq("id", initialData.id);
 
         if (error) throw error;
-        toast.success("Data pemutakhiran berhasil diperbarui");
+        toast.success("Data pencacahan berhasil diperbarui");
       } else {
         const { error } = await supabase
-          .from("ssn_m25_updates")
-          .insert([updateData]);
+          .from("ssn_m25_cacah")
+          .insert([cacahData]);
 
         if (error) throw error;
-        toast.success("Data pemutakhiran berhasil ditambahkan");
+        toast.success("Data pencacahan berhasil ditambahkan");
       }
 
       onSuccess();
@@ -101,10 +101,10 @@ export function UpdateDataForm({
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle>
-            {initialData?.id ? "Edit" : "Tambah"} Data Pemutakhiran
+            {initialData?.id ? "Edit" : "Tambah"} Data Pencacahan
           </DialogTitle>
           <DialogDescription>
-            Isi detail pemutakhiran data di bawah ini
+            Isi detail pencacahan lapangan di bawah ini
           </DialogDescription>
         </DialogHeader>
 
@@ -144,11 +144,38 @@ export function UpdateDataForm({
 
             <FormField
               control={form.control}
-              name="families_before"
+              name="no_ruta"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    Jumlah Keluarga Sebelum Pemutakhiran (Blok II)
+                    Nomor Urut Sampel Rumah Tangga
+                  </FormLabel>
+                    <FormControl>
+                    <Input
+                      type="number"
+                      {...field}
+                      onChange={(e) => {
+                      const value = Number(e.target.value);
+                      if (value >= 1 && value <= 10) {
+                        field.onChange(value);
+                      }
+                      }}
+                      min="1"
+                      max="10"
+                    />
+                    </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="r203_msbp"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                  Hasil Pencacahan Rumah Tangga (R203) MSBP
                   </FormLabel>
                   <FormControl>
                     <Input
@@ -170,37 +197,11 @@ export function UpdateDataForm({
 
             <FormField
               control={form.control}
-              name="families_after"
+              name="r203_kp"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    Jumlah Keluarga Hasil pemutakhiran (Blok II)
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      {...field}
-                      onChange={(e) => {
-                        const value = Number(e.target.value);
-                        if (value >= 0) {
-                          field.onChange(value);
-                        }
-                      }}
-                      min="0"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="households_after"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    Jumlah Rumah Tangga Hasil Pemutakhiran (Blok II)
+                  Hasil Pencacahan Rumah Tangga (R203) KP
                   </FormLabel>
                   <FormControl>
                     <Input

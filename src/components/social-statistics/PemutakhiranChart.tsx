@@ -6,20 +6,20 @@ interface PemutakhiranChartProps {
 
 export function PemutakhiranChart({ data }: PemutakhiranChartProps) {
   // Count updates by status
-  const completedCount = data.filter(item => item.status !== 'not_started').length;
-  const pendingCount = data.filter(item => item.status === 'not_started').length;
+  const completedCount = data.filter(item => item.status !== 'belum').length;
+  const pendingCount = data.filter(item => item.status === 'belum').length;
   const total = completedCount + pendingCount;
 
   const chartData = [
     { 
       name: 'Sudah', 
       value: completedCount,
-      percentage: ((completedCount / total) * 100).toFixed(1)
+      percentage: ((completedCount / total) * 100).toFixed(2)
     },
     { 
       name: 'Belum', 
       value: pendingCount,
-      percentage: ((pendingCount / total) * 100).toFixed(1)
+      percentage: ((pendingCount / total) * 100).toFixed(2)
     },
   ];
 

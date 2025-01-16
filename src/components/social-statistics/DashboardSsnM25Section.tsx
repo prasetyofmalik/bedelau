@@ -30,7 +30,7 @@ export function DashboardSsnM25Section() {
       // Combine samples with their updates
       return allSamples.map(sample => ({
         ...sample,
-        status: updatesMap.has(sample.sample_code) ? 'completed' : 'not_started',
+        status: updatesMap.has(sample.sample_code) ? 'sudah' : 'belum',
       }));
     },
   });

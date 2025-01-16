@@ -6,19 +6,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import { Pencil } from "lucide-react";
-import { UpdateSsnM25Data, UpdateSsnM25TableProps } from "./types";
+import { UpdateSsnM25TableProps } from "./types";
 import { Badge } from "@/components/ui/badge";
 
-export function UpdateTable({
-  updates,
-  onEdit,
-  refetch,
-}: UpdateSsnM25TableProps) {
+export function MutakhirTable({ updates }: UpdateSsnM25TableProps) {
   const getStatusBadge = (status?: string) => {
     switch (status) {
-      case "completed":
+      case "sudah":
         return <Badge className="bg-green-500">Sudah Input</Badge>;
       default:
         return <Badge className="bg-red-500">Belum Input</Badge>;
@@ -26,9 +20,12 @@ export function UpdateTable({
   };
 
   return (
-    <div className="rounded-md border h-[80vh] overflow-x-auto">
+    <div className="rounded-md border h-[78vh] overflow-x-auto">
       <Table>
-        <TableHeader className="bg-yellow-300" style={{ position: 'sticky', top: '0', zIndex: '1 !important' }}>
+        <TableHeader
+          className="bg-yellow-300"
+          style={{ position: "sticky", top: "0", zIndex: "1 !important" }}
+        >
           <TableRow>
             <TableHead>Kecamatan</TableHead>
             <TableHead>Desa/Kelurahan</TableHead>

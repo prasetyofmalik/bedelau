@@ -73,14 +73,14 @@ export const Header = () => {
 
   const NavigationLinks = () => (
     <>
-      {session && (
+      {/* {session && ( */}
         <Button variant="ghost" asChild>
           <Link to="/monitoring" className="flex items-center gap-2">
             <Monitor className="h-4 w-4" />
             Monitoring
           </Link>
         </Button>
-      )}
+      {/* )} */}
     </>
   );
 
