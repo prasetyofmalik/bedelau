@@ -4,10 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Plus, FileDown } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
-import { UpdateDataForm } from "./UpdateDataForm";
-import { CacahDataForm } from "./CacahForm";
+import { MutakhirDataForm } from "./MutakhirForm";
 import { MutakhirTable } from "./MutakhirTable";
-import { CacahTable } from "./CacahTable";
 import { UpdateSsnM25Data } from "./types";
 import { exportToExcel } from "@/utils/excelExport";
 
@@ -159,7 +157,7 @@ export function MutakhirSection() {
         )}
       </div>
 
-      <UpdateDataForm
+      <MutakhirDataForm
         isOpen={isAddUpdateOpen}
         onClose={handleClose}
         onSuccess={refetch}

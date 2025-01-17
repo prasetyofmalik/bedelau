@@ -29,7 +29,7 @@ import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
 import { UpdateSsnM25DataFormProps } from "./types";
 
-export function UpdateDataForm({
+export function MutakhirDataForm({
   isOpen,
   onClose,
   onSuccess,
