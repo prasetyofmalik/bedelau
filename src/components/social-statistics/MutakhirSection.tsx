@@ -83,7 +83,7 @@ export function MutakhirSection() {
           families_before: update?.families_before || null,
           families_after: update?.families_after || null,
           households_after: update?.households_after || null,
-          status: update?.status || "belum",
+          status: update?.status,
           created_at: update?.created_at || null,
         };
       });

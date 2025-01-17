@@ -83,7 +83,7 @@ export function CacahSection() {
           no_ruta: cacah?.no_ruta || null,
           r203_msbp: cacah?.r203_msbp || null,
           r203_kp: cacah?.r203_kp || null,
-          status: cacah?.status || "belum",
+          status: cacah?.status,
           created_at: cacah?.created_at || null,
         };
       });
@@ -117,7 +117,7 @@ export function CacahSection() {
   return (
     <>
       <div className="space-y-6 mt-10 flex flex-col">
-        <h3 className="text-xl font-semibold">Progress Lapangan PCL</h3>
+        <h3 className="text-xl font-semibold">Progress Pencacahan PCL</h3>
         <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center w-full sm:w-auto">
             <Input

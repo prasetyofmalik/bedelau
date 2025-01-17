@@ -29,6 +29,11 @@ import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
 import { UpdateSsnM25DataFormProps } from "./types";
 
+const statusOptions = [
+  { value: 'belum', label: "Belum Selesai" },
+  { value: 'sudah', label: "Sudah Selesai" },
+];
+
 export function MutakhirDataForm({
   isOpen,
   onClose,
@@ -53,6 +58,7 @@ export function MutakhirDataForm({
   const form = useForm({
     defaultValues: {
       sample_code: initialData?.sample_code || "",
+      status: initialData?.status || "belum",
       families_before: initialData?.families_before || 0,
       families_after: initialData?.families_after || 0,
       households_after: initialData?.households_after || 0,
@@ -62,8 +68,7 @@ export function MutakhirDataForm({
   const onSubmit = async (data: any) => {
     setIsSubmitting(true);
     try {
-      const status = data.families_after > 0 ? "sudah" : "belum";
-      const updateData = { ...data, status };
+      const updateData = { ...data };
 
       if (initialData?.id) {
         const { error } = await supabase
@@ -215,6 +220,37 @@ export function MutakhirDataForm({
                       min="0"
                     />
                   </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="status"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Sudah Selesai Dimutakhirkan</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    value={field.value.toString()}
+                  >
+                    <FormControl>
+                      <SelectTrigger className="bg-white">
+                        <SelectValue placeholder="Pilih status pemutakhiran" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent className="bg-white">
+                      {statusOptions.map((option) => (
+                        <SelectItem
+                          key={option.value}
+                          value={option.value.toString()}
+                        >
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}

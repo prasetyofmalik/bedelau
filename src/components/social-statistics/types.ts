@@ -29,6 +29,18 @@ export interface CacahSsnM25Data {
   created_at?: string;
 }
 
+export interface PeriksaSsnM25Data {
+  id: string;
+  sample_code: string;
+  no_ruta: string;
+  status?: 'belum' | 'sudah';
+  iv3_2_16: string;
+  iv3_3_8: string;
+  r304_kp: string;
+  r305_kp: string;
+  created_at?: string;
+}
+
 export interface UpdateSsnM25DataFormProps {
   isOpen: boolean;
   onClose: () => void;
@@ -43,6 +55,13 @@ export interface CacahSsnM25DataFormProps {
   initialData?: CacahSsnM25Data | null;
 }
 
+export interface PeriksaSsnM25DataFormProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSuccess: () => void;
+  initialData?: PeriksaSsnM25Data | null;
+}
+
 export interface UpdateSsnM25TableProps {
   updates: (UpdateSsnM25Data & SampleSsnM25Data)[];
   onEdit: (data: UpdateSsnM25Data) => void;
@@ -52,5 +71,11 @@ export interface UpdateSsnM25TableProps {
 export interface CacahSsnM25TableProps {
   cacahs: (CacahSsnM25Data & SampleSsnM25Data)[];
   onEdit: (data: CacahSsnM25Data) => void;
+  refetch: () => void;
+}
+
+export interface PeriksaSsnM25TableProps {
+  periksas: (PeriksaSsnM25Data & SampleSsnM25Data)[];
+  onEdit: (data: PeriksaSsnM25Data) => void;
   refetch: () => void;
 }

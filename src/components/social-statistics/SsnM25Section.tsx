@@ -1,7 +1,7 @@
 import { DashboardSsnM25Section as DashboardContent } from "./DashboardSsnM25Section";
 import { MutakhirSection } from "./MutakhirSection";
 import { CacahSection } from "./CacahSection";
-import { PmlSection } from "./PmlSection";
+import { PeriksaSection } from "./PeriksaSection";
 
 export function DashboardSsnM25Section() {
   return <DashboardContent />;
@@ -17,5 +17,5 @@ export function InputPclSsnM25Section() {
 }
 
 export function InputPmlSsnM25Section() {
-  return <PmlSection />;
+  return <PeriksaSection />;
 }

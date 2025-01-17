@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { PemutakhiranChart } from "./PemutakhiranChart";
 import { PencacahanChart } from "./PencacahanChart";
+import { PemeriksaanChart } from "./PemeriksaanChart";
 
 export function DashboardSsnM25Section() {
   // Query to get all samples and their updates
@@ -82,6 +83,52 @@ export function DashboardSsnM25Section() {
     },
   });
 
+  const { data: periksas = [] } = useQuery({
+    queryKey: ['ssn_m25_periksa_dashboard'],
+    queryFn: async () => {
+      const { data: allSamples, error: samplesError } = await supabase
+        .from('ssn_m25_samples')
+        .select('*');
+
+      if (samplesError) throw samplesError;
+
+      const { data: periksaData, error: periksaError } = await supabase
+        .from('ssn_m25_periksa')
+        .select('*');
+
+      if (periksaError) throw periksaError;
+
+      // Create an array to store all expected ruta entries (10 per NKS)
+      const expectedRutaEntries = [];
+      allSamples?.forEach(sample => {
+        for (let i = 1; i <= 10; i++) {
+          expectedRutaEntries.push({
+            sample_code: sample.sample_code,
+            no_ruta: i,
+            status: 'belum'
+          });
+        }
+      });
+
+      // Create a map of existing periksa entries
+      const periksaMap = new Map();
+      periksaData?.forEach(periksa => {
+        const key = `${periksa.sample_code}_${periksa.no_ruta}`;
+        periksaMap.set(key, periksa);
+      });
+
+      // Map expected entries to actual status
+      return expectedRutaEntries.map(entry => {
+        const key = `${entry.sample_code}_${entry.no_ruta}`;
+        const existingPeriksa = periksaMap.get(key);
+        return {
+          ...entry,
+          status: existingPeriksa ? 'sudah' : 'belum'
+        };
+      });
+    },
+  });
+
   return (
     <div className="space-y-6">
       <div className="grid gap-6 md:grid-cols-2">
@@ -90,6 +137,9 @@ export function DashboardSsnM25Section() {
         </div>
         <div className="bg-white p-6 rounded-lg shadow-sm">
           <PencacahanChart data={cacahs} />
+        </div>
+        <div className="bg-white p-6 rounded-lg shadow-sm">
+          <PemeriksaanChart data={periksas} />
         </div>
       </div>
     </div>

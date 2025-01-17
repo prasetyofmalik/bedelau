@@ -31,7 +31,7 @@ export function CacahTable({ cacahs }: CacahSsnM25TableProps) {
     switch (status) {
       case "sudah":
         return <Badge className="bg-green-500">Sudah Selesai</Badge>;
-      case "progress":
+      case "belum":
         return <Badge className="bg-yellow-500">Belum Selesai</Badge>;
       default:
         return <Badge className="bg-red-500">Belum Input</Badge>;

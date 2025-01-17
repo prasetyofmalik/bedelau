@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Link, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -21,6 +22,8 @@ import { useToast } from "@/hooks/use-toast";
 export const Header = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
 
   const { data: session } = useQuery({
     queryKey: ["session"],
@@ -73,19 +76,42 @@ export const Header = () => {
 
   const NavigationLinks = () => (
     <>
-      {/* {session && ( */}
-        <Button variant="ghost" asChild>
-          <Link to="/monitoring" className="flex items-center gap-2">
-            <Monitor className="h-4 w-4" />
-            Monitoring
-          </Link>
-        </Button>
-      {/* )} */}
+      <Button variant="ghost" asChild>
+        <Link to="/monitoring" className="flex items-center gap-2">
+          <Monitor className="h-4 w-4" />
+          Monitoring
+        </Link>
+      </Button>
     </>
   );
 
+  const controlHeader = () => {
+    if (typeof window !== "undefined") {
+      if (window.scrollY > lastScrollY) {
+        setIsVisible(false);
+      } else {
+        setIsVisible(true);
+      }
+      setLastScrollY(window.scrollY);
+    }
+  };
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.addEventListener("scroll", controlHeader);
+
+      return () => {
+        window.removeEventListener("scroll", controlHeader);
+      };
+    }
+  }, [lastScrollY]);
+
   return (
-    <header className="border-b bg-white sticky top-0 z-50">
+    <header
+      className={`border-b bg-white sticky top-0 z-50 transition-transform duration-300 ${
+        isVisible ? "translate-y-0" : "-translate-y-full"
+      }`}
+    >
       <div className="container mx-auto px-4 py-4">
         <nav className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
@@ -98,7 +124,6 @@ export const Header = () => {
             </Link>
           </div>
 
-          {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-6">
             <NavigationLinks />
           </div>
@@ -106,7 +131,6 @@ export const Header = () => {
           <div className="flex items-center space-x-4">
             {session ? (
               <div className="flex items-center gap-4">
-                {/* Mobile Navigation */}
                 <div className="md:hidden">
                   <Sheet>
                     <SheetTrigger asChild>

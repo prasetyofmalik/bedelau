@@ -13,7 +13,9 @@ export function MutakhirTable({ updates }: UpdateSsnM25TableProps) {
   const getStatusBadge = (status?: string) => {
     switch (status) {
       case "sudah":
-        return <Badge className="bg-green-500">Sudah Input</Badge>;
+        return <Badge className="bg-green-500">Sudah Selesai</Badge>;
+      case "belum":
+        return <Badge className="bg-yellow-500">Belum Selesai</Badge>;
       default:
         return <Badge className="bg-red-500">Belum Input</Badge>;
     }
