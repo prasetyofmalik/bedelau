@@ -29,6 +29,18 @@ import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
 import { CacahSsnM25DataFormProps } from "./types";
 
+const r203Options = [
+  { value: 1, label: "Terisi Lengkap" },
+  { value: 2, label: "Terisi tidak lengkap" },
+  {
+    value: 3,
+    label:
+      "Tidak ada ART/responden yang memberikan informasi sampai akhir masa pencacahan",
+  },
+  { value: 4, label: "Menolak" },
+  { value: 5, label: "Ruta pindah" },
+];
+
 export function CacahDataForm({
   isOpen,
   onClose,
@@ -62,8 +74,14 @@ export function CacahDataForm({
   const onSubmit = async (data: any) => {
     setIsSubmitting(true);
     try {
-      const status = data.no_ruta === 10 ? "sudah" : data.no_ruta > 0 ? "progress" : "belum";
-      const cacahData = { ...data, status };
+      const status =
+        data.no_ruta === 10 ? "sudah" : data.no_ruta > 0 ? "progress" : "belum";
+      const cacahData = {
+        ...data,
+        status,
+        r203_msbp: Number(data.r203_msbp),
+        r203_kp: Number(data.r203_kp),
+      };
 
       if (initialData?.id) {
         const { error } = await supabase
@@ -147,23 +165,21 @@ export function CacahDataForm({
               name="no_ruta"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>
-                    Nomor Urut Sampel Rumah Tangga
-                  </FormLabel>
-                    <FormControl>
+                  <FormLabel>Nomor Urut Sampel Rumah Tangga</FormLabel>
+                  <FormControl>
                     <Input
                       type="number"
                       {...field}
                       onChange={(e) => {
-                      const value = Number(e.target.value);
-                      if (value >= 1 && value <= 10) {
-                        field.onChange(value);
-                      }
+                        const value = Number(e.target.value);
+                        if (value >= 1 && value <= 10) {
+                          field.onChange(value);
+                        }
                       }}
                       min="1"
                       max="10"
                     />
-                    </FormControl>
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
@@ -175,21 +191,28 @@ export function CacahDataForm({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                  Hasil Pencacahan Rumah Tangga (R203) MSBP
+                    Hasil Pencacahan Rumah Tangga (R203) MSBP
                   </FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      {...field}
-                      onChange={(e) => {
-                        const value = Number(e.target.value);
-                        if (value >= 0) {
-                          field.onChange(value);
-                        }
-                      }}
-                      min="0"
-                    />
-                  </FormControl>
+                  <Select
+                    onValueChange={field.onChange}
+                    value={field.value.toString()}
+                  >
+                    <FormControl>
+                      <SelectTrigger className="bg-white">
+                        <SelectValue placeholder="Pilih hasil pencacahan MSBP" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent className="bg-white">
+                      {r203Options.map((option) => (
+                        <SelectItem
+                          key={option.value}
+                          value={option.value.toString()}
+                        >
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}
@@ -200,22 +223,27 @@ export function CacahDataForm({
               name="r203_kp"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>
-                  Hasil Pencacahan Rumah Tangga (R203) KP
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      {...field}
-                      onChange={(e) => {
-                        const value = Number(e.target.value);
-                        if (value >= 0) {
-                          field.onChange(value);
-                        }
-                      }}
-                      min="0"
-                    />
-                  </FormControl>
+                  <FormLabel>Hasil Pencacahan Rumah Tangga (R203) KP</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    value={field.value.toString()}
+                  >
+                    <FormControl>
+                      <SelectTrigger className="bg-white">
+                        <SelectValue placeholder="Pilih hasil pencacahan KP" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent className="bg-white">
+                      {r203Options.map((option) => (
+                        <SelectItem
+                          key={option.value}
+                          value={option.value.toString()}
+                        >
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}

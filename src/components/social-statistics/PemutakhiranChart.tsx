@@ -50,8 +50,9 @@ export function PemutakhiranChart({ data }: PemutakhiranChartProps) {
             outerRadius="80%"
             paddingAngle={0}
             dataKey="value"
+            className="pemutakhiran-chart"
             onMouseEnter={(data, index) => {
-              const paths = document.querySelectorAll('.recharts-sector');
+              const paths = document.querySelectorAll('.pemutakhiran-chart .recharts-sector');
               paths.forEach((path, i) => {
                 if (i !== index) {
                   (path as SVGPathElement).style.fill = HOVER_COLOR;
@@ -59,7 +60,7 @@ export function PemutakhiranChart({ data }: PemutakhiranChartProps) {
               });
             }}
             onMouseLeave={() => {
-              const paths = document.querySelectorAll('.recharts-sector');
+              const paths = document.querySelectorAll('.pemutakhiran-chart .recharts-sector');
               paths.forEach((path, i) => {
                 (path as SVGPathElement).style.fill = COLORS[i];
               });

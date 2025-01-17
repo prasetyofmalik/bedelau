@@ -37,7 +37,7 @@ export function DashboardSsnM25Section() {
   });
 
   const { data: cacahs = [] } = useQuery({
-    queryKey: ['ssn_m25_samples_dashboard'],
+    queryKey: ['ssn_m25_cacah_dashboard'],
     queryFn: async () => {
       const { data: allSamples, error: samplesError } = await supabase
         .from('ssn_m25_samples')
@@ -45,25 +45,40 @@ export function DashboardSsnM25Section() {
 
       if (samplesError) throw samplesError;
 
-      const { data: cacahs, error: cacahsError } = await supabase
+      const { data: cacahData, error: cacahError } = await supabase
         .from('ssn_m25_cacah')
         .select('*');
 
-      if (cacahsError) throw cacahsError;
+      if (cacahError) throw cacahError;
 
-      // Create a map of cacahs by sample_code
-      const cacahsMap = new Map();
-      cacahs?.forEach(cacah => {
-        if (!cacahsMap.has(cacah.sample_code)) {
-          cacahsMap.set(cacah.sample_code, cacah);
+      // Create an array to store all expected ruta entries (10 per NKS)
+      const expectedRutaEntries = [];
+      allSamples?.forEach(sample => {
+        for (let i = 1; i <= 10; i++) {
+          expectedRutaEntries.push({
+            sample_code: sample.sample_code,
+            no_ruta: i,
+            status: 'belum'
+          });
         }
       });
 
-      // Combine samples with their cacahs
-      return allSamples.map(sample => ({
-        ...sample,
-        status: cacahsMap.has(sample.sample_code) ? 'sudah' : 'belum',
-      }));
+      // Create a map of existing cacah entries
+      const cacahMap = new Map();
+      cacahData?.forEach(cacah => {
+        const key = `${cacah.sample_code}_${cacah.no_ruta}`;
+        cacahMap.set(key, cacah);
+      });
+
+      // Map expected entries to actual status
+      return expectedRutaEntries.map(entry => {
+        const key = `${entry.sample_code}_${entry.no_ruta}`;
+        const existingCacah = cacahMap.get(key);
+        return {
+          ...entry,
+          status: existingCacah ? 'sudah' : 'belum'
+        };
+      });
     },
   });
 

@@ -9,6 +9,23 @@ import {
 import { CacahSsnM25TableProps } from "./types";
 import { Badge } from "@/components/ui/badge";
 
+const getR203Label = (value?: string) => {
+  switch (value) {
+    case "1":
+      return "Terisi Lengkap";
+    case "2":
+      return "Terisi tdk lengkap";
+    case "3":
+      return "Tidak ada ART/responden yang memberikan informasi sampai akhir masa pencacahan";
+    case "4":
+      return "Menolak";
+    case "5":
+      return "Ruta pindah";
+    default:
+      return "-";
+  }
+};
+
 export function CacahTable({ cacahs }: CacahSsnM25TableProps) {
   const getStatusBadge = (status?: string) => {
     switch (status) {
@@ -20,6 +37,24 @@ export function CacahTable({ cacahs }: CacahSsnM25TableProps) {
         return <Badge className="bg-red-500">Belum Input</Badge>;
     }
   };
+
+  // Group cacahs by sample_code
+  const groupedCacahs = cacahs.reduce((acc, cacah) => {
+    if (!acc[cacah.sample_code]) {
+      acc[cacah.sample_code] = [];
+    }
+    acc[cacah.sample_code].push(cacah);
+    return acc;
+  }, {} as Record<string, typeof cacahs>);
+
+  // Sort entries by no_ruta for each sample_code
+  Object.keys(groupedCacahs).forEach(sampleCode => {
+    groupedCacahs[sampleCode].sort((a, b) => {
+      const noRutaA = a.no_ruta ? parseInt(a.no_ruta.toString(), 10) : 0;
+      const noRutaB = b.no_ruta ? parseInt(b.no_ruta.toString(), 10) : 0;
+      return noRutaA - noRutaB;
+    });
+  });
 
   return (
     <div className="rounded-md border h-[78vh] overflow-x-auto">
@@ -39,16 +74,22 @@ export function CacahTable({ cacahs }: CacahSsnM25TableProps) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {cacahs.map((cacah) => (
-            <TableRow key={cacah.sample_code}>
-              <TableCell>{cacah.sample_code}</TableCell>
-              <TableCell>{cacah.pml}</TableCell>
-              <TableCell>{cacah.pcl}</TableCell>
-              <TableCell>{getStatusBadge(cacah.status)}</TableCell>
-              <TableCell>{cacah.no_ruta}</TableCell>
-              <TableCell>{cacah.r203_msbp || "-"}</TableCell>
-              <TableCell>{cacah.r203_kp || "-"}</TableCell>
-            </TableRow>
+          {Object.entries(groupedCacahs).map(([sampleCode, entries]) => (
+            entries.map((cacah, index) => (
+              <TableRow key={`${cacah.sample_code}_${cacah.no_ruta}`}>
+                {index === 0 ? (
+                  <>
+                    <TableCell rowSpan={entries.length}>{cacah.sample_code}</TableCell>
+                    <TableCell rowSpan={entries.length}>{cacah.pml}</TableCell>
+                    <TableCell rowSpan={entries.length}>{cacah.pcl}</TableCell>
+                  </>
+                ) : null}
+                <TableCell>{getStatusBadge(cacah.status)}</TableCell>
+                <TableCell>{cacah.no_ruta || "-"}</TableCell>
+                <TableCell>{getR203Label(cacah.r203_msbp?.toString())}</TableCell>
+                <TableCell>{getR203Label(cacah.r203_kp?.toString())}</TableCell>
+              </TableRow>
+            ))
           ))}
         </TableBody>
       </Table>
