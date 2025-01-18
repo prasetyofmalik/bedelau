@@ -12,31 +12,8 @@ import { exportToExcel } from "@/utils/excelExport";
 export function PeriksaSection() {
   const [searchQuery3, setSearchQuery3] = useState("");
   const [isAddPeriksaOpen, setIsAddPeriksaOpen] = useState(false);
-  const [editingPeriksa, setEditingPeriksa] =
-    useState<PeriksaSsnM25Data | null>(null);
+  const [editingPeriksa, setEditingPeriksa] = useState<PeriksaSsnM25Data | null>(null);
 
-  // Query to get all samples
-  const { data: allSamples = [] } = useQuery({
-    queryKey: ["ssn_m25_samples", searchQuery3],
-    queryFn: async () => {
-      let query = supabase.from("ssn_m25_samples").select("*");
-
-      if (searchQuery3) {
-        query = query.or(
-          `sample_code.ilike.%${searchQuery3}%, pml.ilike.%${searchQuery3}%, pcl.ilike.%${searchQuery3}%`
-        );
-      }
-
-      const { data, error } = await query;
-      if (error) {
-        console.error("Error fetching samples:", error);
-        throw error;
-      }
-      return data;
-    },
-  });
-
-  // Query to get all diperiksa
   const {
     data: diperiksaSamples = [],
     isLoading,
@@ -45,77 +22,81 @@ export function PeriksaSection() {
     queryKey: ["ssn_m25_periksa", searchQuery3],
     queryFn: async () => {
       let query = supabase
-        .from("ssn_m25_periksa")
+        .from("ssn_m25_samples")
         .select(
           `
-          id,
           sample_code,
-          no_ruta,
-          iv3_2_16,
-          iv3_3_8,
-          r304_kp,
-          r305_kp,
-          status,
-          created_at
+          kecamatan,
+          desa_kelurahan,
+          pml,
+          pcl,
+          ssn_m25_periksa (
+            id,
+            no_ruta,
+            iv3_2_16,
+            iv3_3_8,
+            r304_kp,
+            r305_kp,
+            status,
+            created_at
+        )
         `
         )
-        .order("created_at", { ascending: false });
+        .order("sample_code");
 
-      const { data: periksas, error } = await query;
-      if (error) {
-        console.error("Error fetching periksa:", error);
-        throw error;
-      }
-
-      // Create a map of periksas by sample_code
-      const periksasMap = new Map();
-      periksas?.forEach((periksa) => {
-        if (!periksasMap.has(periksa.sample_code)) {
-          periksasMap.set(periksa.sample_code, periksa);
+        if (searchQuery3) {
+          query = query.or(
+            `sample_code.ilike.%${searchQuery3}%,pml.ilike.%${searchQuery3}%,pcl.ilike.%${searchQuery3}%`
+          );
         }
-      });
 
-      // Combine samples with their periksas
-      return allSamples.map((sample) => {
-        const periksa = periksasMap.get(sample.sample_code);
-        return {
-          ...sample,
-          id: periksa?.id || null,
-          no_ruta: periksa?.no_ruta || null,
-          r203_msbp: periksa?.r203_msbp || null,
-          r203_kp: periksa?.r203_kp || null,
-          status: periksa?.status,
-          created_at: periksa?.created_at || null,
-        };
-      });
+      const { data, error } = await query;
+      if (error) throw error;
+
+      // Transform the data to include all samples, even those without periksa data
+      return data.map((sample: any) => ({
+        ...sample,
+        periksa_data: sample.ssn_m25_periksa || [],
+      }));
     },
-    enabled: allSamples.length > 0, // Only run this query after samples are loaded
   });
 
   const handleExport = () => {
-    const exportData = diperiksaSamples.map((periksa) => ({
-      "kode prop": "14",
-      "kode kab": "05",
-      "kode NKS [6 digit]": periksa.sample_code,
-      "No Urut Ruta [max: 10]": periksa.no_ruta,
-      "Sudah Selesai [sudah/belum]": periksa.status || "belum",
-      "Hasil Penperiksaan Ruta (R203) MSBP": periksa.r203_msbp || "-",
-      "Rata-rata Pengeluaran Makanan Sebulan": periksa.iv3_2_16 || "-",
-      "Rata-rata Pengeluaran Bukan Makanan Sebulan": periksa.iv3_3_8 || "-",
-      "Jumlah Komoditas Makanan (R304) KP": periksa.r304_kp || "-",
-      "Jumlah Komoditas Bukan Makanan (R305) KP": periksa.r305_kp || "-",
-    }));
+    const exportData = diperiksaSamples.flatMap((sample) => 
+      sample.periksa_data.length > 0
+          ? sample.periksa_data.map((periksa: any) => ({
+              "kode prop": "14",
+              "kode kab": "05",
+              "kode NKS [6 digit]": sample.sample_code,
+              "No Urut Ruta [max: 10]": periksa.no_ruta,
+              "Sudah Selesai [sudah/belum]": periksa.status,
+              "Hasil Penperiksaan Ruta (R203) MSBP": periksa.r203_msbp || "-",
+              "Rata-rata Pengeluaran Makanan Sebulan": periksa.iv3_2_16 || "-",
+              "Rata-rata Pengeluaran Bukan Makanan Sebulan": periksa.iv3_3_8 || "-",
+              "Jumlah Komoditas Makanan (R304) KP": periksa.r304_kp || "-",
+              "Jumlah Komoditas Bukan Makanan (R305) KP": periksa.r305_kp || "-",
+            }))
+          : [
+              {
+                "kode prop": "14",
+              "kode kab": "05",
+              "kode NKS [6 digit]": sample.sample_code,
+              "No Urut Ruta [max: 10]": "-",
+              "Sudah Selesai [sudah/belum]": "belum",
+              "Hasil Penperiksaan Ruta (R203) MSBP": "-",
+              "Rata-rata Pengeluaran Makanan Sebulan": "-",
+              "Rata-rata Pengeluaran Bukan Makanan Sebulan": "-",
+              "Jumlah Komoditas Makanan (R304) KP": "-",
+              "Jumlah Komoditas Bukan Makanan (R305) KP": "-",
+              },
+            ]
+      );
     exportToExcel(exportData, "progress-pemeriksaan");
   };
 
   const handleClose = () => {
     setIsAddPeriksaOpen(false);
     setEditingPeriksa(null);
-  };
-
-  const handleEdit = (data: PeriksaSsnM25Data) => {
-    setEditingPeriksa(data);
-    setIsAddPeriksaOpen(true);
   };
 
   return (
@@ -156,8 +137,7 @@ export function PeriksaSection() {
           ) : (
             <PeriksaTable
               periksas={diperiksaSamples}
-              onEdit={handleEdit}
-              refetch={refetch}
+              onSuccess={refetch}
             />
           )}
         </div>

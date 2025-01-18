@@ -69,13 +69,21 @@ export interface UpdateSsnM25TableProps {
 }
 
 export interface CacahSsnM25TableProps {
-  cacahs: (CacahSsnM25Data & SampleSsnM25Data)[];
-  onEdit: (data: CacahSsnM25Data) => void;
-  refetch: () => void;
+  cacahs: {
+    sample_code: string;
+    pml: string;
+    pcl: string;
+    cacah_data: CacahSsnM25Data[];
+  }[];
+  onSuccess: () => void;
 }
 
 export interface PeriksaSsnM25TableProps {
-  periksas: (PeriksaSsnM25Data & SampleSsnM25Data)[];
-  onEdit: (data: PeriksaSsnM25Data) => void;
-  refetch: () => void;
+  periksas: {
+    sample_code: string;
+    pml: string;
+    pcl: string;
+    periksa_data: PeriksaSsnM25Data[];
+  }[];
+  onSuccess: () => void;
 }

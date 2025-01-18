@@ -21,24 +21,6 @@ export function PeriksaTable({ periksas }: PeriksaSsnM25TableProps) {
     }
   };
 
-  // Group periksas by sample_code
-  const groupedPeriksas = periksas.reduce((acc, periksa) => {
-    if (!acc[periksa.sample_code]) {
-      acc[periksa.sample_code] = [];
-    }
-    acc[periksa.sample_code].push(periksa);
-    return acc;
-  }, {} as Record<string, typeof periksas>);
-
-  // Sort entries by no_ruta for each sample_code
-  Object.keys(groupedPeriksas).forEach(sampleCode => {
-    groupedPeriksas[sampleCode].sort((a, b) => {
-      const noRutaA = a.no_ruta ? parseInt(a.no_ruta.toString(), 10) : 0;
-      const noRutaB = b.no_ruta ? parseInt(b.no_ruta.toString(), 10) : 0;
-      return noRutaA - noRutaB;
-    });
-  });
-
   return (
     <div className="rounded-md border h-[78vh] overflow-x-auto">
       <Table>
@@ -59,14 +41,17 @@ export function PeriksaTable({ periksas }: PeriksaSsnM25TableProps) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {Object.entries(groupedPeriksas).map(([sampleCode, entries]) => (
-            entries.map((periksa, index) => (
-              <TableRow key={`${periksa.sample_code}_${periksa.no_ruta}`}>
+          {periksas.map((sample) => {
+            const rowCount = Math.max(1, sample.periksa_data.length);
+
+            return sample.periksa_data.length > 0 ? ( 
+              sample.periksa_data.map((periksa:any, index:number) => (
+              <TableRow key={`${sample.sample_code}_${periksa.no_ruta}`}>
                 {index === 0 ? (
                   <>
-                    <TableCell rowSpan={entries.length}>{periksa.sample_code}</TableCell>
-                    <TableCell rowSpan={entries.length}>{periksa.pml}</TableCell>
-                    <TableCell rowSpan={entries.length}>{periksa.pcl}</TableCell>
+                    <TableCell rowSpan={rowCount}>{sample.sample_code}</TableCell>
+                    <TableCell rowSpan={rowCount}>{sample.pml}</TableCell>
+                    <TableCell rowSpan={rowCount}>{sample.pcl}</TableCell>
                   </>
                 ) : null}
                 <TableCell>{getStatusBadge(periksa.status)}</TableCell>
@@ -76,8 +61,21 @@ export function PeriksaTable({ periksas }: PeriksaSsnM25TableProps) {
                 <TableCell>{periksa.r304_kp || "-"}</TableCell>
                 <TableCell>{periksa.r305_kp || "-"}</TableCell>
               </TableRow>
-            ))
-          ))}
+              ))
+            ) : (
+              <TableRow key={sample.sample_code}>
+                <TableCell>{sample.sample_code}</TableCell>
+                <TableCell>{sample.pml}</TableCell>
+                <TableCell>{sample.pcl}</TableCell>
+                <TableCell>{getStatusBadge(undefined)}</TableCell>
+                <TableCell>-</TableCell>
+                <TableCell>-</TableCell>
+                <TableCell>-</TableCell>
+                <TableCell>-</TableCell>
+                <TableCell>-</TableCell>
+              </TableRow>
+              );
+            })}
         </TableBody>
       </Table>
     </div>
