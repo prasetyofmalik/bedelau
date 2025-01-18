@@ -41,6 +41,19 @@ export interface PeriksaSsnM25Data {
   created_at?: string;
 }
 
+export interface FenomenaSsnM25Data {
+  id: string;
+  created_at?: string;
+  sample_code: string;
+  households_after: number;
+  bansos: string;
+  change_expense: string;
+  internet_signal: string;
+  economy_access: string;
+  edu_access: string;
+  health_access: string;
+}
+
 export interface UpdateSsnM25DataFormProps {
   isOpen: boolean;
   onClose: () => void;
@@ -60,6 +73,13 @@ export interface PeriksaSsnM25DataFormProps {
   onClose: () => void;
   onSuccess: () => void;
   initialData?: PeriksaSsnM25Data | null;
+}
+
+export interface FenomenaSsnM25DataFormProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSuccess: () => void;
+  initialData?: UpdateSsnM25Data | null;
 }
 
 export interface UpdateSsnM25TableProps {
@@ -86,4 +106,10 @@ export interface PeriksaSsnM25TableProps {
     periksa_data: PeriksaSsnM25Data[];
   }[];
   onSuccess: () => void;
+}
+
+export interface FenomenaSsnM25TableProps {
+  fenomenas: (FenomenaSsnM25Data & SampleSsnM25Data)[];
+  onEdit: (data: FenomenaSsnM25Data) => void;
+  refetch: () => void;
 }

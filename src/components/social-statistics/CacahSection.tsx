@@ -63,23 +63,23 @@ export function CacahSection() {
       const exportData = tercacahSamples.flatMap((sample) =>
         sample.cacah_data.length > 0
           ? sample.cacah_data.map((cacah: any) => ({
-              NKS: sample.sample_code,
-              PML: sample.pml,
-              PCL: sample.pcl,
-              "No Urut Ruta": cacah.no_ruta || "-",
-              "Status": cacah.status || "belum",
-              "Hasil Pencacahan (R203) MSBP": cacah.r203_msbp || "-",
-              "Hasil Pencacahan (R203) KP": cacah.r203_kp || "-",
+              "kode prop": "14",
+              "kode kab": "05",
+              "kode NKS [6 digit]": sample.sample_code,
+              "No Urut Ruta [max: 10]": cacah.no_ruta,
+              "Sudah Selesai [sudah/belum]": cacah.status,
+              "Hasil Pencacahan Ruta (R203) MSBP": cacah.r203_msbp || "-",
+              "Hasil Pencacahan Ruta (R203) KP": cacah.r203_kp || "-",
             }))
           : [
               {
-                NKS: sample.sample_code,
-                PML: sample.pml,
-                PCL: sample.pcl,
-                "No Urut Ruta": "-",
-                "Status": "belum",
-                "Hasil Pencacahan (R203) MSBP": "-",
-                "Hasil Pencacahan (R203) KP": "-",
+                "kode prop": "14",
+                "kode kab": "05",
+                "kode NKS [6 digit]": sample.sample_code,
+                "No Urut Ruta [max: 10]": "-",
+                "Sudah Selesai [sudah/belum]": "-",
+                "Hasil Pencacahan Ruta (R203) MSBP": "-",
+                "Hasil Pencacahan Ruta (R203) KP": "-",
               },
             ]
       );
