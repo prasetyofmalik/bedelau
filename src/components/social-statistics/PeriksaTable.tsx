@@ -8,8 +8,10 @@ import {
 } from "@/components/ui/table";
 import { PeriksaSsnM25TableProps } from "./types";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Pencil } from "lucide-react";
 
-export function PeriksaTable({ periksas }: PeriksaSsnM25TableProps) {
+export function PeriksaTable({ periksas, onEdit }: PeriksaSsnM25TableProps) {
   const getStatusBadge = (status?: string) => {
     switch (status) {
       case "sudah":
@@ -38,6 +40,7 @@ export function PeriksaTable({ periksas }: PeriksaSsnM25TableProps) {
             <TableHead>Rata-rata Pengeluaran Bukan Makanan Sebulan</TableHead>
             <TableHead>Jumlah Komoditas Makanan (R304) KP</TableHead>
             <TableHead>Jumlah Komoditas Bukan Makanan (R305) KP</TableHead>
+            <TableHead>Aksi</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -60,6 +63,17 @@ export function PeriksaTable({ periksas }: PeriksaSsnM25TableProps) {
                 <TableCell>{periksa.iv3_3_8 || "-"}</TableCell>
                 <TableCell>{periksa.r304_kp || "-"}</TableCell>
                 <TableCell>{periksa.r305_kp || "-"}</TableCell>
+                <TableCell>
+                  {periksa.status == 'belum' && (
+                    <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => onEdit(periksa)}
+                    >
+                    <Pencil className="h-4 w-4" />
+                    </Button>
+                  )}
+                </TableCell>
               </TableRow>
               ))
             ) : (
@@ -73,6 +87,7 @@ export function PeriksaTable({ periksas }: PeriksaSsnM25TableProps) {
                 <TableCell>-</TableCell>
                 <TableCell>-</TableCell>
                 <TableCell>-</TableCell>
+                <TableCell></TableCell>
               </TableRow>
               );
             })}

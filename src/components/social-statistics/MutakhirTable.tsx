@@ -8,8 +8,10 @@ import {
 } from "@/components/ui/table";
 import { UpdateSsnM25TableProps } from "./types";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Pencil } from "lucide-react";
 
-export function MutakhirTable({ updates }: UpdateSsnM25TableProps) {
+export function MutakhirTable({ updates, onEdit }: UpdateSsnM25TableProps) {
   const getStatusBadge = (status?: string) => {
     switch (status) {
       case "sudah":
@@ -39,7 +41,7 @@ export function MutakhirTable({ updates }: UpdateSsnM25TableProps) {
             <TableHead>Jumlah Keluarga Sebelum (Blok II)</TableHead>
             <TableHead>Jumlah Keluarga Hasil (Blok II)</TableHead>
             <TableHead>Jumlah Ruta Hasil (Blok II)</TableHead>
-            {/* <TableHead>Aksi</TableHead> */}
+            <TableHead>Aksi</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -55,15 +57,17 @@ export function MutakhirTable({ updates }: UpdateSsnM25TableProps) {
               <TableCell>{update.families_before || "-"}</TableCell>
               <TableCell>{update.families_after || "-"}</TableCell>
               <TableCell>{update.households_after || "-"}</TableCell>
-              {/* <TableCell>
-        <Button
-        variant="ghost"
-        size="icon"
-        onClick={() => onEdit(update)}
-        >
-        <Pencil className="h-4 w-4" />
-        </Button>
-        </TableCell> */}
+              <TableCell>
+                {update.status == 'belum' && (
+                  <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => onEdit(update)}
+                  >
+                  <Pencil className="h-4 w-4" />
+                  </Button>
+                )}
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>

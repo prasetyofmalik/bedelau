@@ -99,6 +99,11 @@ export function PeriksaSection() {
     setEditingPeriksa(null);
   };
 
+  const handleEdit = (data: PeriksaSsnM25Data) => {
+    setEditingPeriksa(data);
+    setIsAddPeriksaOpen(true);
+  };
+
   return (
     <>
       <div className="space-y-6 flex flex-col">
@@ -137,6 +142,7 @@ export function PeriksaSection() {
           ) : (
             <PeriksaTable
               periksas={diperiksaSamples}
+              onEdit={handleEdit}
               onSuccess={refetch}
             />
           )}

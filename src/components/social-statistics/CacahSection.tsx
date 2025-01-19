@@ -90,6 +90,11 @@ export function CacahSection() {
       setIsAddCacahOpen(false);
       setEditingCacah(null);
     };
+
+    const handleEdit = (data: CacahSsnM25Data) => {
+      setEditingCacah(data);
+      setIsAddCacahOpen(true);
+    };
   
     return (
       <>
@@ -129,6 +134,7 @@ export function CacahSection() {
             ) : (
               <CacahTable
                 cacahs={tercacahSamples}
+                onEdit={handleEdit}
                 onSuccess={refetch}
               />
             )}

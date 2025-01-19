@@ -8,6 +8,8 @@ import {
 } from "@/components/ui/table";
 import { CacahSsnM25TableProps } from "./types";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Pencil } from "lucide-react";
 
 const getR203Label = (value?: string) => {
   switch (value) {
@@ -26,7 +28,7 @@ const getR203Label = (value?: string) => {
   }
 };
 
-export function CacahTable({ cacahs }: CacahSsnM25TableProps) {
+export function CacahTable({ cacahs, onEdit }: CacahSsnM25TableProps) {
   const getStatusBadge = (status?: string) => {
     switch (status) {
       case "sudah":
@@ -53,26 +55,44 @@ export function CacahTable({ cacahs }: CacahSsnM25TableProps) {
             <TableHead>No Urut Ruta</TableHead>
             <TableHead>Hasil Pencacahan Ruta (R203) MSBP</TableHead>
             <TableHead>Hasil Pencacahan Ruta (R203) KP</TableHead>
+            <TableHead>Aksi</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {cacahs.map((sample) => {
             const rowCount = Math.max(1, sample.cacah_data.length);
-            
+
             return sample.cacah_data.length > 0 ? (
               sample.cacah_data.map((cacah: any, index: number) => (
                 <TableRow key={`${sample.sample_code}_${cacah.no_ruta}`}>
                   {index === 0 ? (
                     <>
-                      <TableCell rowSpan={rowCount}>{sample.sample_code}</TableCell>
+                      <TableCell rowSpan={rowCount}>
+                        {sample.sample_code}
+                      </TableCell>
                       <TableCell rowSpan={rowCount}>{sample.pml}</TableCell>
                       <TableCell rowSpan={rowCount}>{sample.pcl}</TableCell>
                     </>
                   ) : null}
                   <TableCell>{getStatusBadge(cacah.status)}</TableCell>
                   <TableCell>{cacah.no_ruta || "-"}</TableCell>
-                  <TableCell>{getR203Label(cacah.r203_msbp?.toString())}</TableCell>
-                  <TableCell>{getR203Label(cacah.r203_kp?.toString())}</TableCell>
+                  <TableCell>
+                    {getR203Label(cacah.r203_msbp?.toString())}
+                  </TableCell>
+                  <TableCell>
+                    {getR203Label(cacah.r203_kp?.toString())}
+                  </TableCell>
+                  <TableCell>
+                    {cacah.status == "belum" && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => onEdit(cacah)}
+                      >
+                        <Pencil className="h-4 w-4" />
+                      </Button>
+                    )}
+                  </TableCell>
                 </TableRow>
               ))
             ) : (
@@ -84,6 +104,7 @@ export function CacahTable({ cacahs }: CacahSsnM25TableProps) {
                 <TableCell>-</TableCell>
                 <TableCell>-</TableCell>
                 <TableCell>-</TableCell>
+                <TableCell></TableCell>
               </TableRow>
             );
           })}

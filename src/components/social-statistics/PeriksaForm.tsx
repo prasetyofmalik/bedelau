@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
@@ -41,6 +41,7 @@ export function PeriksaDataForm({
   initialData,
 }: PeriksaSsnM25DataFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const { data: samples = [] } = useQuery({
     queryKey: ["ssn_m25_samples"],
@@ -66,6 +67,21 @@ export function PeriksaDataForm({
       r305_kp: initialData?.r305_kp || 0,
     },
   });
+
+  // Reset form when initialData changes
+  useEffect(() => {
+    if (initialData) {
+      form.reset({
+        sample_code: initialData.sample_code,
+        no_ruta: initialData?.no_ruta || 0,
+        status: initialData?.status || "belum",
+        iv3_2_16: initialData?.iv3_2_16 || 0,
+        iv3_3_8: initialData?.iv3_3_8 || 0,
+        r304_kp: initialData?.r304_kp || 0,
+        r305_kp: initialData?.r305_kp || 0,
+      });
+    }
+  }, [initialData, form]);
 
   const onSubmit = async (data: any) => {
     setIsSubmitting(true);
@@ -102,6 +118,28 @@ export function PeriksaDataForm({
       );
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!initialData?.id) return;
+
+    setIsDeleting(true);
+    try {
+      const { error } = await supabase
+        .from("ssn_m25_periksa")
+        .delete()
+        .eq("id", initialData.id);
+
+      if (error) throw error;
+      toast.success("Data pemeriksaan berhasil dihapus");
+      onSuccess();
+      onClose();
+    } catch (error) {
+      console.error("Error deleting periksa data:", error);
+      toast.error("Gagal menghapus data pemeriksaan");
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -313,13 +351,25 @@ export function PeriksaDataForm({
               )}
             />
 
-            <div className="flex justify-end gap-2">
-              <Button type="button" variant="outline" onClick={onClose}>
-                Batal
-              </Button>
-              <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting ? "Menyimpan..." : "Simpan"}
-              </Button>
+            <div className="flex justify-between items-center">
+              {initialData?.id && (
+                <Button
+                  type="button"
+                  variant="destructive"
+                  onClick={handleDelete}
+                  disabled={isDeleting}
+                >
+                  {isDeleting ? "Menghapus..." : "Hapus"}
+                </Button>
+              )}
+              <div className="flex gap-2 ml-auto">
+                <Button type="button" variant="outline" onClick={onClose}>
+                  Batal
+                </Button>
+                <Button type="submit" disabled={isSubmitting}>
+                  {isSubmitting ? "Menyimpan..." : "Simpan"}
+                </Button>
+              </div>
             </div>
           </form>
         </Form>

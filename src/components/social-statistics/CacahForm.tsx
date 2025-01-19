@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
@@ -53,6 +53,7 @@ export function CacahDataForm({
   initialData,
 }: CacahSsnM25DataFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const { data: samples = [] } = useQuery({
     queryKey: ["ssn_m25_samples"],
@@ -76,6 +77,19 @@ export function CacahDataForm({
       r203_kp: initialData?.r203_kp || 0,
     },
   });
+
+  // Reset form when initialData changes
+  useEffect(() => {
+    if (initialData) {
+      form.reset({
+        sample_code: initialData?.sample_code,
+        no_ruta: initialData.no_ruta || 0,
+        status: initialData.status || "belum",
+        r203_msbp: initialData?.r203_msbp || 0,
+        r203_kp: initialData?.r203_kp || 0,
+      });
+    }
+  }, [initialData, form]);
 
   const onSubmit = async (data: any) => {
     setIsSubmitting(true);
@@ -114,6 +128,28 @@ export function CacahDataForm({
       );
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!initialData?.id) return;
+
+    setIsDeleting(true);
+    try {
+      const { error } = await supabase
+        .from("ssn_m25_cacah")
+        .delete()
+        .eq("id", initialData.id);
+
+      if (error) throw error;
+      toast.success("Data pencacahan berhasil dihapus");
+      onSuccess();
+      onClose();
+    } catch (error) {
+      console.error("Error deleting cacah data:", error);
+      toast.error("Gagal menghapus data pencacahan");
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -283,13 +319,25 @@ export function CacahDataForm({
               )}
             />
 
-            <div className="flex justify-end gap-2">
-              <Button type="button" variant="outline" onClick={onClose}>
-                Batal
-              </Button>
-              <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting ? "Menyimpan..." : "Simpan"}
-              </Button>
+<div className="flex justify-between items-center">
+              {initialData?.id && (
+                <Button
+                  type="button"
+                  variant="destructive"
+                  onClick={handleDelete}
+                  disabled={isDeleting}
+                >
+                  {isDeleting ? "Menghapus..." : "Hapus"}
+                </Button>
+              )}
+              <div className="flex gap-2 ml-auto">
+                <Button type="button" variant="outline" onClick={onClose}>
+                  Batal
+                </Button>
+                <Button type="submit" disabled={isSubmitting}>
+                  {isSubmitting ? "Menyimpan..." : "Simpan"}
+                </Button>
+              </div>
             </div>
           </form>
         </Form>

@@ -20,7 +20,7 @@ export interface UpdateSsnM25Data {
 }
 
 export interface CacahSsnM25Data {
-  id: string;
+  id?: string;
   sample_code: string;
   no_ruta: string;
   status?: 'belum' | 'sudah';
@@ -96,6 +96,7 @@ export interface CacahSsnM25TableProps {
     cacah_data: CacahSsnM25Data[];
   }[];
   onSuccess: () => void;
+  onEdit: (data: CacahSsnM25Data) => void;
 }
 
 export interface PeriksaSsnM25TableProps {
@@ -106,6 +107,7 @@ export interface PeriksaSsnM25TableProps {
     periksa_data: PeriksaSsnM25Data[];
   }[];
   onSuccess: () => void;
+  onEdit: (data: PeriksaSsnM25Data) => void;
 }
 
 export interface FenomenaSsnM25TableProps {
