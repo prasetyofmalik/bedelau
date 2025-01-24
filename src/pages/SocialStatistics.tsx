@@ -4,6 +4,11 @@ import {
   InputPplSsnM25Section,
   InputPmlSsnM25Section,
 } from "@/components/social-statistics/SsnM25Section";
+import {
+  DashboardSakF25Section,
+  InputPplSakF25Section,
+  // InputPmlSsnM25Section,
+} from "@/components/social-statistics/SakF25Section";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -98,36 +103,36 @@ export default function SocialStatistics() {
             </div>
 
             {isSakF25Visible && (
-              <Tabs defaultValue="dashboardSsnM25" className="space-y-6">
+              <Tabs defaultValue="dashboardSakF25" className="space-y-6">
                 <TabsList className="w-full border-b border-gray-200 space-x-8 p-0 h-auto bg-transparent">
                   <TabsTrigger
-                    value="dashboardSsnM25"
+                    value="dashboardSakF25"
                     className="px-4 py-3 data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none rounded-none bg-transparent font-medium"
                   >
                     Dashboard
                   </TabsTrigger>
                   <TabsTrigger
-                    value="inputPplSsnM25"
+                    value="inputPplSakF25"
                     className="px-4 py-3 data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none rounded-none bg-transparent font-medium"
                   >
                     PPL Input
                   </TabsTrigger>
-                  <TabsTrigger
-                    value="inputPmlSsnM25"
+                  {/* <TabsTrigger
+                    value="inputPmlSakF25"
                     className="px-4 py-3 data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none rounded-none bg-transparent font-medium"
                   >
                     PML Input
-                  </TabsTrigger>
+                  </TabsTrigger> */}
                 </TabsList>
-                <TabsContent value="dashboardSsnM25">
-                  <DashboardSsnM25Section />
+                <TabsContent value="dashboardSakF25">
+                  <DashboardSakF25Section />
                 </TabsContent>
-                <TabsContent value="inputPplSsnM25">
-                  <InputPplSsnM25Section />
+                <TabsContent value="inputPplSakF25">
+                  <InputPplSakF25Section />
                 </TabsContent>
-                <TabsContent value="inputPmlSsnM25">
-                  <InputPmlSsnM25Section />
-                </TabsContent>
+                {/* <TabsContent value="inputPmlSakF25">
+                  <InputPmlSakF25Section />
+                </TabsContent> */}
               </Tabs>
             )}
           </div>

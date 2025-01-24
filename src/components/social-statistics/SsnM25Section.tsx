@@ -1,4 +1,4 @@
-import { DashboardSsnM25Section as DashboardContent } from "./DashboardSsnM25Section";
+import { DashboardSsnM25Section as DashboardContent } from "./SsnM25DashboardSection";
 import { MutakhirSection } from "./MutakhirSection";
 import { CacahSection } from "./CacahSection";
 import { PeriksaSection } from "./PeriksaSection";

@@ -1,24 +1,24 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { PemutakhiranChart } from "./PemutakhiranChart";
-import { PencacahanChart } from "./PencacahanChart";
-import { PemeriksaanChart } from "./PemeriksaanChart";
-import { PplMonitoringTable } from "./PplMonitoringTable";
+// import { PencacahanChart } from "./PencacahanChart";
+// import { PemeriksaanChart } from "./PemeriksaanChart";
+import { PplMonitoringTable } from "./SakF25PplMonitoringTable";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-export function DashboardSsnM25Section() {
+export function DashboardSakF25Section() {
   // Query to get all samples and their updates
   const { data: samples = [] } = useQuery({
-    queryKey: ["ssn_m25_samples_dashboard"],
+    queryKey: ["sak_f25_samples_dashboard"],
     queryFn: async () => {
       const { data: allSamples, error: samplesError } = await supabase
-        .from("ssn_m25_samples")
+        .from("sak_f25_samples")
         .select("*");
 
       if (samplesError) throw samplesError;
 
       const { data: updates, error: updatesError } = await supabase
-        .from("ssn_m25_updates")
+        .from("sak_f25_updates")
         .select("*");
 
       if (updatesError) throw updatesError;
@@ -137,8 +137,8 @@ export function DashboardSsnM25Section() {
         <h3 className="text-xl font-semibold mb-6">Progress Overview</h3>
         <div className="grid gap-6 md:grid-cols-3">
           <PemutakhiranChart data={samples} />
-          <PencacahanChart data={cacahs} />
-          <PemeriksaanChart data={periksas} />
+          {/* <PencacahanChart data={cacahs} />
+          <PemeriksaanChart data={periksas} /> */}
         </div>
       </div>
 
@@ -152,20 +152,20 @@ export function DashboardSsnM25Section() {
             >
               Pemutakhiran
             </TabsTrigger>
-            <TabsTrigger
+            {/* <TabsTrigger
               value="pencacahan"
               className="rounded-md px-6 py-2 data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm"
             >
               Pencacahan
-            </TabsTrigger>
+            </TabsTrigger> */}
           </TabsList>
           <div className="p-6">
             <TabsContent value="pemutakhiran">
               <PplMonitoringTable type="pemutakhiran" />
             </TabsContent>
-            <TabsContent value="pencacahan">
+            {/* <TabsContent value="pencacahan">
               <PplMonitoringTable type="pencacahan" />
-            </TabsContent>
+            </TabsContent> */}
           </div>
         </Tabs>
       </div>
