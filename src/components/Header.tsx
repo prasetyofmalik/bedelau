@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Link, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -22,8 +21,6 @@ import { useToast } from "@/hooks/use-toast";
 export const Header = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [isVisible, setIsVisible] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
 
   const { data: session } = useQuery({
     queryKey: ["session"],
@@ -85,98 +82,75 @@ export const Header = () => {
     </>
   );
 
-  const controlHeader = () => {
-    if (typeof window !== "undefined") {
-      if (window.scrollY > lastScrollY) {
-        setIsVisible(false);
-      } else {
-        setIsVisible(true);
-      }
-      setLastScrollY(window.scrollY);
-    }
-  };
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      window.addEventListener("scroll", controlHeader);
-
-      return () => {
-        window.removeEventListener("scroll", controlHeader);
-      };
-    }
-  }, [lastScrollY]);
-
   return (
     <header
-      className={`border-b bg-white sticky top-0 z-50 transition-transform duration-300 ${
-        isVisible ? "translate-y-0" : "-translate-y-full"
-      }`}
+      className={"border-b bg-white bg-opacity-90 backdrop-blur-md sticky top-0 z-50"}
     >
-      <div className="container mx-auto px-4 py-4">
-        <nav className="flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <Link to="/">
-              <img
-                src="/img/sams-logo.png"
-                alt="SAMS Logo"
-                className="h-8 w-auto"
-              />
-            </Link>
-          </div>
+      <div className="container mx-auto px-4 py-3">
+      <nav className="flex items-center justify-between">
+        <div className="flex items-center space-x-2">
+        <Link to="/">
+          <img
+          src="/img/bedelau-logo.png"
+          alt="Bedelau Logo"
+          className="h-7 w-auto"
+          />
+        </Link>
+        </div>
 
-          <div className="hidden md:flex items-center space-x-6">
-            <NavigationLinks />
-          </div>
+        <div className="hidden md:flex items-center space-x-6">
+        <NavigationLinks />
+        </div>
 
-          <div className="flex items-center space-x-4">
-            {session ? (
-              <div className="flex items-center gap-4">
-                <div className="md:hidden">
-                  <Sheet>
-                    <SheetTrigger asChild>
-                      <Button variant="ghost" size="icon">
-                        <Menu className="h-5 w-5" />
-                      </Button>
-                    </SheetTrigger>
-                    <SheetContent side="left">
-                      <SheetHeader>
-                        <SheetTitle>Menu</SheetTitle>
-                      </SheetHeader>
-                      <div className="flex flex-col gap-4 mt-4">
-                        <NavigationLinks />
-                      </div>
-                    </SheetContent>
-                  </Sheet>
-                </div>
-
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon">
-                      <User className="h-5 w-5" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-56 bg-white">
-                    <DropdownMenuItem onClick={navigateToRole}>
-                      <User className="mr-2 h-4 w-4" />
-                      <span>Dashboard</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onClick={handleLogout}
-                      className="text-red-600"
-                    >
-                      <LogOut className="mr-2 h-4 w-4" />
-                      <span>Keluar</span>
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-            ) : (
-              <Button variant="default" asChild>
-                <Link to="/login">Masuk</Link>
+        <div className="flex items-center space-x-4">
+        {session ? (
+          <div className="flex items-center gap-4">
+          <div className="md:hidden">
+            <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon">
+              <Menu className="h-5 w-5" />
               </Button>
-            )}
+            </SheetTrigger>
+            <SheetContent side="left">
+              <SheetHeader>
+              <SheetTitle>Menu</SheetTitle>
+              </SheetHeader>
+              <div className="flex flex-col gap-4 mt-4">
+              <NavigationLinks />
+              </div>
+            </SheetContent>
+            </Sheet>
           </div>
-        </nav>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon">
+              <User className="h-5 w-5" />
+            </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56 bg-white">
+            <DropdownMenuItem onClick={navigateToRole}>
+              <User className="mr-2 h-4 w-4" />
+              <span>Dashboard</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={handleLogout}
+              className="text-red-600"
+            >
+              <LogOut className="mr-2 h-4 w-4" />
+              <span>Keluar</span>
+            </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          </div>
+        ) : (
+          <Button variant="default" asChild>
+          <Link to="/login">Masuk</Link>
+          </Button>
+        )}
+        </div>
+      </nav>
       </div>
     </header>
   );

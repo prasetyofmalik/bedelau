@@ -91,11 +91,14 @@ const Index = () => {
         {/* Hero Section */}
         <section className="bg-gradient-to-r from-primary to-blue-800 text-white py-20">
           <div className="container mx-auto px-4 text-center">
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">
-              Sistem Aplikasi Manajemen Siak (SAMS)
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">
+              Beranda Elektronik dan Administrasi Umum
+            </h1>
+            <h1 className="text-4xl md:text-4xl font-bold mb-6">
+              BPS Kabupaten Siak
             </h1>
             <p className="text-xl mb-8 text-gray-100">
-              Mengelola workflow dan manajemen kantor secara efisien
+              Bantu efisiensi, notifikasi, dan administrasi terintegrasi.
             </p>
             <Button
               size="lg"
