@@ -1,4 +1,4 @@
-export interface SampleSsnM25Data {
+export interface SampleData {
   id: string;
   sample_code: string;
   kecamatan: string;
@@ -9,7 +9,7 @@ export interface SampleSsnM25Data {
   created_at?: string;
 }
 
-export interface UpdateSsnM25Data {
+export interface UpdateData {
   id?: number;
   sample_code: string;
   families_before: number;
@@ -54,11 +54,11 @@ export interface FenomenaSsnM25Data {
   health_access: string;
 }
 
-export interface UpdateSsnM25DataFormProps {
+export interface UpdateDataFormProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
-  initialData?: UpdateSsnM25Data | null;
+  initialData?: UpdateData | null;
 }
 
 export interface CacahSsnM25DataFormProps {
@@ -79,12 +79,12 @@ export interface FenomenaSsnM25DataFormProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
-  initialData?: UpdateSsnM25Data | null;
+  initialData?: UpdateData | null;
 }
 
-export interface UpdateSsnM25TableProps {
-  updates: (UpdateSsnM25Data & SampleSsnM25Data)[];
-  onEdit: (data: UpdateSsnM25Data) => void;
+export interface UpdateTableProps {
+  updates: (UpdateData & SampleData)[];
+  onEdit: (data: UpdateData) => void;
   refetch: () => void;
 }
 
@@ -111,7 +111,33 @@ export interface PeriksaSsnM25TableProps {
 }
 
 export interface FenomenaSsnM25TableProps {
-  fenomenas: (FenomenaSsnM25Data & SampleSsnM25Data)[];
+  fenomenas: (FenomenaSsnM25Data & SampleData)[];
   onEdit: (data: FenomenaSsnM25Data) => void;
   refetch: () => void;
+}
+
+export type SurveyType = "ssn_m25" | "sak_f25";
+
+export interface MutakhirSectionProps {
+  surveyType: SurveyType;
+}
+
+export interface MutakhirTableProps {
+  updates: (UpdateData & SampleData)[];
+  onEdit: (data: UpdateData) => void;
+  refetch: () => void;
+  surveyType: SurveyType;
+}
+
+export interface MutakhirFormProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSuccess: () => void;
+  initialData?: UpdateData | null;
+  surveyType: SurveyType;
+}
+
+export interface PplMonitoringTableProps {
+  type: "pemutakhiran" | "pencacahan";
+  surveyType: SurveyType;
 }

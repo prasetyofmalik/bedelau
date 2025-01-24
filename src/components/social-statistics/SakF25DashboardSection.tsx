@@ -3,7 +3,7 @@ import { supabase } from "@/lib/supabase";
 import { PemutakhiranChart } from "./PemutakhiranChart";
 // import { PencacahanChart } from "./PencacahanChart";
 // import { PemeriksaanChart } from "./PemeriksaanChart";
-import { PplMonitoringTable } from "./SakF25PplMonitoringTable";
+import { PplMonitoringTable } from "./PplMonitoringTable";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export function DashboardSakF25Section() {
@@ -39,97 +39,97 @@ export function DashboardSakF25Section() {
     },
   });
 
-  const { data: cacahs = [] } = useQuery({
-    queryKey: ["ssn_m25_cacah_dashboard"],
-    queryFn: async () => {
-      const { data: allSamples, error: samplesError } = await supabase
-        .from("ssn_m25_samples")
-        .select("*");
+  // const { data: cacahs = [] } = useQuery({
+  //   queryKey: ["ssn_m25_cacah_dashboard"],
+  //   queryFn: async () => {
+  //     const { data: allSamples, error: samplesError } = await supabase
+  //       .from("ssn_m25_samples")
+  //       .select("*");
 
-      if (samplesError) throw samplesError;
+  //     if (samplesError) throw samplesError;
 
-      const { data: cacahData, error: cacahError } = await supabase
-        .from("ssn_m25_cacah")
-        .select("*");
+  //     const { data: cacahData, error: cacahError } = await supabase
+  //       .from("ssn_m25_cacah")
+  //       .select("*");
 
-      if (cacahError) throw cacahError;
+  //     if (cacahError) throw cacahError;
 
-      // Create an array to store all expected ruta entries (10 per NKS)
-      const expectedRutaEntries = [];
-      allSamples?.forEach((sample) => {
-        for (let i = 1; i <= 10; i++) {
-          expectedRutaEntries.push({
-            sample_code: sample.sample_code,
-            no_ruta: i,
-            status: "belum",
-          });
-        }
-      });
+  //     // Create an array to store all expected ruta entries (10 per NKS)
+  //     const expectedRutaEntries = [];
+  //     allSamples?.forEach((sample) => {
+  //       for (let i = 1; i <= 10; i++) {
+  //         expectedRutaEntries.push({
+  //           sample_code: sample.sample_code,
+  //           no_ruta: i,
+  //           status: "belum",
+  //         });
+  //       }
+  //     });
 
-      // Create a map of existing cacah entries
-      const cacahMap = new Map();
-      cacahData?.forEach((cacah) => {
-        const key = `${cacah.sample_code}_${cacah.no_ruta}`;
-        cacahMap.set(key, cacah);
-      });
+  //     // Create a map of existing cacah entries
+  //     const cacahMap = new Map();
+  //     cacahData?.forEach((cacah) => {
+  //       const key = `${cacah.sample_code}_${cacah.no_ruta}`;
+  //       cacahMap.set(key, cacah);
+  //     });
 
-      // Map expected entries to actual status
-      return expectedRutaEntries.map((entry) => {
-        const key = `${entry.sample_code}_${entry.no_ruta}`;
-        const existingCacah = cacahMap.get(key);
-        return {
-          ...entry,
-          status: existingCacah ? "sudah" : "belum",
-        };
-      });
-    },
-  });
+  //     // Map expected entries to actual status
+  //     return expectedRutaEntries.map((entry) => {
+  //       const key = `${entry.sample_code}_${entry.no_ruta}`;
+  //       const existingCacah = cacahMap.get(key);
+  //       return {
+  //         ...entry,
+  //         status: existingCacah ? "sudah" : "belum",
+  //       };
+  //     });
+  //   },
+  // });
 
-  const { data: periksas = [] } = useQuery({
-    queryKey: ["ssn_m25_periksa_dashboard"],
-    queryFn: async () => {
-      const { data: allSamples, error: samplesError } = await supabase
-        .from("ssn_m25_samples")
-        .select("*");
+  // const { data: periksas = [] } = useQuery({
+  //   queryKey: ["ssn_m25_periksa_dashboard"],
+  //   queryFn: async () => {
+  //     const { data: allSamples, error: samplesError } = await supabase
+  //       .from("ssn_m25_samples")
+  //       .select("*");
 
-      if (samplesError) throw samplesError;
+  //     if (samplesError) throw samplesError;
 
-      const { data: periksaData, error: periksaError } = await supabase
-        .from("ssn_m25_periksa")
-        .select("*");
+  //     const { data: periksaData, error: periksaError } = await supabase
+  //       .from("ssn_m25_periksa")
+  //       .select("*");
 
-      if (periksaError) throw periksaError;
+  //     if (periksaError) throw periksaError;
 
-      // Create an array to store all expected ruta entries (10 per NKS)
-      const expectedRutaEntries = [];
-      allSamples?.forEach((sample) => {
-        for (let i = 1; i <= 10; i++) {
-          expectedRutaEntries.push({
-            sample_code: sample.sample_code,
-            no_ruta: i,
-            status: "belum",
-          });
-        }
-      });
+  //     // Create an array to store all expected ruta entries (10 per NKS)
+  //     const expectedRutaEntries = [];
+  //     allSamples?.forEach((sample) => {
+  //       for (let i = 1; i <= 10; i++) {
+  //         expectedRutaEntries.push({
+  //           sample_code: sample.sample_code,
+  //           no_ruta: i,
+  //           status: "belum",
+  //         });
+  //       }
+  //     });
 
-      // Create a map of existing periksa entries
-      const periksaMap = new Map();
-      periksaData?.forEach((periksa) => {
-        const key = `${periksa.sample_code}_${periksa.no_ruta}`;
-        periksaMap.set(key, periksa);
-      });
+  //     // Create a map of existing periksa entries
+  //     const periksaMap = new Map();
+  //     periksaData?.forEach((periksa) => {
+  //       const key = `${periksa.sample_code}_${periksa.no_ruta}`;
+  //       periksaMap.set(key, periksa);
+  //     });
 
-      // Map expected entries to actual status
-      return expectedRutaEntries.map((entry) => {
-        const key = `${entry.sample_code}_${entry.no_ruta}`;
-        const existingPeriksa = periksaMap.get(key);
-        return {
-          ...entry,
-          status: existingPeriksa ? "sudah" : "belum",
-        };
-      });
-    },
-  });
+  //     // Map expected entries to actual status
+  //     return expectedRutaEntries.map((entry) => {
+  //       const key = `${entry.sample_code}_${entry.no_ruta}`;
+  //       const existingPeriksa = periksaMap.get(key);
+  //       return {
+  //         ...entry,
+  //         status: existingPeriksa ? "sudah" : "belum",
+  //       };
+  //     });
+  //   },
+  // });
 
   return (
     <div className="space-y-8">
@@ -161,7 +161,9 @@ export function DashboardSakF25Section() {
           </TabsList>
           <div className="p-6">
             <TabsContent value="pemutakhiran">
-              <PplMonitoringTable type="pemutakhiran" />
+              <PplMonitoringTable 
+              type="pemutakhiran" 
+              surveyType="sak_f25"/>
             </TabsContent>
             {/* <TabsContent value="pencacahan">
               <PplMonitoringTable type="pencacahan" />

@@ -12,6 +12,7 @@ import { supabase } from "@/lib/supabase";
 import { id } from "date-fns/locale";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
+import { PplMonitoringTableProps } from "./types";
 
 interface MonitoringData {
   ppl: string;
@@ -19,11 +20,7 @@ interface MonitoringData {
   count: number;
 }
 
-interface PplMonitoringTableProps {
-  type: "pemutakhiran" | "pencacahan";
-}
-
-export function PplMonitoringTable({ type }: PplMonitoringTableProps) {
+export function PplMonitoringTable({ type, surveyType }: PplMonitoringTableProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const currentDate = new Date();
   const daysInMonth = eachDayOfInterval({
@@ -33,30 +30,28 @@ export function PplMonitoringTable({ type }: PplMonitoringTableProps) {
 
   // Fetch PPL list and their daily counts
   const { data: monitoringData } = useQuery({
-    queryKey: ["sak_ppl_monitoring", type],
+    queryKey: [`${surveyType}_ppl_monitoring`, type],
     queryFn: async () => {
       // First get all unique PPLs from samples
       const { data: pplList, error: pplError } = await supabase
-        .from("sak_f25_samples")
+        .from(`${surveyType}_samples`)
         .select("ppl");
 
       if (pplError) throw pplError;
       if (!pplList) return [];
 
       // Get unique PPLs, filtering out null values
-      const uniquePpls = [
-        ...new Set(
-          pplList.filter((item) => item.ppl !== null).map((item) => item.ppl)
-        ),
-      ];
+      const uniquePpls = Array.from(
+        new Set(pplList.filter((item) => item.ppl !== null).map((item) => item.ppl))
+      );
 
       // Get daily counts for each PPL
-      const { data: dailyCounts, error: countsError } = await supabase.from(
-        type === "pemutakhiran" ? "sak_f25_updates" : "sak_f25_cacah"
-      ).select(`
+      const { data: dailyCounts, error: countsError } = await supabase
+        .from(type === "pemutakhiran" ? `${surveyType}_updates` : `${surveyType}_cacah`)
+        .select(`
           created_at,
           sample_code,
-          sak_f25_samples!inner (
+          ${surveyType}_samples!inner (
             ppl
           )
         `);
@@ -72,7 +67,7 @@ export function PplMonitoringTable({ type }: PplMonitoringTableProps) {
           const dateStr = format(date, "yyyy-MM-dd");
           const count = dailyCounts.filter(
             (item) =>
-              item.sak_f25_samples.ppl === ppl &&
+              item[`${surveyType}_samples`].ppl === ppl &&
               item.created_at.startsWith(dateStr)
           ).length;
 
@@ -109,12 +104,14 @@ export function PplMonitoringTable({ type }: PplMonitoringTableProps) {
     return "bg-yellow-500";
   };
 
+  const surveyTitle = surveyType === "ssn_m25" ? "Susenas Maret 2025" : "Sakernas Februari 2025";
+
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <h3 className="text-xl font-semibold">
           Progress {type === "pemutakhiran" ? "Pemutakhiran" : "Pencacahan"}{" "}
-          Harian PPL
+          Harian PPL {surveyTitle}
         </h3>
         <Input
           type="search"
@@ -130,12 +127,12 @@ export function PplMonitoringTable({ type }: PplMonitoringTableProps) {
             <TableRow>
               <TableHead className="bg-white sticky left-0 z-10">Nama PPL</TableHead>
               {daysInMonth.map((date) => (
-              <TableHead
-                key={date.toString()}
-                className="bg-white text-center w-12"
-              >
-                {format(date, "d", { locale: id })}
-              </TableHead>
+                <TableHead
+                  key={date.toString()}
+                  className="bg-white text-center w-12"
+                >
+                  {format(date, "d", { locale: id })}
+                </TableHead>
               ))}
               <TableHead>Jumlah</TableHead>
             </TableRow>
@@ -143,7 +140,9 @@ export function PplMonitoringTable({ type }: PplMonitoringTableProps) {
           <TableBody>
             {filteredPplGroups.map(([ppl, data]) => (
               <TableRow key={ppl}>
-                <TableCell className="font-medium bg-white sticky left-0 z-10">{ppl}</TableCell>
+                <TableCell className="font-medium bg-white sticky left-0 z-10">
+                  {ppl}
+                </TableCell>
                 {daysInMonth.map((date) => {
                   const dateStr = format(date, "yyyy-MM-dd");
                   const dayData = data.find((d) => d.date === dateStr);

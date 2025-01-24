@@ -93,7 +93,7 @@ export const Header = () => {
           <img
           src="/img/bedelau-logo.png"
           alt="Bedelau Logo"
-          className="h-7 w-auto"
+          className="h-8 w-auto"
           />
         </Link>
         </div>

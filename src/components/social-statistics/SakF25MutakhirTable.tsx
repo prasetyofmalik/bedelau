@@ -6,12 +6,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { UpdateSsnM25TableProps } from "./types";
+import { MutakhirTableProps } from "./types";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Pencil } from "lucide-react";
 
-export function MutakhirTable({ updates, onEdit }: UpdateSsnM25TableProps) {
+export function MutakhirTable({ updates, onEdit, surveyType }: MutakhirTableProps) {
   const getStatusBadge = (status?: string) => {
     switch (status) {
       case "sudah":
@@ -22,6 +22,8 @@ export function MutakhirTable({ updates, onEdit }: UpdateSsnM25TableProps) {
         return <Badge className="bg-red-500">Belum Input</Badge>;
     }
   };
+
+  // const surveyTitle = surveyType === "ssn_m25" ? "Susenas Maret 2025" : "Sakernas Februari 2025";
 
   return (
     <div className="rounded-md border h-[78vh] overflow-x-auto">

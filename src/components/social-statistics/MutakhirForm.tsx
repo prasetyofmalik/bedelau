@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { useQuery } from "@tanstack/react-query";
+import Select from "react-select";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -18,7 +19,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import {
-  Select,
+  Select as UISelect,
   SelectContent,
   SelectItem,
   SelectTrigger,
@@ -27,7 +28,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
-import { UpdateSsnM25DataFormProps } from "./types";
+import { MutakhirFormProps } from "./types";
 
 const statusOptions = [
   { value: 'belum', label: "Belum Selesai" },
@@ -39,15 +40,16 @@ export function MutakhirDataForm({
   onClose,
   onSuccess,
   initialData,
-}: UpdateSsnM25DataFormProps) {
+  surveyType,
+}: MutakhirFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
   const { data: samples = [] } = useQuery({
-    queryKey: ["ssn_m25_samples"],
+    queryKey: [`${surveyType}_samples`],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("ssn_m25_samples")
+        .from(`${surveyType}_samples`)
         .select("sample_code")
         .order("sample_code");
 
@@ -55,6 +57,12 @@ export function MutakhirDataForm({
       return data;
     },
   });
+
+  // Convert samples to react-select format
+  const sampleOptions = samples.map((sample) => ({
+    value: sample.sample_code,
+    label: sample.sample_code,
+  }));
 
   const form = useForm({
     defaultValues: {
@@ -86,7 +94,7 @@ export function MutakhirDataForm({
 
       if (initialData?.id) {
         const { error } = await supabase
-          .from("ssn_m25_updates")
+          .from(`${surveyType}_updates`)
           .update(updateData)
           .eq("id", initialData.id);
 
@@ -94,7 +102,7 @@ export function MutakhirDataForm({
         toast.success("Data pemutakhiran berhasil diperbarui");
       } else {
         const { error } = await supabase
-          .from("ssn_m25_updates")
+          .from(`${surveyType}_updates`)
           .insert([updateData]);
 
         if (error) throw error;
@@ -121,7 +129,7 @@ export function MutakhirDataForm({
     setIsDeleting(true);
     try {
       const { error } = await supabase
-        .from("ssn_m25_updates")
+        .from(`${surveyType}_updates`)
         .delete()
         .eq("id", initialData.id);
 
@@ -139,7 +147,7 @@ export function MutakhirDataForm({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>
             {initialData?.id ? "Edit" : "Tambah"} Data Pemutakhiran
@@ -156,28 +164,28 @@ export function MutakhirDataForm({
               name="sample_code"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>NKS</FormLabel>
-                  <Select
-                    disabled={!!initialData}
-                    onValueChange={field.onChange}
-                    value={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger className="bg-white">
-                        <SelectValue placeholder="Pilih Nomor Kode Sampel" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent className="bg-white">
-                      {samples.map((sample) => (
-                        <SelectItem
-                          key={sample.sample_code}
-                          value={sample.sample_code}
-                        >
-                          {sample.sample_code}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <FormLabel>Nomor Kode Sampel</FormLabel>
+                  <FormControl>
+                    <Controller
+                      name="sample_code"
+                      control={form.control}
+                      render={({ field }) => (
+                        <Select
+                          isDisabled={!!initialData}
+                          options={sampleOptions}
+                          value={sampleOptions.find(
+                            (option) => option.value === field.value
+                          )}
+                          onChange={(option) => field.onChange(option?.value)}
+                          placeholder="Pilih atau ketik NKS..."
+                          className="react-select-container"
+                          classNamePrefix="react-select"
+                          isClearable
+                          isSearchable
+                        />
+                      )}
+                    />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
@@ -267,7 +275,7 @@ export function MutakhirDataForm({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Sudah Selesai Dimutakhirkan</FormLabel>
-                  <Select
+                  <UISelect
                     onValueChange={field.onChange}
                     value={field.value.toString()}
                   >
@@ -286,7 +294,7 @@ export function MutakhirDataForm({
                         </SelectItem>
                       ))}
                     </SelectContent>
-                  </Select>
+                  </UISelect>
                   <FormMessage />
                 </FormItem>
               )}

@@ -45,6 +45,10 @@ export default {
           DEFAULT: "#EF4444",
           foreground: "#FFFFFF",
         },
+        muted: {
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",

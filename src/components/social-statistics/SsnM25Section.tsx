@@ -1,5 +1,5 @@
 import { DashboardSsnM25Section as DashboardContent } from "./SsnM25DashboardSection";
-import { MutakhirSection } from "./SsnM25MutakhirSection";
+import { MutakhirSection } from "./MutakhirSection";
 import { CacahSection } from "./CacahSection";
 import { PeriksaSection } from "./PeriksaSection";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -26,7 +26,7 @@ export function InputPplSsnM25Section() {
         </TabsTrigger>
       </TabsList>
       <TabsContent value="pemutakhiran">
-        <MutakhirSection />
+        <MutakhirSection surveyType="ssn_m25" />
       </TabsContent>
       <TabsContent value="pencacahan">
         <CacahSection />

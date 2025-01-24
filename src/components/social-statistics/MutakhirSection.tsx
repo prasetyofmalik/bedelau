@@ -5,22 +5,22 @@ import { Plus, FileDown } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { MutakhirDataForm } from "./MutakhirForm";
-import { MutakhirTable } from "./MutakhirTable";
-import { UpdateSsnM25Data } from "./types";
+import { MutakhirTable } from "./SsnM25MutakhirTable";
+import { UpdateData, MutakhirSectionProps } from "./types";
 import { exportToExcel } from "@/utils/excelExport";
 
-export function MutakhirSection() {
+export function MutakhirSection({ surveyType }: MutakhirSectionProps) {
   const [searchQuery1, setSearchQuery1] = useState("");
   const [isAddUpdateOpen, setIsAddUpdateOpen] = useState(false);
-  const [editingUpdate, setEditingUpdate] = useState<UpdateSsnM25Data | null>(
+  const [editingUpdate, setEditingUpdate] = useState<UpdateData | null>(
     null
   );
 
   // Query to get all samples
   const { data: allSamples = [] } = useQuery({
-    queryKey: ["ssn_m25_samples", searchQuery1],
+    queryKey: [`${surveyType}_samples`, searchQuery1],
     queryFn: async () => {
-      let query = supabase.from("ssn_m25_samples").select("*");
+      let query = supabase.from(`${surveyType}_samples`).select("*");
 
       if (searchQuery1) {
         query = query.or(
@@ -29,10 +29,7 @@ export function MutakhirSection() {
       }
 
       const { data, error } = await query;
-      if (error) {
-        console.error("Error fetching samples:", error);
-        throw error;
-      }
+      if (error) throw error;
       return data;
     },
   });
@@ -43,52 +40,45 @@ export function MutakhirSection() {
     isLoading,
     refetch,
   } = useQuery({
-    queryKey: ["ssn_m25_updates", searchQuery1],
+    queryKey: [`${surveyType}_updates`, searchQuery1],
     queryFn: async () => {
       let query = supabase
-        .from("ssn_m25_updates")
-        .select(
-          `
-          id,
+        .from(`${surveyType}_samples`)
+        .select(`
           sample_code,
-          families_before,
-          families_after,
-          households_after,
-          status,
-          created_at
-        `
-        )
-        .order("created_at", { ascending: false });
+          kecamatan,
+          desa_kelurahan,
+          households_before,
+          pml,
+          ppl,
+          ${surveyType}_updates (
+            id,
+            families_before,
+            families_after,
+            households_after,
+            status,
+            created_at
+          )
+        `)
+        .order('created_at', { foreignTable: `${surveyType}_updates`, ascending: false });
 
-      const { data: updates, error } = await query;
-      if (error) {
-        console.error("Error fetching updates:", error);
-        throw error;
+      if (searchQuery1) {
+        query.ilike('sample_code', `%${searchQuery1}%`);
       }
 
-      // Create a map of updates by sample_code
-      const updatesMap = new Map();
-      updates?.forEach((update) => {
-        if (!updatesMap.has(update.sample_code)) {
-          updatesMap.set(update.sample_code, update);
-        }
-      });
+      const { data, error } = await query;
+      if (error) throw error;
 
-      // Combine samples with their updates
-      return allSamples.map((sample) => {
-        const update = updatesMap.get(sample.sample_code);
-        return {
-          ...sample,
-          id: update?.id || null,
-          families_before: update?.families_before || null,
-          families_after: update?.families_after || null,
-          households_after: update?.households_after || null,
-          status: update?.status,
-          created_at: update?.created_at || null,
-        };
-      });
+      return data.map((sample: any) => ({
+        ...sample,
+        id: sample[`${surveyType}_updates`]?.[0]?.id,
+        families_before: sample[`${surveyType}_updates`]?.[0]?.families_before || null,
+        families_after: sample[`${surveyType}_updates`]?.[0]?.families_after || null,
+        households_after: sample[`${surveyType}_updates`]?.[0]?.households_after || null,
+        status: sample[`${surveyType}_updates`]?.[0]?.status || 'not_started',
+        created_at: sample[`${surveyType}_updates`]?.[0]?.created_at,
+      }));
     },
-    enabled: allSamples.length > 0, // Only run this query after samples are loaded
   });
 
   const handleExport = () => {
@@ -101,7 +91,7 @@ export function MutakhirSection() {
       "Jumlah Keluarga Hasil Pemutakhiran": update.families_after || "-",
       "Jumlah Rumah Tangga Hasil Pemutakhiran": update.households_after || "-",
     }));
-    exportToExcel(exportData, "pemutakhiran-data");
+    exportToExcel(exportData, `pemutakhiran-data-${surveyType}`);
   };
 
   const handleClose = () => {
@@ -109,14 +99,16 @@ export function MutakhirSection() {
     setEditingUpdate(null);
   };
 
-  const handleEdit = (data: UpdateSsnM25Data) => {
+  const handleEdit = (data: UpdateData) => {
     setEditingUpdate(data);
     setIsAddUpdateOpen(true);
   };
 
+  const surveyTitle = surveyType === "ssn_m25" ? "Susenas Maret 2025" : "Sakernas Februari 2025";
+
   return (
     <div className="space-y-6 flex flex-col">
-      <h3 className="text-xl font-semibold">Pemutakhiran Data</h3>
+      <h3 className="text-xl font-semibold">Pemutakhiran Data {surveyTitle}</h3>
       <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center w-full sm:w-auto">
           <Input
@@ -153,6 +145,7 @@ export function MutakhirSection() {
             updates={updatedSamples}
             onEdit={handleEdit}
             refetch={refetch}
+            surveyType={surveyType}
           />
         )}
       </div>
@@ -162,6 +155,7 @@ export function MutakhirSection() {
         onClose={handleClose}
         onSuccess={refetch}
         initialData={editingUpdate}
+        surveyType={surveyType}
       />
     </div>
   );
