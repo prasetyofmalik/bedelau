@@ -24,7 +24,7 @@ export function MutakhirSection() {
 
       if (searchQuery1) {
         query = query.or(
-          `sample_code.ilike.%${searchQuery1}%, kecamatan.ilike.%${searchQuery1}%, desa_kelurahan.ilike.%${searchQuery1}%, pml.ilike.%${searchQuery1}%, pcl.ilike.%${searchQuery1}%`
+          `sample_code.ilike.%${searchQuery1}%, kecamatan.ilike.%${searchQuery1}%, desa_kelurahan.ilike.%${searchQuery1}%, pml.ilike.%${searchQuery1}%, ppl.ilike.%${searchQuery1}%`
         );
       }
 

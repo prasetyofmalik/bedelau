@@ -33,7 +33,7 @@ export function PeriksaTable({ periksas, onEdit }: PeriksaSsnM25TableProps) {
           <TableRow>
             <TableHead>NKS</TableHead>
             <TableHead>PML</TableHead>
-            <TableHead>PCL</TableHead>
+            <TableHead>PPL</TableHead>
             <TableHead>Status Selesai Pemeriksaan</TableHead>
             <TableHead>No Urut Ruta</TableHead>
             <TableHead>Rata-rata Pengeluaran Makanan Sebulan</TableHead>
@@ -47,40 +47,42 @@ export function PeriksaTable({ periksas, onEdit }: PeriksaSsnM25TableProps) {
           {periksas.map((sample) => {
             const rowCount = Math.max(1, sample.periksa_data.length);
 
-            return sample.periksa_data.length > 0 ? ( 
-              sample.periksa_data.map((periksa:any, index:number) => (
-              <TableRow key={`${sample.sample_code}_${periksa.no_ruta}`}>
-                {index === 0 ? (
-                  <>
-                    <TableCell rowSpan={rowCount}>{sample.sample_code}</TableCell>
-                    <TableCell rowSpan={rowCount}>{sample.pml}</TableCell>
-                    <TableCell rowSpan={rowCount}>{sample.pcl}</TableCell>
-                  </>
-                ) : null}
-                <TableCell>{getStatusBadge(periksa.status)}</TableCell>
-                <TableCell>{periksa.no_ruta || "-"}</TableCell>
-                <TableCell>{periksa.iv3_2_16 || "-"}</TableCell>
-                <TableCell>{periksa.iv3_3_8 || "-"}</TableCell>
-                <TableCell>{periksa.r304_kp || "-"}</TableCell>
-                <TableCell>{periksa.r305_kp || "-"}</TableCell>
-                <TableCell>
-                  {periksa.status == 'belum' && (
-                    <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => onEdit(periksa)}
-                    >
-                    <Pencil className="h-4 w-4" />
-                    </Button>
-                  )}
-                </TableCell>
-              </TableRow>
+            return sample.periksa_data.length > 0 ? (
+              sample.periksa_data.map((periksa: any, index: number) => (
+                <TableRow key={`${sample.sample_code}_${periksa.no_ruta}`}>
+                  {index === 0 ? (
+                    <>
+                      <TableCell rowSpan={rowCount}>
+                        {sample.sample_code}
+                      </TableCell>
+                      <TableCell rowSpan={rowCount}>{sample.pml}</TableCell>
+                      <TableCell rowSpan={rowCount}>{sample.ppl}</TableCell>
+                    </>
+                  ) : null}
+                  <TableCell>{getStatusBadge(periksa.status)}</TableCell>
+                  <TableCell>{periksa.no_ruta || "-"}</TableCell>
+                  <TableCell>{periksa.iv3_2_16 || "-"}</TableCell>
+                  <TableCell>{periksa.iv3_3_8 || "-"}</TableCell>
+                  <TableCell>{periksa.r304_kp || "-"}</TableCell>
+                  <TableCell>{periksa.r305_kp || "-"}</TableCell>
+                  <TableCell>
+                    {periksa.status == "belum" && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => onEdit(periksa)}
+                      >
+                        <Pencil className="h-4 w-4" />
+                      </Button>
+                    )}
+                  </TableCell>
+                </TableRow>
               ))
             ) : (
               <TableRow key={sample.sample_code}>
                 <TableCell>{sample.sample_code}</TableCell>
                 <TableCell>{sample.pml}</TableCell>
-                <TableCell>{sample.pcl}</TableCell>
+                <TableCell>{sample.ppl}</TableCell>
                 <TableCell>{getStatusBadge(undefined)}</TableCell>
                 <TableCell>-</TableCell>
                 <TableCell>-</TableCell>
@@ -89,8 +91,8 @@ export function PeriksaTable({ periksas, onEdit }: PeriksaSsnM25TableProps) {
                 <TableCell>-</TableCell>
                 <TableCell></TableCell>
               </TableRow>
-              );
-            })}
+            );
+          })}
         </TableBody>
       </Table>
     </div>

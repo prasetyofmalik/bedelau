@@ -5,7 +5,7 @@ export interface SampleSsnM25Data {
   desa_kelurahan: string;
   households_before: number;
   pml: string;
-  pcl: string;
+  ppl: string;
   created_at?: string;
 }
 
@@ -92,7 +92,7 @@ export interface CacahSsnM25TableProps {
   cacahs: {
     sample_code: string;
     pml: string;
-    pcl: string;
+    ppl: string;
     cacah_data: CacahSsnM25Data[];
   }[];
   onSuccess: () => void;
@@ -103,7 +103,7 @@ export interface PeriksaSsnM25TableProps {
   periksas: {
     sample_code: string;
     pml: string;
-    pcl: string;
+    ppl: string;
     periksa_data: PeriksaSsnM25Data[];
   }[];
   onSuccess: () => void;

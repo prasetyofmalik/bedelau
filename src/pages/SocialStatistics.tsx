@@ -1,7 +1,7 @@
 import { Header } from "@/components/Header";
 import {
   DashboardSsnM25Section,
-  InputPclSsnM25Section,
+  InputPplSsnM25Section,
   InputPmlSsnM25Section,
 } from "@/components/social-statistics/SsnM25Section";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -11,6 +11,7 @@ import { ChevronUp, ChevronDown } from "lucide-react";
 
 export default function SocialStatistics() {
   const [isSsnM25Visible, setIsSsnM25Visible] = useState(true);
+  const [isSakF25Visible, setIsSakF25Visible] = useState(true);
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
@@ -50,10 +51,10 @@ export default function SocialStatistics() {
                     Dashboard
                   </TabsTrigger>
                   <TabsTrigger
-                    value="inputPclSsnM25"
+                    value="inputPplSsnM25"
                     className="px-4 py-3 data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none rounded-none bg-transparent font-medium"
                   >
-                    PCL Input
+                    PPL Input
                   </TabsTrigger>
                   <TabsTrigger
                     value="inputPmlSsnM25"
@@ -65,8 +66,64 @@ export default function SocialStatistics() {
                 <TabsContent value="dashboardSsnM25">
                   <DashboardSsnM25Section />
                 </TabsContent>
-                <TabsContent value="inputPclSsnM25">
-                  <InputPclSsnM25Section />
+                <TabsContent value="inputPplSsnM25">
+                  <InputPplSsnM25Section />
+                </TabsContent>
+                <TabsContent value="inputPmlSsnM25">
+                  <InputPmlSsnM25Section />
+                </TabsContent>
+              </Tabs>
+            )}
+          </div>
+        </div>
+
+        <div className="bg-white rounded-lg border border-gray-200 mt-5">
+          <div className="p-6">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-semibold mb-6">
+                Monitoring Sakernas Februari 2025
+              </h2>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setIsSakF25Visible(!isSakF25Visible)}
+                className="ml-2 rounded-full hover:bg-gray-100"
+              >
+                {isSakF25Visible ? (
+                  <ChevronUp className="h-4 w-4" />
+                ) : (
+                  <ChevronDown className="h-4 w-4" />
+                )}
+              </Button>
+            </div>
+
+            {isSakF25Visible && (
+              <Tabs defaultValue="dashboardSsnM25" className="space-y-6">
+                <TabsList className="w-full border-b border-gray-200 space-x-8 p-0 h-auto bg-transparent">
+                  <TabsTrigger
+                    value="dashboardSsnM25"
+                    className="px-4 py-3 data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none rounded-none bg-transparent font-medium"
+                  >
+                    Dashboard
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="inputPplSsnM25"
+                    className="px-4 py-3 data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none rounded-none bg-transparent font-medium"
+                  >
+                    PPL Input
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="inputPmlSsnM25"
+                    className="px-4 py-3 data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none rounded-none bg-transparent font-medium"
+                  >
+                    PML Input
+                  </TabsTrigger>
+                </TabsList>
+                <TabsContent value="dashboardSsnM25">
+                  <DashboardSsnM25Section />
+                </TabsContent>
+                <TabsContent value="inputPplSsnM25">
+                  <InputPplSsnM25Section />
                 </TabsContent>
                 <TabsContent value="inputPmlSsnM25">
                   <InputPmlSsnM25Section />

@@ -50,7 +50,7 @@ export function CacahTable({ cacahs, onEdit }: CacahSsnM25TableProps) {
           <TableRow>
             <TableHead>NKS</TableHead>
             <TableHead>PML</TableHead>
-            <TableHead>PCL</TableHead>
+            <TableHead>PPL</TableHead>
             <TableHead>Status Selesai Pencacahan</TableHead>
             <TableHead>No Urut Ruta</TableHead>
             <TableHead>Hasil Pencacahan Ruta (R203) MSBP</TableHead>
@@ -71,7 +71,7 @@ export function CacahTable({ cacahs, onEdit }: CacahSsnM25TableProps) {
                         {sample.sample_code}
                       </TableCell>
                       <TableCell rowSpan={rowCount}>{sample.pml}</TableCell>
-                      <TableCell rowSpan={rowCount}>{sample.pcl}</TableCell>
+                      <TableCell rowSpan={rowCount}>{sample.ppl}</TableCell>
                     </>
                   ) : null}
                   <TableCell>{getStatusBadge(cacah.status)}</TableCell>
@@ -99,7 +99,7 @@ export function CacahTable({ cacahs, onEdit }: CacahSsnM25TableProps) {
               <TableRow key={sample.sample_code}>
                 <TableCell>{sample.sample_code}</TableCell>
                 <TableCell>{sample.pml}</TableCell>
-                <TableCell>{sample.pcl}</TableCell>
+                <TableCell>{sample.ppl}</TableCell>
                 <TableCell>{getStatusBadge(undefined)}</TableCell>
                 <TableCell>-</TableCell>
                 <TableCell>-</TableCell>

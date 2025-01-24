@@ -3,7 +3,7 @@ import { supabase } from "@/lib/supabase";
 import { PemutakhiranChart } from "./PemutakhiranChart";
 import { PencacahanChart } from "./PencacahanChart";
 import { PemeriksaanChart } from "./PemeriksaanChart";
-import { PclMonitoringTable } from "./PclMonitoringTable";
+import { PplMonitoringTable } from "./PplMonitoringTable";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export function DashboardSsnM25Section() {
@@ -161,10 +161,10 @@ export function DashboardSsnM25Section() {
           </TabsList>
           <div className="p-6">
             <TabsContent value="pemutakhiran">
-              <PclMonitoringTable type="pemutakhiran" />
+              <PplMonitoringTable type="pemutakhiran" />
             </TabsContent>
             <TabsContent value="pencacahan">
-              <PclMonitoringTable type="pencacahan" />
+              <PplMonitoringTable type="pencacahan" />
             </TabsContent>
           </div>
         </Tabs>

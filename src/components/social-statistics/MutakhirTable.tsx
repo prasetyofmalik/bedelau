@@ -36,7 +36,7 @@ export function MutakhirTable({ updates, onEdit }: UpdateSsnM25TableProps) {
             <TableHead>NKS</TableHead>
             <TableHead>Perkiraan Jumlah Ruta</TableHead>
             <TableHead>PML</TableHead>
-            <TableHead>PCL</TableHead>
+            <TableHead>PPL</TableHead>
             <TableHead>Status Pemutakhiran</TableHead>
             <TableHead>Jumlah Keluarga Sebelum (Blok II)</TableHead>
             <TableHead>Jumlah Keluarga Hasil (Blok II)</TableHead>
@@ -52,19 +52,19 @@ export function MutakhirTable({ updates, onEdit }: UpdateSsnM25TableProps) {
               <TableCell>{update.sample_code}</TableCell>
               <TableCell>{update.households_before}</TableCell>
               <TableCell>{update.pml}</TableCell>
-              <TableCell>{update.pcl}</TableCell>
+              <TableCell>{update.ppl}</TableCell>
               <TableCell>{getStatusBadge(update.status)}</TableCell>
               <TableCell>{update.families_before || "-"}</TableCell>
               <TableCell>{update.families_after || "-"}</TableCell>
               <TableCell>{update.households_after || "-"}</TableCell>
               <TableCell>
-                {update.status == 'belum' && (
+                {update.status == "belum" && (
                   <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => onEdit(update)}
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => onEdit(update)}
                   >
-                  <Pencil className="h-4 w-4" />
+                    <Pencil className="h-4 w-4" />
                   </Button>
                 )}
               </TableCell>

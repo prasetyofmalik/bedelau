@@ -12,7 +12,8 @@ import { exportToExcel } from "@/utils/excelExport";
 export function PeriksaSection() {
   const [searchQuery3, setSearchQuery3] = useState("");
   const [isAddPeriksaOpen, setIsAddPeriksaOpen] = useState(false);
-  const [editingPeriksa, setEditingPeriksa] = useState<PeriksaSsnM25Data | null>(null);
+  const [editingPeriksa, setEditingPeriksa] =
+    useState<PeriksaSsnM25Data | null>(null);
 
   const {
     data: diperiksaSamples = [],
@@ -29,7 +30,7 @@ export function PeriksaSection() {
           kecamatan,
           desa_kelurahan,
           pml,
-          pcl,
+          ppl,
           ssn_m25_periksa (
             id,
             no_ruta,
@@ -44,11 +45,11 @@ export function PeriksaSection() {
         )
         .order("sample_code");
 
-        if (searchQuery3) {
-          query = query.or(
-            `sample_code.ilike.%${searchQuery3}%,pml.ilike.%${searchQuery3}%,pcl.ilike.%${searchQuery3}%`
-          );
-        }
+      if (searchQuery3) {
+        query = query.or(
+          `sample_code.ilike.%${searchQuery3}%,pml.ilike.%${searchQuery3}%,ppl.ilike.%${searchQuery3}%`
+        );
+      }
 
       const { data, error } = await query;
       if (error) throw error;
@@ -62,23 +63,24 @@ export function PeriksaSection() {
   });
 
   const handleExport = () => {
-    const exportData = diperiksaSamples.flatMap((sample) => 
+    const exportData = diperiksaSamples.flatMap((sample) =>
       sample.periksa_data.length > 0
-          ? sample.periksa_data.map((periksa: any) => ({
+        ? sample.periksa_data.map((periksa: any) => ({
+            "kode prop": "14",
+            "kode kab": "05",
+            "kode NKS [6 digit]": sample.sample_code,
+            "No Urut Ruta [max: 10]": periksa.no_ruta,
+            "Sudah Selesai [sudah/belum]": periksa.status,
+            "Hasil Pemeriksaan Ruta (R203) MSBP": periksa.r203_msbp || "-",
+            "Rata-rata Pengeluaran Makanan Sebulan": periksa.iv3_2_16 || "-",
+            "Rata-rata Pengeluaran Bukan Makanan Sebulan":
+              periksa.iv3_3_8 || "-",
+            "Jumlah Komoditas Makanan (R304) KP": periksa.r304_kp || "-",
+            "Jumlah Komoditas Bukan Makanan (R305) KP": periksa.r305_kp || "-",
+          }))
+        : [
+            {
               "kode prop": "14",
-              "kode kab": "05",
-              "kode NKS [6 digit]": sample.sample_code,
-              "No Urut Ruta [max: 10]": periksa.no_ruta,
-              "Sudah Selesai [sudah/belum]": periksa.status,
-              "Hasil Pemeriksaan Ruta (R203) MSBP": periksa.r203_msbp || "-",
-              "Rata-rata Pengeluaran Makanan Sebulan": periksa.iv3_2_16 || "-",
-              "Rata-rata Pengeluaran Bukan Makanan Sebulan": periksa.iv3_3_8 || "-",
-              "Jumlah Komoditas Makanan (R304) KP": periksa.r304_kp || "-",
-              "Jumlah Komoditas Bukan Makanan (R305) KP": periksa.r305_kp || "-",
-            }))
-          : [
-              {
-                "kode prop": "14",
               "kode kab": "05",
               "kode NKS [6 digit]": sample.sample_code,
               "No Urut Ruta [max: 10]": "-",
@@ -88,9 +90,9 @@ export function PeriksaSection() {
               "Rata-rata Pengeluaran Bukan Makanan Sebulan": "-",
               "Jumlah Komoditas Makanan (R304) KP": "-",
               "Jumlah Komoditas Bukan Makanan (R305) KP": "-",
-              },
-            ]
-      );
+            },
+          ]
+    );
     exportToExcel(exportData, "progress-pemeriksaan");
   };
 
