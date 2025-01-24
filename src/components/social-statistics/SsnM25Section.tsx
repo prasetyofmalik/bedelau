@@ -1,5 +1,5 @@
 import { DashboardSsnM25Section as DashboardContent } from "./SsnM25DashboardSection";
-import { MutakhirSection } from "./MutakhirSection";
+import { MutakhirSection } from "./SsnM25MutakhirSection";
 import { CacahSection } from "./CacahSection";
 import { PeriksaSection } from "./PeriksaSection";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
