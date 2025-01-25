@@ -136,7 +136,7 @@ export function DashboardSakF25Section() {
       <div className="bg-white p-6 rounded-lg shadow-sm">
         <h3 className="text-xl font-semibold mb-6">Progress Overview</h3>
         <div className="grid gap-6 md:grid-cols-3">
-          <PemutakhiranChart data={samples} />
+          <PemutakhiranChart data={samples} surveyType={"sak_f25"} />
           {/* <PencacahanChart data={cacahs} />
           <PemeriksaanChart data={periksas} /> */}
         </div>
@@ -161,9 +161,7 @@ export function DashboardSakF25Section() {
           </TabsList>
           <div className="p-6">
             <TabsContent value="pemutakhiran">
-              <PplMonitoringTable 
-              type="pemutakhiran" 
-              surveyType="sak_f25"/>
+              <PplMonitoringTable type="pemutakhiran" surveyType="sak_f25" />
             </TabsContent>
             {/* <TabsContent value="pencacahan">
               <PplMonitoringTable type="pencacahan" />

@@ -49,7 +49,7 @@ export function PemutakhiranChart({ data, surveyType }: PemutakhiranChartProps) 
             dataKey="value"
             className={`${surveyType}-pemutakhiran-chart`}
             onMouseEnter={(data, index) => {
-              const paths = document.querySelectorAll(`.${surveyType}-pemutakhiran-chart .recharts-sector`);
+              const paths = document.querySelectorAll(`.${surveyType}-pemutakhiran-chart path.recharts-sector`);
               paths.forEach((path, i) => {
                 if (i !== index) {
                   (path as SVGPathElement).style.fill = HOVER_COLOR;
@@ -57,7 +57,7 @@ export function PemutakhiranChart({ data, surveyType }: PemutakhiranChartProps) 
               });
             }}
             onMouseLeave={() => {
-              const paths = document.querySelectorAll(`.${surveyType}-pemutakhiran-chart .recharts-sector`);
+              const paths = document.querySelectorAll(`.${surveyType}-pemutakhiran-chart path.recharts-sector`);
               paths.forEach((path, i) => {
                 (path as SVGPathElement).style.fill = COLORS[i];
               });

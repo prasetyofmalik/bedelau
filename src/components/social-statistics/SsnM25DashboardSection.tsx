@@ -136,7 +136,7 @@ export function DashboardSsnM25Section() {
       <div className="bg-white p-6 rounded-lg shadow-sm">
         <h3 className="text-xl font-semibold mb-6">Progress Overview</h3>
         <div className="grid gap-6 md:grid-cols-3">
-          <PemutakhiranChart data={samples} />
+          <PemutakhiranChart data={samples} surveyType={"ssn_m25"} />
           <PencacahanChart data={cacahs} />
           <PemeriksaanChart data={periksas} />
         </div>
