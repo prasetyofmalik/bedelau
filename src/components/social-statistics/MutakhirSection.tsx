@@ -5,7 +5,7 @@ import { Plus, FileDown } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { MutakhirDataForm } from "./MutakhirForm";
-import { MutakhirTable } from "./SsnM25MutakhirTable";
+import { MutakhirTable } from "./MutakhirTable";
 import { UpdateData, MutakhirSectionProps } from "./types";
 import { exportToExcel } from "@/utils/excelExport";
 
@@ -29,7 +29,10 @@ export function MutakhirSection({ surveyType }: MutakhirSectionProps) {
       }
 
       const { data, error } = await query;
-      if (error) throw error;
+      if (error) {
+        console.error("Error fetching samples:", error);
+        throw error;
+      }
       return data;
     },
   });
@@ -43,42 +46,49 @@ export function MutakhirSection({ surveyType }: MutakhirSectionProps) {
     queryKey: [`${surveyType}_updates`, searchQuery1],
     queryFn: async () => {
       let query = supabase
-        .from(`${surveyType}_samples`)
-        .select(`
+        .from(`${surveyType}_updates`)
+        .select(
+          `
+          id,
           sample_code,
-          kecamatan,
-          desa_kelurahan,
-          households_before,
-          pml,
-          ppl,
-          ${surveyType}_updates (
-            id,
-            families_before,
-            families_after,
-            households_after,
-            status,
-            created_at
-          )
-        `)
-        .order('created_at', { foreignTable: `${surveyType}_updates`, ascending: false });
+          families_before,
+          families_after,
+          households_after,
+          status,
+          created_at
+        `
+        )
+        .order("created_at", { ascending: false });
 
-      if (searchQuery1) {
-        query.ilike('sample_code', `%${searchQuery1}%`);
+      const { data: updates, error } = await query;
+      if (error) {
+        console.error("Error fetching updates:", error);
+        throw error;
       }
 
-      const { data, error } = await query;
-      if (error) throw error;
+      // Create a map of updates by sample_code
+      const updatesMap = new Map();
+      updates?.forEach((update) => {
+        if (!updatesMap.has(update.sample_code)) {
+          updatesMap.set(update.sample_code, update);
+        }
+      });
 
-      return data.map((sample: any) => ({
-        ...sample,
-        id: sample[`${surveyType}_updates`]?.[0]?.id,
-        families_before: sample[`${surveyType}_updates`]?.[0]?.families_before || null,
-        families_after: sample[`${surveyType}_updates`]?.[0]?.families_after || null,
-        households_after: sample[`${surveyType}_updates`]?.[0]?.households_after || null,
-        status: sample[`${surveyType}_updates`]?.[0]?.status || 'not_started',
-        created_at: sample[`${surveyType}_updates`]?.[0]?.created_at,
-      }));
+      // Combine samples with their updates
+      return allSamples.map((sample) => {
+        const update = updatesMap.get(sample.sample_code);
+        return {
+          ...sample,
+          id: update?.id || null,
+          families_before: update?.families_before || null,
+          families_after: update?.families_after || null,
+          households_after: update?.households_after || null,
+          status: update?.status,
+          created_at: update?.created_at || null,
+        };
+      });
     },
+    enabled: allSamples.length > 0, // Only run this query after samples are loaded
   });
 
   const handleExport = () => {
