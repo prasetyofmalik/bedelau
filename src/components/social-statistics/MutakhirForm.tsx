@@ -31,8 +31,8 @@ import { supabase } from "@/lib/supabase";
 import { MutakhirFormProps } from "./types";
 
 const statusOptions = [
-  { value: 'belum', label: "Belum Selesai" },
-  { value: 'sudah', label: "Sudah Selesai" },
+  { value: "belum", label: "Belum Selesai" },
+  { value: "sudah", label: "Sudah Selesai" },
 ];
 
 export function MutakhirDataForm({
@@ -204,8 +204,9 @@ export function MutakhirDataForm({
                       type="number"
                       {...field}
                       onChange={(e) => {
-                        const value = Number(e.target.value);
-                        if (value >= 0) {
+                        const value =
+                          e.target.value === "" ? null : Number(e.target.value);
+                        if (value === null || value >= 0) {
                           field.onChange(value);
                         }
                       }}
@@ -230,8 +231,9 @@ export function MutakhirDataForm({
                       type="number"
                       {...field}
                       onChange={(e) => {
-                        const value = Number(e.target.value);
-                        if (value >= 0) {
+                        const value =
+                          e.target.value === "" ? null : Number(e.target.value);
+                        if (value === null || value >= 0) {
                           field.onChange(value);
                         }
                       }}
@@ -256,8 +258,9 @@ export function MutakhirDataForm({
                       type="number"
                       {...field}
                       onChange={(e) => {
-                        const value = Number(e.target.value);
-                        if (value >= 0) {
+                        const value =
+                          e.target.value === "" ? null : Number(e.target.value);
+                        if (value === null || value >= 0) {
                           field.onChange(value);
                         }
                       }}

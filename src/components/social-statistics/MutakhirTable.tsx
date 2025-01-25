@@ -11,7 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Pencil } from "lucide-react";
 
-export function MutakhirTable({ updates, onEdit, surveyType }: MutakhirTableProps) {
+export function MutakhirTable({ updates, onEdit }: MutakhirTableProps) {
   const getStatusBadge = (status?: string) => {
     switch (status) {
       case "sudah":
@@ -22,8 +22,6 @@ export function MutakhirTable({ updates, onEdit, surveyType }: MutakhirTableProp
         return <Badge className="bg-red-500">Belum Input</Badge>;
     }
   };
-
-  // const surveyTitle = surveyType === "ssn_m25" ? "Susenas Maret 2025" : "Sakernas Februari 2025";
 
   return (
     <div className="rounded-md border h-[78vh] overflow-x-auto">

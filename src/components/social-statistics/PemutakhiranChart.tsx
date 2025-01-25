@@ -1,10 +1,7 @@
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from "recharts";
+import { PemutakhiranChartProps } from "./types";
 
-interface PemutakhiranChartProps {
-  data: any[];
-}
-
-export function PemutakhiranChart({ data }: PemutakhiranChartProps) {
+export function PemutakhiranChart({ data, surveyType }: PemutakhiranChartProps) {
   // Count updates by status
   const completedCount = data.filter(item => item.status !== 'belum').length;
   const pendingCount = data.filter(item => item.status === 'belum').length;
@@ -50,9 +47,9 @@ export function PemutakhiranChart({ data }: PemutakhiranChartProps) {
             outerRadius="80%"
             paddingAngle={0}
             dataKey="value"
-            className="pemutakhiran-chart"
+            className={`${surveyType}-pemutakhiran-chart`}
             onMouseEnter={(data, index) => {
-              const paths = document.querySelectorAll('.pemutakhiran-chart .recharts-sector');
+              const paths = document.querySelectorAll(`.${surveyType}-pemutakhiran-chart .recharts-sector`);
               paths.forEach((path, i) => {
                 if (i !== index) {
                   (path as SVGPathElement).style.fill = HOVER_COLOR;
@@ -60,7 +57,7 @@ export function PemutakhiranChart({ data }: PemutakhiranChartProps) {
               });
             }}
             onMouseLeave={() => {
-              const paths = document.querySelectorAll('.pemutakhiran-chart .recharts-sector');
+              const paths = document.querySelectorAll(`.${surveyType}-pemutakhiran-chart .recharts-sector`);
               paths.forEach((path, i) => {
                 (path as SVGPathElement).style.fill = COLORS[i];
               });

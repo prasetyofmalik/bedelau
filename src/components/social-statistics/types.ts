@@ -137,6 +137,11 @@ export interface MutakhirFormProps {
   surveyType: SurveyType;
 }
 
+export interface PemutakhiranChartProps {
+  data: any[];
+  surveyType: SurveyType;
+}
+
 export interface PplMonitoringTableProps {
   type: "pemutakhiran" | "pencacahan";
   surveyType: SurveyType;

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { useQuery } from "@tanstack/react-query";
+import Select from "react-select";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -18,7 +19,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import {
-  Select,
+  Select as UISelect,
   SelectContent,
   SelectItem,
   SelectTrigger,
@@ -30,8 +31,8 @@ import { supabase } from "@/lib/supabase";
 import { PeriksaSsnM25DataFormProps } from "./types";
 
 const statusOptions = [
-  { value: 'belum', label: "Belum Selesai" },
-  { value: 'sudah', label: "Sudah Selesai" },
+  { value: "belum", label: "Belum Selesai" },
+  { value: "sudah", label: "Sudah Selesai" },
 ];
 
 export function PeriksaDataForm({
@@ -55,6 +56,12 @@ export function PeriksaDataForm({
       return data;
     },
   });
+
+  // Convert samples to react-select format
+  const sampleOptions = samples.map((sample) => ({
+    value: sample.sample_code,
+    label: sample.sample_code,
+  }));
 
   const form = useForm({
     defaultValues: {
@@ -87,7 +94,7 @@ export function PeriksaDataForm({
     setIsSubmitting(true);
     try {
       const periksaData = {
-        ...data
+        ...data,
       };
 
       if (initialData?.id) {
@@ -145,7 +152,7 @@ export function PeriksaDataForm({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>
             {initialData?.id ? "Edit" : "Tambah"} Data Pemeriksaan
@@ -162,28 +169,28 @@ export function PeriksaDataForm({
               name="sample_code"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>NKS</FormLabel>
-                  <Select
-                    disabled={!!initialData}
-                    onValueChange={field.onChange}
-                    value={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger className="bg-white">
-                        <SelectValue placeholder="Pilih Nomor Kode Sampel" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent className="bg-white">
-                      {samples.map((sample) => (
-                        <SelectItem
-                          key={sample.sample_code}
-                          value={sample.sample_code}
-                        >
-                          {sample.sample_code}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <FormLabel>Nomor Kode Sampel</FormLabel>
+                  <FormControl>
+                    <Controller
+                      name="sample_code"
+                      control={form.control}
+                      render={({ field }) => (
+                        <Select
+                          isDisabled={!!initialData}
+                          options={sampleOptions}
+                          value={sampleOptions.find(
+                            (option) => option.value === field.value
+                          )}
+                          onChange={(option) => field.onChange(option?.value)}
+                          placeholder="Pilih atau ketik NKS..."
+                          className="react-select-container"
+                          classNamePrefix="react-select"
+                          isClearable
+                          isSearchable
+                        />
+                      )}
+                    />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
@@ -196,12 +203,13 @@ export function PeriksaDataForm({
                 <FormItem>
                   <FormLabel>Nomor Urut Sampel Rumah Tangga</FormLabel>
                   <FormControl>
-                    <Input
+                  <Input
                       type="number"
                       {...field}
                       onChange={(e) => {
-                        const value = Number(e.target.value);
-                        if (value >= 1 && value <= 10) {
+                        const value =
+                          e.target.value === "" ? null : Number(e.target.value);
+                        if (value === null || value >= 0) {
                           field.onChange(value);
                         }
                       }}
@@ -220,15 +228,17 @@ export function PeriksaDataForm({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                  Rata-Rata Pengeluaran Makanan Sebulan (Rp) (BIV.3.2. R16 Kolom 5)
+                    Rata-Rata Pengeluaran Makanan Sebulan (Rp) (BIV.3.2. R16
+                    Kolom 5)
                   </FormLabel>
                   <FormControl>
                     <Input
                       type="number"
                       {...field}
                       onChange={(e) => {
-                        const value = Number(e.target.value);
-                        if (value >= 0) {
+                        const value =
+                          e.target.value === "" ? null : Number(e.target.value);
+                        if (value === null || value >= 0) {
                           field.onChange(value);
                         }
                       }}
@@ -246,15 +256,17 @@ export function PeriksaDataForm({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                  Rata-Rata Pengeluaran Bukan Makanan Sebulan (Rp) (BIV.3.3. R8 Kolom 3)
+                    Rata-Rata Pengeluaran Bukan Makanan Sebulan (Rp) (BIV.3.3.
+                    R8 Kolom 3)
                   </FormLabel>
                   <FormControl>
                     <Input
                       type="number"
                       {...field}
                       onChange={(e) => {
-                        const value = Number(e.target.value);
-                        if (value >= 0) {
+                        const value =
+                          e.target.value === "" ? null : Number(e.target.value);
+                        if (value === null || value >= 0) {
                           field.onChange(value);
                         }
                       }}
@@ -271,16 +283,15 @@ export function PeriksaDataForm({
               name="r304_kp"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>
-                  Jumlah Komoditas Makanan (R304 KP)
-                  </FormLabel>
+                  <FormLabel>Jumlah Komoditas Makanan (R304 KP)</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
                       {...field}
                       onChange={(e) => {
-                        const value = Number(e.target.value);
-                        if (value >= 0) {
+                        const value =
+                          e.target.value === "" ? null : Number(e.target.value);
+                        if (value === null || value >= 0) {
                           field.onChange(value);
                         }
                       }}
@@ -298,15 +309,16 @@ export function PeriksaDataForm({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                  Jumlah Komoditas Bukan Makanan (R305 KP)
+                    Jumlah Komoditas Bukan Makanan (R305 KP)
                   </FormLabel>
                   <FormControl>
                     <Input
                       type="number"
                       {...field}
                       onChange={(e) => {
-                        const value = Number(e.target.value);
-                        if (value >= 0) {
+                        const value =
+                          e.target.value === "" ? null : Number(e.target.value);
+                        if (value === null || value >= 0) {
                           field.onChange(value);
                         }
                       }}
@@ -323,10 +335,8 @@ export function PeriksaDataForm({
               name="status"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>
-                    Sudah Selesai Diperiksa
-                  </FormLabel>
-                  <Select
+                  <FormLabel>Sudah Selesai Diperiksa</FormLabel>
+                  <UISelect
                     onValueChange={field.onChange}
                     value={field.value.toString()}
                   >
@@ -345,7 +355,7 @@ export function PeriksaDataForm({
                         </SelectItem>
                       ))}
                     </SelectContent>
-                  </Select>
+                  </UISelect>
                   <FormMessage />
                 </FormItem>
               )}
