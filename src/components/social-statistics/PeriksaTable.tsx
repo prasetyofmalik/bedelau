@@ -22,9 +22,20 @@ export function PeriksaTable({ periksas, onEdit }: PeriksaSsnM25TableProps) {
         return <Badge className="bg-red-500">Belum Input</Badge>;
     }
   };
+  
+  const getResponseBadge = (non_response?: boolean) => {
+    switch (non_response) {
+      case true:
+        return <Badge className="bg-red-500">Nonrespons</Badge>;
+      case false:
+        return <Badge className="bg-green-500">Tidak</Badge>;
+      default:
+        return "-";
+    }
+  };
 
   return (
-    <div className="rounded-md border h-[78vh] overflow-x-auto">
+    <div className="rounded-md border h-[80vh] overflow-x-auto">
       <Table>
         <TableHeader
           className="bg-yellow-300"
@@ -40,6 +51,7 @@ export function PeriksaTable({ periksas, onEdit }: PeriksaSsnM25TableProps) {
             <TableHead>Rata-rata Pengeluaran Bukan Makanan Sebulan</TableHead>
             <TableHead>Jumlah Komoditas Makanan (R304) KP</TableHead>
             <TableHead>Jumlah Komoditas Bukan Makanan (R305) KP</TableHead>
+            <TableHead>Nonrespons</TableHead>
             <TableHead>Aksi</TableHead>
           </TableRow>
         </TableHeader>
@@ -65,6 +77,7 @@ export function PeriksaTable({ periksas, onEdit }: PeriksaSsnM25TableProps) {
                   <TableCell>{periksa.iv3_3_8 || "-"}</TableCell>
                   <TableCell>{periksa.r304_kp || "-"}</TableCell>
                   <TableCell>{periksa.r305_kp || "-"}</TableCell>
+                  <TableCell>{getResponseBadge(periksa.non_response)}</TableCell>
                   <TableCell>
                     {periksa.status == "belum" && (
                       <Button
@@ -89,6 +102,7 @@ export function PeriksaTable({ periksas, onEdit }: PeriksaSsnM25TableProps) {
                 <TableCell>-</TableCell>
                 <TableCell>-</TableCell>
                 <TableCell>-</TableCell>
+                <TableCell>{getResponseBadge()}</TableCell>
                 <TableCell></TableCell>
               </TableRow>
             );

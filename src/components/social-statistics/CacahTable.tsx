@@ -41,7 +41,7 @@ export function CacahTable({ cacahs, onEdit }: CacahSsnM25TableProps) {
   };
 
   return (
-    <div className="rounded-md border h-[78vh] overflow-x-auto">
+    <div className="rounded-md border h-[80vh] overflow-x-auto">
       <Table>
         <TableHeader
           className="bg-yellow-300"

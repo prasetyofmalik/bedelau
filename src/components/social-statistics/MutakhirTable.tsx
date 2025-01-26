@@ -26,11 +26,8 @@ export function MutakhirTable({ updates, onEdit }: MutakhirTableProps) {
   return (
     <div className="rounded-md border h-[78vh] overflow-x-auto">
       <Table>
-        <TableHeader
-          className="bg-yellow-300"
-          style={{ position: "sticky", top: "0", zIndex: "1 !important" }}
-        >
-          <TableRow>
+        <TableHeader className="bg-yellow-300">
+          <TableRow className="sticky top-0 z-1">
             <TableHead>Kecamatan</TableHead>
             <TableHead>Desa/Kelurahan</TableHead>
             <TableHead>NKS</TableHead>

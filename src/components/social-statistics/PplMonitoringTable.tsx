@@ -100,19 +100,19 @@ export function PplMonitoringTable({ type, surveyType }: PplMonitoringTableProps
   );
 
   const getStatusColor = (count: number) => {
-    if (count > 0) return "bg-green-500";
-    return "bg-yellow-500";
+    if (count > 0) return "bg-green-600";
+    return "bg-yellow-400";
   };
 
-  const surveyTitle = surveyType === "ssn_m25" ? "Susenas Maret 2025" : "Sakernas Februari 2025";
+  // const surveyTitle = surveyType === "ssn_m25" ? "Susenas Maret 2025" : "Sakernas Februari 2025";
 
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
-        <h3 className="text-xl font-semibold">
+        {/* <h3 className="text-xl font-semibold">
           Progress {type === "pemutakhiran" ? "Pemutakhiran" : "Pencacahan"}{" "}
           Harian PPL {surveyTitle}
-        </h3>
+        </h3> */}
         <Input
           type="search"
           placeholder="Cari PPL..."

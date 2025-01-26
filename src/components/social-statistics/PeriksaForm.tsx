@@ -35,6 +35,11 @@ const statusOptions = [
   { value: "sudah", label: "Sudah Selesai" },
 ];
 
+const nonresponseOptions = [
+  { value: false, label: "Tidak" },
+  { value: true, label: "Nonrespons" },
+];
+
 export function PeriksaDataForm({
   isOpen,
   onClose,
@@ -72,6 +77,7 @@ export function PeriksaDataForm({
       iv3_3_8: initialData?.iv3_3_8 || 0,
       r304_kp: initialData?.r304_kp || 0,
       r305_kp: initialData?.r305_kp || 0,
+      non_response: initialData?.non_response || false,
     },
   });
 
@@ -86,6 +92,7 @@ export function PeriksaDataForm({
         iv3_3_8: initialData?.iv3_3_8 || 0,
         r304_kp: initialData?.r304_kp || 0,
         r305_kp: initialData?.r305_kp || 0,
+        non_response: initialData?.non_response || false,
       });
     }
   }, [initialData, form]);
@@ -325,6 +332,37 @@ export function PeriksaDataForm({
                       min="0"
                     />
                   </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="non_response"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Apakah Ruta Ini Nonrespons</FormLabel>
+                  <UISelect
+                    onValueChange={field.onChange}
+                    value={field.value.toString()}
+                  >
+                    <FormControl>
+                      <SelectTrigger className="bg-white">
+                        <SelectValue placeholder="Pilih nonrespons/tidak" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent className="bg-white">
+                      {nonresponseOptions.map((option) => (
+                        <SelectItem
+                          key={option.value.toString()}
+                          value={option.value.toString()}
+                        >
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </UISelect>
                   <FormMessage />
                 </FormItem>
               )}

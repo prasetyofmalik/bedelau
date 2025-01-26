@@ -35,9 +35,9 @@ export function PemutakhiranChart({ data, surveyType }: PemutakhiranChartProps) 
   };
 
   return (
-    <div className="w-full aspect-square max-w-md mx-auto">
-      <h3 className="text-xl font-semibold mb-4 text-center">Progress Pemutakhiran</h3>
-      <ResponsiveContainer width="100%" height="100%">
+    <div className="w-[80%] aspect-square max-w-md mx-auto">
+      <h3 className="text-xl font-semibold m-4">Progress Pemutakhiran</h3>
+      <ResponsiveContainer width="100%" height="90%">
         <PieChart>
           <Pie
             data={chartData}

@@ -39,6 +39,7 @@ export function PeriksaSection() {
             r304_kp,
             r305_kp,
             status,
+            non_response,
             created_at
         )
         `

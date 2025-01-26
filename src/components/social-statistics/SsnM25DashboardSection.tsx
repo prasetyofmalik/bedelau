@@ -133,17 +133,17 @@ export function DashboardSsnM25Section() {
 
   return (
     <div className="space-y-8">
-      <div className="bg-white p-6 rounded-lg shadow-sm">
-        <h3 className="text-xl font-semibold mb-6">Progress Overview</h3>
-        <div className="grid gap-6 md:grid-cols-3">
+      <div className="bg-white rounded-lg shadow-sm py-6">
+        <h3 className="text-xl font-semibold px-6">Susenas Maret 2025</h3>
+        <div className="grid md:grid-cols-3">
           <PemutakhiranChart data={samples} surveyType={"ssn_m25"} />
           <PencacahanChart data={cacahs} />
           <PemeriksaanChart data={periksas} />
         </div>
       </div>
 
-      <div className="bg-white mt-6 rounded-lg shadow-sm">
-        <h3 className="text-xl font-semibold px-6">Progress Harian</h3>
+      <div className="bg-white mt-6 rounded-lg shadow-sm pt-6">
+        <h3 className="text-xl font-semibold px-6">Progress Harian Susenas Maret 2025</h3>
         <Tabs defaultValue="pemutakhiran" className="w-full">
           <TabsList className="w-full inline-flex p-1 bg-muted/10 gap-2 rounded-t-lg border-b">
             <TabsTrigger

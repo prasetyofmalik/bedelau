@@ -38,6 +38,7 @@ export interface PeriksaSsnM25Data {
   iv3_3_8: string;
   r304_kp: string;
   r305_kp: string;
+  non_response: true | false;
   created_at?: string;
 }
 
