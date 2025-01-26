@@ -74,36 +74,3 @@
     @apply bg-background text-foreground;
   }
 }
-
-/* React Select Styles */
-.react-select-container .react-select__control {
-  @apply bg-white border border-input rounded-md min-h-[40px] !important;
-}
-
-.react-select-container .react-select__control--is-focused {
-  @apply border-primary shadow-sm !important;
-}
-
-.react-select-container .react-select__menu {
-  @apply bg-white border border-input rounded-md shadow-md !important;
-}
-
-.react-select-container .react-select__option {
-  @apply cursor-pointer bg-white hover:bg-secondary !important;
-}
-
-.react-select-container .react-select__option--is-selected {
-  @apply bg-primary text-primary-foreground !important;
-}
-
-.react-select-container .react-select__value-container {
-  @apply py-1 !important;
-}
-
-.react-select-container .react-select__input-container {
-  @apply text-foreground !important;
-}
-
-.react-select-container .react-select__placeholder {
-  @apply text-muted-foreground !important;
-}

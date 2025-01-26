@@ -44,13 +44,17 @@ export function MutakhirDataForm({
 }: MutakhirFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [selectedKecamatan, setSelectedKecamatan] = useState<string | null>(
+    null
+  );
+  const [selectedDesa, setSelectedDesa] = useState<string | null>(null);
 
   const { data: samples = [] } = useQuery({
     queryKey: [`${surveyType}_samples`],
     queryFn: async () => {
       const { data, error } = await supabase
         .from(`${surveyType}_samples`)
-        .select("sample_code")
+        .select("kecamatan, desa_kelurahan, sample_code")
         .order("sample_code");
 
       if (error) throw error;
@@ -58,8 +62,38 @@ export function MutakhirDataForm({
     },
   });
 
-  // Convert samples to react-select format
-  const sampleOptions = samples.map((sample) => ({
+  // Get unique kecamatan options
+  const kecamatanOptions = Array.from(
+    new Set(samples.map((sample) => sample.kecamatan))
+  )
+    .filter(Boolean)
+    .map((kecamatan) => ({
+      value: kecamatan,
+      label: kecamatan,
+    }));
+
+  // Get desa options based on selected kecamatan
+  const desaOptions = Array.from(
+    new Set(
+      samples
+        .filter((sample) => sample.kecamatan === selectedKecamatan)
+        .map((sample) => sample.desa_kelurahan)
+    )
+  )
+    .filter(Boolean)
+    .map((desa) => ({
+      value: desa,
+      label: desa,
+    }));
+
+  // Filter sample options based on selected kecamatan and desa
+  const filteredSamples = samples.filter(
+    (sample) =>
+      (!selectedKecamatan || sample.kecamatan === selectedKecamatan) &&
+      (!selectedDesa || sample.desa_kelurahan === selectedDesa)
+  );
+
+  const sampleOptions = filteredSamples.map((sample) => ({
     value: sample.sample_code,
     label: sample.sample_code,
   }));
@@ -84,8 +118,17 @@ export function MutakhirDataForm({
         families_after: initialData.families_after || 0,
         households_after: initialData.households_after || 0,
       });
+
+      // Find and set initial kecamatan and desa
+      const sample = samples.find(
+        (s) => s.sample_code === initialData.sample_code
+      );
+      if (sample) {
+        setSelectedKecamatan(sample.kecamatan);
+        setSelectedDesa(sample.desa_kelurahan);
+      }
     }
-  }, [initialData, form]);
+  }, [initialData, form, samples]);
 
   const onSubmit = async (data: any) => {
     setIsSubmitting(true);
@@ -159,6 +202,40 @@ export function MutakhirDataForm({
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormItem>
+              <FormLabel>Kecamatan</FormLabel>
+              <Select
+                isDisabled={!!initialData}
+                options={kecamatanOptions}
+                value={kecamatanOptions.find(
+                  (option) => option.value === selectedKecamatan
+                )}
+                onChange={(option) => {
+                  setSelectedKecamatan(option?.value || null);
+                  setSelectedDesa(null); // Reset desa when kecamatan changes
+                  form.setValue("sample_code", ""); // Reset sample code
+                }}
+                placeholder="Pilih Kecamatan..."
+                isClearable
+              />
+            </FormItem>
+            <FormItem>
+              <FormLabel>Desa/Kelurahan</FormLabel>
+              <Select
+                isDisabled={!selectedKecamatan || !!initialData}
+                options={desaOptions}
+                value={desaOptions.find(
+                  (option) => option.value === selectedDesa
+                )}
+                onChange={(option) => {
+                  setSelectedDesa(option?.value || null);
+                  form.setValue("sample_code", ""); // Reset sample code
+                }}
+                placeholder="Pilih Desa/Kelurahan..."
+                isClearable
+              />
+            </FormItem>
+
             <FormField
               control={form.control}
               name="sample_code"
@@ -171,15 +248,13 @@ export function MutakhirDataForm({
                       control={form.control}
                       render={({ field }) => (
                         <Select
-                          isDisabled={!!initialData}
+                          isDisabled={!selectedDesa || !!initialData}
                           options={sampleOptions}
                           value={sampleOptions.find(
                             (option) => option.value === field.value
                           )}
                           onChange={(option) => field.onChange(option?.value)}
-                          placeholder="Pilih atau ketik NKS..."
-                          className="react-select-container"
-                          classNamePrefix="react-select"
+                          placeholder="Pilih NKS..."
                           isClearable
                           isSearchable
                         />
