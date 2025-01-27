@@ -110,7 +110,6 @@ export function PeriksaSection() {
   return (
     <>
       <div className="space-y-6 flex flex-col">
-        <h3 className="text-xl font-semibold">Progress Pemeriksaan PML</h3>
         <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center w-full sm:w-auto">
             <Input

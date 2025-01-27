@@ -24,37 +24,37 @@ export function MutakhirTable({ updates, onEdit }: MutakhirTableProps) {
   };
 
   return (
-    <div className="rounded-md border h-[78vh] overflow-x-auto">
+    <div className="rounded-md border max-h-[78vh] overflow-x-auto">
       <Table>
         <TableHeader className="bg-yellow-300">
           <TableRow className="sticky top-0 z-1">
-            <TableHead>Kecamatan</TableHead>
-            <TableHead>Desa/Kelurahan</TableHead>
-            <TableHead>NKS</TableHead>
-            <TableHead>Perkiraan Jumlah Ruta</TableHead>
-            <TableHead>PML</TableHead>
-            <TableHead>PPL</TableHead>
-            <TableHead>Status Pemutakhiran</TableHead>
-            <TableHead>Jumlah Keluarga Sebelum (Blok II)</TableHead>
-            <TableHead>Jumlah Keluarga Hasil (Blok II)</TableHead>
-            <TableHead>Jumlah Ruta Hasil (Blok II)</TableHead>
-            <TableHead>Aksi</TableHead>
+            <TableHead className="p-1 text-center">Kecamatan</TableHead>
+            <TableHead className="p-1 text-center">Desa/Kelurahan</TableHead>
+            <TableHead className="p-1 text-center">NKS</TableHead>
+            <TableHead className="p-1 text-center">Perkiraan Jumlah Ruta</TableHead>
+            <TableHead className="p-1 text-center">PML</TableHead>
+            <TableHead className="p-1 text-center">PPL</TableHead>
+            <TableHead className="p-1 text-center">Status Pemutakhiran</TableHead>
+            <TableHead className="p-1 text-xs text-center">Jumlah Keluarga Sebelum (Blok II)</TableHead>
+            <TableHead className="p-1 text-xs text-center">Jumlah Keluarga Hasil (Blok II)</TableHead>
+            <TableHead className="p-1 text-xs text-center">Jumlah Ruta Hasil (Blok II)</TableHead>
+            <TableHead className="p-1 text-center">Aksi</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {updates.map((update) => (
             <TableRow key={update.sample_code}>
-              <TableCell>{update.kecamatan}</TableCell>
-              <TableCell>{update.desa_kelurahan}</TableCell>
-              <TableCell>{update.sample_code}</TableCell>
-              <TableCell>{update.households_before}</TableCell>
-              <TableCell>{update.pml}</TableCell>
-              <TableCell>{update.ppl}</TableCell>
-              <TableCell>{getStatusBadge(update.status)}</TableCell>
-              <TableCell>{update.families_before || "-"}</TableCell>
-              <TableCell>{update.families_after || "-"}</TableCell>
-              <TableCell>{update.households_after || "-"}</TableCell>
-              <TableCell>
+              <TableCell className="text-secondary p-1">{update.kecamatan}</TableCell>
+              <TableCell className="text-secondary p-1">{update.desa_kelurahan}</TableCell>
+              <TableCell className="text-secondary p-1">{update.sample_code}</TableCell>
+              <TableCell className="text-secondary py-1 text-right">{update.households_before}</TableCell>
+              <TableCell className="text-secondary p-1 whitespace-nowrap">{update.pml}</TableCell>
+              <TableCell className="text-secondary p-1 whitespace-nowrap">{update.ppl}</TableCell>
+              <TableCell className="text-secondary p-1 text-center">{getStatusBadge(update.status)}</TableCell>
+              <TableCell className="text-secondary py-1 text-right">{update.families_before || "-"}</TableCell>
+              <TableCell className="text-secondary py-1 text-right">{update.families_after || "-"}</TableCell>
+              <TableCell className="text-secondary py-1 text-right">{update.households_after || "-"}</TableCell>
+              <TableCell className="text-secondary p-1">
                 {update.status == "belum" && (
                   <Button
                     variant="ghost"

@@ -38,8 +38,8 @@ export function PencacahanChart({ data }: PencacahanChartProps) {
   };
 
   return (
-    <div className="w-[80%] aspect-square max-w-md mx-auto">
-      <h3 className="text-xl font-semibold mx-3 text-center">Pencacahan</h3>
+    <div className="w-[80%] aspect-square max-w-md mx-auto mb-4">
+      <h3 className="text-xl font-semibold text-secondary mx-3 text-center">Pencacahan</h3>
       <ResponsiveContainer width="100%" height="90%">
         <PieChart>
           <Pie

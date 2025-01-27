@@ -122,7 +122,7 @@ export function PplMonitoringTable({
           onChange={(e) => setSearchQuery(e.target.value)}
         />
       </div>
-      <div className="overflow-auto h-[78vh]">
+      <div className="overflow-auto max-h-[78vh]">
         <Table>
           <TableHeader className="sticky top-0 bg-white z-10">
             <TableRow>

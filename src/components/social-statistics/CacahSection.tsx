@@ -99,56 +99,53 @@ export function CacahSection() {
   };
 
   return (
-    <>
-      <div className="space-y-6 mt-10 flex flex-col">
-        <h3 className="text-xl font-semibold">Progress Pencacahan PPL</h3>
-        <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center">
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-center w-full sm:w-auto">
-            <Input
-              placeholder="Cari pencacahan..."
-              value={searchQuery2}
-              onChange={(e) => setSearchQuery2(e.target.value)}
-              className="w-full sm:w-[300px]"
-            />
-          </div>
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-            <Button
-              variant="outline"
-              className="w-full sm:w-auto"
-              onClick={handleExport}
-            >
-              <FileDown className="mr-2 h-4 w-4" />
-              Export
-            </Button>
-            <Button
-              onClick={() => setIsAddCacahOpen(true)}
-              className="w-full sm:w-auto"
-            >
-              <Plus className="mr-2 h-4 w-4" />
-              Tambah Pencacahan
-            </Button>
-          </div>
+    <div className="space-y-6 flex flex-col">
+      <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center w-full sm:w-auto">
+          <Input
+            placeholder="Cari pencacahan..."
+            value={searchQuery2}
+            onChange={(e) => setSearchQuery2(e.target.value)}
+            className="w-full sm:w-[300px]"
+          />
         </div>
-
-        <div className="border rounded-lg overflow-y-auto flex-grow">
-          {isLoading ? (
-            <div className="p-8 text-center">Loading...</div>
-          ) : (
-            <CacahTable
-              cacahs={tercacahSamples}
-              onEdit={handleEdit}
-              onSuccess={refetch}
-            />
-          )}
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+          <Button
+            variant="outline"
+            className="w-full sm:w-auto"
+            onClick={handleExport}
+          >
+            <FileDown className="mr-2 h-4 w-4" />
+            Export
+          </Button>
+          <Button
+            onClick={() => setIsAddCacahOpen(true)}
+            className="w-full sm:w-auto"
+          >
+            <Plus className="mr-2 h-4 w-4" />
+            Tambah Pencacahan
+          </Button>
         </div>
-
-        <CacahDataForm
-          isOpen={isAddCacahOpen}
-          onClose={handleClose}
-          onSuccess={refetch}
-          initialData={editingCacah}
-        />
       </div>
-    </>
+
+      <div className="border rounded-lg overflow-y-auto flex-grow">
+        {isLoading ? (
+          <div className="p-8 text-center">Loading...</div>
+        ) : (
+          <CacahTable
+            cacahs={tercacahSamples}
+            onEdit={handleEdit}
+            onSuccess={refetch}
+          />
+        )}
+      </div>
+
+      <CacahDataForm
+        isOpen={isAddCacahOpen}
+        onClose={handleClose}
+        onSuccess={refetch}
+        initialData={editingCacah}
+      />
+    </div>
   );
 }

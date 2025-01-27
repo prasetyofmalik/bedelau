@@ -41,21 +41,22 @@ export function CacahTable({ cacahs, onEdit }: CacahSsnM25TableProps) {
   };
 
   return (
-    <div className="rounded-md border h-[80vh] overflow-x-auto">
+    <div className="rounded-md border max-h-[78vh] overflow-x-auto">
       <Table>
-        <TableHeader
-          className="bg-yellow-300"
-          style={{ position: "sticky", top: "0", zIndex: "1 !important" }}
-        >
+        <TableHeader className="bg-yellow-300">
           <TableRow>
-            <TableHead>NKS</TableHead>
-            <TableHead>PML</TableHead>
-            <TableHead>PPL</TableHead>
-            <TableHead>Status Selesai Pencacahan</TableHead>
-            <TableHead>No Urut Ruta</TableHead>
-            <TableHead>Hasil Pencacahan Ruta (R203) MSBP</TableHead>
-            <TableHead>Hasil Pencacahan Ruta (R203) KP</TableHead>
-            <TableHead>Aksi</TableHead>
+            <TableHead className="p-1 text-center">NKS</TableHead>
+            <TableHead className="p-1 text-center">PML</TableHead>
+            <TableHead className="p-1 text-center">PPL</TableHead>
+            <TableHead className="p-1 text-center">Status Pencacahan</TableHead>
+            <TableHead className="py-1 text-center">No Urut Ruta</TableHead>
+            <TableHead className="p-1 text-xs text-center">
+              Hasil Pencacahan Ruta (R203) MSBP
+            </TableHead>
+            <TableHead className="p-1 text-xs text-center">
+              Hasil Pencacahan Ruta (R203) KP
+            </TableHead>
+            <TableHead className="p-1 text-center">Aksi</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -67,22 +68,39 @@ export function CacahTable({ cacahs, onEdit }: CacahSsnM25TableProps) {
                 <TableRow key={`${sample.sample_code}_${cacah.no_ruta}`}>
                   {index === 0 ? (
                     <>
-                      <TableCell rowSpan={rowCount}>
+                      <TableCell
+                        className="text-secondary p-1"
+                        rowSpan={rowCount}
+                      >
                         {sample.sample_code}
                       </TableCell>
-                      <TableCell rowSpan={rowCount}>{sample.pml}</TableCell>
-                      <TableCell rowSpan={rowCount}>{sample.ppl}</TableCell>
+                      <TableCell
+                        className="text-secondary p-1"
+                        rowSpan={rowCount}
+                      >
+                        {sample.pml}
+                      </TableCell>
+                      <TableCell
+                        className="text-secondary p-1"
+                        rowSpan={rowCount}
+                      >
+                        {sample.ppl}
+                      </TableCell>
                     </>
                   ) : null}
-                  <TableCell>{getStatusBadge(cacah.status)}</TableCell>
-                  <TableCell>{cacah.no_ruta || "-"}</TableCell>
-                  <TableCell>
+                  <TableCell className="text-secondary p-1 text-center whitespace-nowrap">
+                    {getStatusBadge(cacah.status)}
+                  </TableCell>
+                  <TableCell className="text-secondary p-1 pr-4 text-right">
+                    {cacah.no_ruta || "-"}
+                  </TableCell>
+                  <TableCell className="text-secondary p-1 pr-4 text-right">
                     {getR203Label(cacah.r203_msbp?.toString())}
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="text-secondary p-1 pr-4 text-right">
                     {getR203Label(cacah.r203_kp?.toString())}
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="text-secondary p-1">
                     {cacah.status == "belum" && (
                       <Button
                         variant="ghost"
@@ -97,14 +115,28 @@ export function CacahTable({ cacahs, onEdit }: CacahSsnM25TableProps) {
               ))
             ) : (
               <TableRow key={sample.sample_code}>
-                <TableCell>{sample.sample_code}</TableCell>
-                <TableCell>{sample.pml}</TableCell>
-                <TableCell>{sample.ppl}</TableCell>
-                <TableCell>{getStatusBadge(undefined)}</TableCell>
-                <TableCell>-</TableCell>
-                <TableCell>-</TableCell>
-                <TableCell>-</TableCell>
-                <TableCell></TableCell>
+                <TableCell className="text-secondary p-1">
+                  {sample.sample_code}
+                </TableCell>
+                <TableCell className="text-secondary p-1">
+                  {sample.pml}
+                </TableCell>
+                <TableCell className="text-secondary p-1">
+                  {sample.ppl}
+                </TableCell>
+                <TableCell className="text-secondary p-1 text-center whitespace-nowrap">
+                  {getStatusBadge(undefined)}
+                </TableCell>
+                <TableCell className="text-secondary p-1 pr-4 text-right">
+                  -
+                </TableCell>
+                <TableCell className="text-secondary p-1 pr-4 text-right">
+                  -
+                </TableCell>
+                <TableCell className="text-secondary p-1 pr-4 text-right">
+                  -
+                </TableCell>
+                <TableCell className="text-secondary p-1"></TableCell>
               </TableRow>
             );
           })}

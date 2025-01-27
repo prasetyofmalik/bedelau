@@ -22,7 +22,7 @@ export function PeriksaTable({ periksas, onEdit }: PeriksaSsnM25TableProps) {
         return <Badge className="bg-red-500">Belum Input</Badge>;
     }
   };
-  
+
   const getResponseBadge = (non_response?: boolean) => {
     switch (non_response) {
       case true:
@@ -35,24 +35,21 @@ export function PeriksaTable({ periksas, onEdit }: PeriksaSsnM25TableProps) {
   };
 
   return (
-    <div className="rounded-md border h-[80vh] overflow-x-auto">
+    <div className="rounded-md border max-h-[78vh] overflow-x-auto">
       <Table>
-        <TableHeader
-          className="bg-yellow-300"
-          style={{ position: "sticky", top: "0", zIndex: "1 !important" }}
-        >
+        <TableHeader className="bg-yellow-300">
           <TableRow>
-            <TableHead>NKS</TableHead>
-            <TableHead>PML</TableHead>
-            <TableHead>PPL</TableHead>
-            <TableHead>Status Selesai Pemeriksaan</TableHead>
-            <TableHead>No Urut Ruta</TableHead>
-            <TableHead>Rata-rata Pengeluaran Makanan Sebulan</TableHead>
-            <TableHead>Rata-rata Pengeluaran Bukan Makanan Sebulan</TableHead>
-            <TableHead>Jumlah Komoditas Makanan (R304) KP</TableHead>
-            <TableHead>Jumlah Komoditas Bukan Makanan (R305) KP</TableHead>
-            <TableHead>Nonrespons</TableHead>
-            <TableHead>Aksi</TableHead>
+            <TableHead className="p-1 text-center">NKS</TableHead>
+            <TableHead className="p-1 text-center">PML</TableHead>
+            <TableHead className="p-1 text-center">PPL</TableHead>
+            <TableHead className="p-1 text-center">Status Selesai Pemeriksaan</TableHead>
+            <TableHead className="py-1 text-center">No Urut Ruta</TableHead>
+            <TableHead className="p-1 text-xs text-center">Rata-rata Pengeluaran Makanan Sebulan</TableHead>
+            <TableHead className="p-1 text-xs text-center">Rata-rata Pengeluaran Bukan Makanan Sebulan</TableHead>
+            <TableHead className="p-1 text-xs text-center">Jumlah Komoditas Makanan (R304) KP</TableHead>
+            <TableHead className="p-1 text-xs text-center">Jumlah Komoditas Bukan Makanan (R305) KP</TableHead>
+            <TableHead className="p-1 text-center">Nonrespons</TableHead>
+            <TableHead className="p-1 text-center">Aksi</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -64,21 +61,23 @@ export function PeriksaTable({ periksas, onEdit }: PeriksaSsnM25TableProps) {
                 <TableRow key={`${sample.sample_code}_${periksa.no_ruta}`}>
                   {index === 0 ? (
                     <>
-                      <TableCell rowSpan={rowCount}>
+                      <TableCell className="text-secondary p-1" rowSpan={rowCount}>
                         {sample.sample_code}
                       </TableCell>
-                      <TableCell rowSpan={rowCount}>{sample.pml}</TableCell>
-                      <TableCell rowSpan={rowCount}>{sample.ppl}</TableCell>
+                      <TableCell className="text-secondary p-1" rowSpan={rowCount}>{sample.pml}</TableCell>
+                      <TableCell className="text-secondary p-1" rowSpan={rowCount}>{sample.ppl}</TableCell>
                     </>
                   ) : null}
-                  <TableCell>{getStatusBadge(periksa.status)}</TableCell>
-                  <TableCell>{periksa.no_ruta || "-"}</TableCell>
-                  <TableCell>{periksa.iv3_2_16 || "-"}</TableCell>
-                  <TableCell>{periksa.iv3_3_8 || "-"}</TableCell>
-                  <TableCell>{periksa.r304_kp || "-"}</TableCell>
-                  <TableCell>{periksa.r305_kp || "-"}</TableCell>
-                  <TableCell>{getResponseBadge(periksa.non_response)}</TableCell>
-                  <TableCell>
+                  <TableCell className="text-secondary p-1 whitespace-nowrap">{getStatusBadge(periksa.status)}</TableCell>
+                  <TableCell className="text-secondary py-1 text-right">{periksa.no_ruta || "-"}</TableCell>
+                  <TableCell className="text-secondary py-1 text-right">{periksa.iv3_2_16 || "-"}</TableCell>
+                  <TableCell className="text-secondary py-1 text-right">{periksa.iv3_3_8 || "-"}</TableCell>
+                  <TableCell className="text-secondary py-1 text-right">{periksa.r304_kp || "-"}</TableCell>
+                  <TableCell className="text-secondary py-1 text-right">{periksa.r305_kp || "-"}</TableCell>
+                  <TableCell className="text-secondary p-1">
+                    {getResponseBadge(periksa.non_response)}
+                  </TableCell>
+                  <TableCell className="text-secondary p-1">
                     {periksa.status == "belum" && (
                       <Button
                         variant="ghost"
@@ -93,17 +92,17 @@ export function PeriksaTable({ periksas, onEdit }: PeriksaSsnM25TableProps) {
               ))
             ) : (
               <TableRow key={sample.sample_code}>
-                <TableCell>{sample.sample_code}</TableCell>
-                <TableCell>{sample.pml}</TableCell>
-                <TableCell>{sample.ppl}</TableCell>
-                <TableCell>{getStatusBadge(undefined)}</TableCell>
-                <TableCell>-</TableCell>
-                <TableCell>-</TableCell>
-                <TableCell>-</TableCell>
-                <TableCell>-</TableCell>
-                <TableCell>-</TableCell>
-                <TableCell>{getResponseBadge()}</TableCell>
-                <TableCell></TableCell>
+                <TableCell className="text-secondary p-1">{sample.sample_code}</TableCell>
+                <TableCell className="text-secondary p-1">{sample.pml}</TableCell>
+                <TableCell className="text-secondary p-1">{sample.ppl}</TableCell>
+                <TableCell className="text-secondary p-1 text-center whitespace-nowrap">{getStatusBadge(undefined)}</TableCell>
+                <TableCell className="text-secondary py-1 text-right">-</TableCell>
+                <TableCell className="text-secondary py-1 text-right">-</TableCell>
+                <TableCell className="text-secondary py-1 text-right">-</TableCell>
+                <TableCell className="text-secondary py-1 text-right">-</TableCell>
+                <TableCell className="text-secondary py-1 text-right">-</TableCell>
+                <TableCell className="text-secondary p-1 text-center">{getResponseBadge()}</TableCell>
+                <TableCell className="text-secondary p-1"></TableCell>
               </TableRow>
             );
           })}
