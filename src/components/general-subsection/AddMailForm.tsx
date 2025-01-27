@@ -11,9 +11,9 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { IncomingMailFormFields } from "./IncomingMailFormFields";
-import { OutgoingMailFormFields } from "./OutgoingMailFormFields";
-import { SKFormFields } from "./SKFormFields";
+import { IncomingMailFormFields } from "./IncomingMailForm";
+import { OutgoingMailFormFields } from "./OutgoingMailForm";
+import { SKFormFields } from "./SKForm";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
 import { IncomingMail, OutgoingMail, SK, MailFormType } from "./types";
@@ -139,7 +139,7 @@ export function AddMailForm({ type, isOpen, onClose, onSuccess, initialData }: A
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>
             {initialData?.id ? "Edit" : "Tambah"} {

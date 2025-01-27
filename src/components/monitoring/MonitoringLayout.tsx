@@ -1,4 +1,5 @@
 import { MonitoringHeader } from "@/components/monitoring/MonitoringHeader";
+import { Header } from "@/components/Header";
 import {
   Sidebar,
   SidebarContent,
@@ -10,61 +11,104 @@ import {
   SidebarMenuItem,
   SidebarProvider,
 } from "@/components/ui/sidebar";
-import { BarChart3, ClipboardList } from "lucide-react";
+import { LucideHome } from "lucide-react";
 import { Outlet, Link, useLocation } from "react-router-dom";
+import { teams } from "./teamsData";
 
 export function MonitoringLayout() {
   const location = useLocation();
-
-  const socialStatisticsItems = [
-    {
-      title: "Susenas Maret 2025",
-      url: "/monitoring/social-statistics/ssn-m25",
-      icon: ClipboardList,
-    },
-    {
-      title: "Sakernas Februari 2025",
-      url: "/monitoring/social-statistics/sak-f25",
-      icon: BarChart3,
-    },
-  ];
+  const monitoringSubpages = ["/general-subsection", "/social-statistics"];
+  const isSubpage = monitoringSubpages.some((path) =>
+    location.pathname.includes(path)
+  );
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
+      {!isSubpage && <Header />}
       <SidebarProvider>
         <div className="flex-1 flex w-full">
-          {location.pathname.includes("/social-statistics") && (
+          {isSubpage && (
             <Sidebar className="border-r">
               <SidebarContent className="bg-white">
                 <SidebarGroup>
-                  <SidebarGroupLabel>Statistik Sosial</SidebarGroupLabel>
+                  <SidebarGroupLabel>Monitoring</SidebarGroupLabel>
                   <SidebarGroupContent>
                     <SidebarMenu>
-                      {socialStatisticsItems.map((item) => (
-                        <SidebarMenuItem key={item.title}>
+                        <SidebarMenuItem key="Beranda">
                           <SidebarMenuButton asChild>
                             <Link
-                              to={item.url}
+                              to="/monitoring"
                               className={`flex items-center gap-2 px-3 py-2 rounded-md transition-colors ${
-                                location.pathname === item.url
+                                location.pathname === "/monitoring"
                                   ? "text-primary bg-primary-light"
                                   : "hover:bg-gray-100"
                               }`}
                             >
-                              <item.icon className="h-4 w-4" />
-                              <span>{item.title}</span>
+                              <LucideHome className="h-4 w-4" />
+                              <span>Beranda</span>
                             </Link>
                           </SidebarMenuButton>
                         </SidebarMenuItem>
-                      ))}
                     </SidebarMenu>
                   </SidebarGroupContent>
                 </SidebarGroup>
+                {location.pathname.includes("/general-subsection") && (
+                  <SidebarGroup>
+                    <SidebarGroupLabel>Subbagian Umum</SidebarGroupLabel>
+                    <SidebarGroupContent>
+                      <SidebarMenu>
+                        {teams[0].items.map((item) => (
+                          <SidebarMenuItem key={item.title}>
+                            <SidebarMenuButton asChild>
+                              <Link
+                                to={item.url}
+                                className={`flex items-center gap-2 px-3 py-2 rounded-md transition-colors ${
+                                  location.pathname === item.url
+                                    ? "text-primary bg-primary-light"
+                                    : "hover:bg-gray-100"
+                                }`}
+                              >
+                                <item.icon className="h-4 w-4" />
+                                <span>{item.title}</span>
+                              </Link>
+                            </SidebarMenuButton>
+                          </SidebarMenuItem>
+                        ))}
+                      </SidebarMenu>
+                    </SidebarGroupContent>
+                  </SidebarGroup>
+                )}
+                {location.pathname.includes("/social-statistics") && (
+                  <SidebarGroup>
+                    <SidebarGroupLabel>Statistik Sosial</SidebarGroupLabel>
+                    <SidebarGroupContent>
+                      <SidebarMenu>
+                        {teams[1].items.map((item) => (
+                          <SidebarMenuItem key={item.title}>
+                            <SidebarMenuButton asChild>
+                              <Link
+                                to={item.url}
+                                className={`flex items-center gap-2 px-3 py-2 rounded-md transition-colors ${
+                                  location.pathname === item.url
+                                    ? "text-primary bg-primary-light"
+                                    : "hover:bg-gray-100"
+                                }`}
+                              >
+                                <item.icon className="h-4 w-4" />
+                                <span>{item.title}</span>
+                              </Link>
+                            </SidebarMenuButton>
+                          </SidebarMenuItem>
+                        ))}
+                      </SidebarMenu>
+                    </SidebarGroupContent>
+                  </SidebarGroup>
+                )}
               </SidebarContent>
             </Sidebar>
           )}
           <div className="flex-1 flex flex-col min-w-0">
-            <MonitoringHeader />
+            {isSubpage && <MonitoringHeader />}
             <main className="flex-1 overflow-auto">
               <Outlet />
             </main>

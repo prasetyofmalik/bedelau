@@ -114,12 +114,12 @@ export function IncomingMailTable({ mails, onEdit, refetch }: IncomingMailTableP
   return (
     <Table>
       <TableHeader>
-        <TableRow>
+        <TableRow className="bg-blue-500">
           <TableHead 
             onClick={() => handleSort('number')} 
             onMouseEnter={() => setHoveredColumn('number')}
             onMouseLeave={() => setHoveredColumn(null)}
-            className="cursor-pointer hover:bg-muted"
+            className="cursor-pointer hover:bg-blue-600 text-white"
           >
             No. Surat {renderSortIcon('number')}
           </TableHead>
@@ -127,7 +127,7 @@ export function IncomingMailTable({ mails, onEdit, refetch }: IncomingMailTableP
             onClick={() => handleSort('date')}
             onMouseEnter={() => setHoveredColumn('date')}
             onMouseLeave={() => setHoveredColumn(null)}
-            className="cursor-pointer hover:bg-muted"
+            className="cursor-pointer hover:bg-blue-600 text-white"
           >
             Tanggal {renderSortIcon('date')}
           </TableHead>
@@ -135,7 +135,7 @@ export function IncomingMailTable({ mails, onEdit, refetch }: IncomingMailTableP
             onClick={() => handleSort('sender')}
             onMouseEnter={() => setHoveredColumn('sender')}
             onMouseLeave={() => setHoveredColumn(null)}
-            className="cursor-pointer hover:bg-muted"
+            className="cursor-pointer hover:bg-blue-600 text-white"
           >
             Pengirim {renderSortIcon('sender')}
           </TableHead>
@@ -143,7 +143,7 @@ export function IncomingMailTable({ mails, onEdit, refetch }: IncomingMailTableP
             onClick={() => handleSort('classification')}
             onMouseEnter={() => setHoveredColumn('classification')}
             onMouseLeave={() => setHoveredColumn(null)}
-            className="cursor-pointer hover:bg-muted"
+            className="cursor-pointer hover:bg-blue-600 text-white"
           >
             Klasifikasi {renderSortIcon('classification')}
           </TableHead>
@@ -151,23 +151,23 @@ export function IncomingMailTable({ mails, onEdit, refetch }: IncomingMailTableP
             onClick={() => handleSort('created_at')}
             onMouseEnter={() => setHoveredColumn('created_at')}
             onMouseLeave={() => setHoveredColumn(null)}
-            className="cursor-pointer hover:bg-muted"
+            className="cursor-pointer hover:bg-blue-600 text-white"
           >
             Tgl Diterima {renderSortIcon('created_at')}
           </TableHead>
-          <TableHead 
+            <TableHead 
             onClick={() => handleSort('disposition')}
             onMouseEnter={() => setHoveredColumn('disposition')}
             onMouseLeave={() => setHoveredColumn(null)}
-            className="cursor-pointer hover:bg-muted"
-          >
+            className={"cursor-pointer hover:bg-primary text-white"}
+            >
             Disposisi {renderSortIcon('disposition')}
-          </TableHead>
+            </TableHead>
           <TableHead 
             onClick={() => handleSort('disposition_date')}
             onMouseEnter={() => setHoveredColumn('disposition_date')}
             onMouseLeave={() => setHoveredColumn(null)}
-            className="cursor-pointer hover:bg-muted"
+            className="cursor-pointer hover:bg-blue-600 text-white"
           >
             Tgl Disposisi {renderSortIcon('disposition_date')}
           </TableHead>
@@ -175,7 +175,7 @@ export function IncomingMailTable({ mails, onEdit, refetch }: IncomingMailTableP
             onClick={() => handleSort('recipient')}
             onMouseEnter={() => setHoveredColumn('recipient')}
             onMouseLeave={() => setHoveredColumn(null)}
-            className="cursor-pointer hover:bg-muted"
+            className="cursor-pointer hover:bg-blue-600 text-white"
           >
             Penerima {renderSortIcon('recipient')}
           </TableHead>
@@ -183,12 +183,12 @@ export function IncomingMailTable({ mails, onEdit, refetch }: IncomingMailTableP
             onClick={() => handleSort('reply_date')}
             onMouseEnter={() => setHoveredColumn('reply_date')}
             onMouseLeave={() => setHoveredColumn(null)}
-            className="cursor-pointer hover:bg-muted"
+            className="cursor-pointer hover:bg-blue-600 text-white"
           >
             Tgl Balasan {renderSortIcon('reply_date')}
           </TableHead>
-          <TableHead>Status</TableHead>
-          <TableHead>Aksi</TableHead>
+          <TableHead className="text-white">Status</TableHead>
+          <TableHead className="text-white">Aksi</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>

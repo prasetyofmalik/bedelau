@@ -134,7 +134,7 @@ export function DashboardSsnM25Section() {
   return (
     <div className="space-y-8">
       <div className="bg-white rounded-lg shadow-sm py-6">
-        <h3 className="text-xl font-semibold px-6">Susenas Maret 2025</h3>
+        <h3 className="text-xl font-semibold px-6 pb-3">Progress Input</h3>
         <div className="grid md:grid-cols-3">
           <PemutakhiranChart data={samples} surveyType={"ssn_m25"} />
           <PencacahanChart data={cacahs} />
@@ -143,7 +143,7 @@ export function DashboardSsnM25Section() {
       </div>
 
       <div className="bg-white mt-6 rounded-lg shadow-sm pt-6">
-        <h3 className="text-xl font-semibold px-6">Progress Harian Susenas Maret 2025</h3>
+        <h3 className="text-xl font-semibold px-6 pb-3">Progress Harian</h3>
         <Tabs defaultValue="pemutakhiran" className="w-full">
           <TabsList className="w-full inline-flex p-1 bg-muted/10 gap-2 rounded-t-lg border-b">
             <TabsTrigger

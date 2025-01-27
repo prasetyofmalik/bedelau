@@ -20,7 +20,10 @@ interface MonitoringData {
   count: number;
 }
 
-export function PplMonitoringTable({ type, surveyType }: PplMonitoringTableProps) {
+export function PplMonitoringTable({
+  type,
+  surveyType,
+}: PplMonitoringTableProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const currentDate = new Date();
   const daysInMonth = eachDayOfInterval({
@@ -42,13 +45,17 @@ export function PplMonitoringTable({ type, surveyType }: PplMonitoringTableProps
 
       // Get unique PPLs, filtering out null values
       const uniquePpls = Array.from(
-        new Set(pplList.filter((item) => item.ppl !== null).map((item) => item.ppl))
+        new Set(
+          pplList.filter((item) => item.ppl !== null).map((item) => item.ppl)
+        )
       );
 
       // Get daily counts for each PPL
-      const { data: dailyCounts, error: countsError } = await supabase
-        .from(type === "pemutakhiran" ? `${surveyType}_updates` : `${surveyType}_cacah`)
-        .select(`
+      const { data: dailyCounts, error: countsError } = await supabase.from(
+        type === "pemutakhiran"
+          ? `${surveyType}_updates`
+          : `${surveyType}_cacah`
+      ).select(`
           created_at,
           sample_code,
           ${surveyType}_samples!inner (
@@ -100,19 +107,13 @@ export function PplMonitoringTable({ type, surveyType }: PplMonitoringTableProps
   );
 
   const getStatusColor = (count: number) => {
-    if (count > 0) return "bg-green-600";
+    if (count > 0) return "bg-green-600 text-white";
     return "bg-yellow-400";
   };
-
-  // const surveyTitle = surveyType === "ssn_m25" ? "Susenas Maret 2025" : "Sakernas Februari 2025";
 
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
-        {/* <h3 className="text-xl font-semibold">
-          Progress {type === "pemutakhiran" ? "Pemutakhiran" : "Pencacahan"}{" "}
-          Harian PPL {surveyTitle}
-        </h3> */}
         <Input
           type="search"
           placeholder="Cari PPL..."
@@ -125,7 +126,9 @@ export function PplMonitoringTable({ type, surveyType }: PplMonitoringTableProps
         <Table>
           <TableHeader className="sticky top-0 bg-white z-10">
             <TableRow>
-              <TableHead className="bg-white sticky left-0 z-10">Nama PPL</TableHead>
+              <TableHead className="bg-white sticky left-0 z-10 p-1 pr-3 text-sm">
+                Nama PPL
+              </TableHead>
               {daysInMonth.map((date) => (
                 <TableHead
                   key={date.toString()}
@@ -139,8 +142,8 @@ export function PplMonitoringTable({ type, surveyType }: PplMonitoringTableProps
           </TableHeader>
           <TableBody>
             {filteredPplGroups.map(([ppl, data]) => (
-              <TableRow key={ppl}>
-                <TableCell className="font-medium bg-white sticky left-0 z-10">
+              <TableRow key={ppl} className="h-8">
+                <TableCell className="text-sm bg-white sticky left-0 z-10 p-1 pr-3">
                   {ppl}
                 </TableCell>
                 {daysInMonth.map((date) => {
@@ -157,7 +160,7 @@ export function PplMonitoringTable({ type, surveyType }: PplMonitoringTableProps
                     </TableCell>
                   );
                 })}
-                <TableCell className="font-medium text-center bg-white">
+                <TableCell className="text-sm text-center bg-white">
                   {data.reduce((sum, d) => sum + d.count, 0)}
                 </TableCell>
               </TableRow>

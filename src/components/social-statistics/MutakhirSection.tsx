@@ -114,11 +114,8 @@ export function MutakhirSection({ surveyType }: MutakhirSectionProps) {
     setIsAddUpdateOpen(true);
   };
 
-  const surveyTitle = surveyType === "ssn_m25" ? "Susenas Maret 2025" : "Sakernas Februari 2025";
-
   return (
     <div className="space-y-6 flex flex-col">
-      <h3 className="text-xl font-semibold">Pemutakhiran Data {surveyTitle}</h3>
       <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center w-full sm:w-auto">
           <Input

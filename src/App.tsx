@@ -9,7 +9,7 @@ import Login from "./pages/Login";
 import AdminDashboard from "./pages/AdminDashboard";
 import UserDashboard from "./pages/UserDashboard";
 import Monitoring from "./pages/Monitoring";
-import GeneralSubsection from "./pages/GeneralSubsection";
+import MailsRecap from "./pages/general-subsection/MailsRecap";
 import SsnM25 from "./pages/social-statistics/SsnM25";
 import SakF25 from "./pages/social-statistics/SakF25";
 import { MonitoringLayout } from "@/components/monitoring/MonitoringLayout";
@@ -46,11 +46,10 @@ const App = () => (
             <Route
               path="general-subsection"
               element={
-                <ProtectedRoute>
-                  <GeneralSubsection />
-                </ProtectedRoute>
+                <Navigate to="/monitoring/general-subsection/mails-recap" replace />
               }
             />
+            <Route path="general-subsection/mails-recap" element={<ProtectedRoute><MailsRecap /></ProtectedRoute>} />
             <Route
               path="social-statistics"
               element={

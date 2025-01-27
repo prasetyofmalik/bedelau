@@ -1,4 +1,4 @@
-import { Notebook, Coffee, Tablet, IdCard, Calculator, Laptop } from "lucide-react";
+import { Notebook, Coffee, Tablet, IdCard, Calculator, Laptop, Mails, LucideHome, ClipboardList, BarChart3 } from "lucide-react";
 
 export const teams = [
   {
@@ -7,6 +7,7 @@ export const teams = [
     icon: Notebook,
     color: "text-blue-600",
     text: "Subbagian Umum",
+    items: [] as Array<{ title: string; url: string; icon: any }>,
   },
   {
     id: 2,
@@ -44,3 +45,27 @@ export const teams = [
     text: "Fungsi Pengolahan, Jaringan, dan Diseminasi",
   },
 ];
+
+const generalSubsectionItems = [
+  {
+    title: "Rekap Surat",
+    url: "/monitoring/general-subsection/mails-recap",
+    icon: Mails,
+  },
+];
+
+const socialStatisticsItems = [
+  {
+    title: "Susenas Maret 2025",
+    url: "/monitoring/social-statistics/ssn-m25",
+    icon: ClipboardList,
+  },
+  {
+    title: "Sakernas Februari 2025",
+    url: "/monitoring/social-statistics/sak-f25",
+    icon: BarChart3,
+  },
+];
+
+teams[0].items = generalSubsectionItems;
+teams[1].items = socialStatisticsItems;
