@@ -29,31 +29,40 @@ export function MonitoringLayout() {
         <div className="flex-1 flex w-full">
           {isSubpage && (
             <Sidebar className="border-r">
-              <SidebarContent className="bg-white">
-                <SidebarGroup>
+              <SidebarContent className="bg-white gap-1">
+                <SidebarGroup  className="p-4">
+                  <Link to="/">
+                    <img
+                      src="/img/bedelau-logo-min.png"
+                      alt="Bedelau Logo"
+                      className="h-8 w-auto"
+                    />
+                  </Link>
+                </SidebarGroup>
+                <SidebarGroup className="py-1">
                   <SidebarGroupLabel>Monitoring</SidebarGroupLabel>
                   <SidebarGroupContent>
                     <SidebarMenu>
-                        <SidebarMenuItem key="Beranda">
-                          <SidebarMenuButton asChild>
-                            <Link
-                              to="/monitoring"
-                              className={`flex items-center gap-2 px-3 py-2 rounded-md transition-colors ${
-                                location.pathname === "/monitoring"
-                                  ? "text-primary bg-primary-light"
-                                  : "hover:bg-gray-100"
-                              }`}
-                            >
-                              <LucideHome className="h-4 w-4" />
-                              <span>Beranda</span>
-                            </Link>
-                          </SidebarMenuButton>
-                        </SidebarMenuItem>
+                      <SidebarMenuItem key="Beranda">
+                        <SidebarMenuButton asChild>
+                          <Link
+                            to="/monitoring"
+                            className={`flex items-center gap-2 px-3 py-2 rounded-md transition-colors ${
+                              location.pathname === "/monitoring"
+                                ? "text-primary bg-primary-light"
+                                : "hover:bg-gray-100"
+                            }`}
+                          >
+                            <LucideHome className="h-4 w-4" />
+                            <span>Beranda</span>
+                          </Link>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
                     </SidebarMenu>
                   </SidebarGroupContent>
                 </SidebarGroup>
                 {location.pathname.includes("/general-subsection") && (
-                  <SidebarGroup>
+                  <SidebarGroup className="py-1">
                     <SidebarGroupLabel>Subbagian Umum</SidebarGroupLabel>
                     <SidebarGroupContent>
                       <SidebarMenu>
@@ -79,7 +88,7 @@ export function MonitoringLayout() {
                   </SidebarGroup>
                 )}
                 {location.pathname.includes("/social-statistics") && (
-                  <SidebarGroup>
+                  <SidebarGroup className="py-1">
                     <SidebarGroupLabel>Statistik Sosial</SidebarGroupLabel>
                     <SidebarGroupContent>
                       <SidebarMenu>

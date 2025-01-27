@@ -39,17 +39,17 @@ export function PeriksaTable({ periksas, onEdit }: PeriksaSsnM25TableProps) {
       <Table>
         <TableHeader className="bg-yellow-300">
           <TableRow>
-            <TableHead className="p-1 text-center">NKS</TableHead>
-            <TableHead className="p-1 text-center">PML</TableHead>
-            <TableHead className="p-1 text-center">PPL</TableHead>
-            <TableHead className="p-1 text-center">Status Selesai Pemeriksaan</TableHead>
-            <TableHead className="py-1 text-center">No Urut Ruta</TableHead>
-            <TableHead className="p-1 text-xs text-center">Rata-rata Pengeluaran Makanan Sebulan</TableHead>
-            <TableHead className="p-1 text-xs text-center">Rata-rata Pengeluaran Bukan Makanan Sebulan</TableHead>
-            <TableHead className="p-1 text-xs text-center">Jumlah Komoditas Makanan (R304) KP</TableHead>
-            <TableHead className="p-1 text-xs text-center">Jumlah Komoditas Bukan Makanan (R305) KP</TableHead>
-            <TableHead className="p-1 text-center">Nonrespons</TableHead>
-            <TableHead className="p-1 text-center">Aksi</TableHead>
+            <TableHead className="text-black p-1 text-center">NKS</TableHead>
+            <TableHead className="text-black p-1 text-center">PML</TableHead>
+            <TableHead className="text-black p-1 text-center">PPL</TableHead>
+            <TableHead className="text-black p-1 text-center">Status Selesai Pemeriksaan</TableHead>
+            <TableHead className="text-black py-1 text-center">No Urut Ruta</TableHead>
+            <TableHead className="text-black p-1 text-xs text-center">Rata-rata Pengeluaran Makanan Sebulan</TableHead>
+            <TableHead className="text-black p-1 text-xs text-center">Rata-rata Pengeluaran Bukan Makanan Sebulan</TableHead>
+            <TableHead className="text-black p-1 text-xs text-center">Jumlah Komoditas Makanan (R304) KP</TableHead>
+            <TableHead className="text-black p-1 text-xs text-center">Jumlah Komoditas Bukan Makanan (R305) KP</TableHead>
+            <TableHead className="text-black p-1 text-center">Nonrespons</TableHead>
+            <TableHead className="text-black p-1 text-center">Aksi</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>

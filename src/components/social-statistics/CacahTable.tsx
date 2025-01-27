@@ -45,18 +45,14 @@ export function CacahTable({ cacahs, onEdit }: CacahSsnM25TableProps) {
       <Table>
         <TableHeader className="bg-yellow-300">
           <TableRow>
-            <TableHead className="p-1 text-center">NKS</TableHead>
-            <TableHead className="p-1 text-center">PML</TableHead>
-            <TableHead className="p-1 text-center">PPL</TableHead>
-            <TableHead className="p-1 text-center">Status Pencacahan</TableHead>
-            <TableHead className="py-1 text-center">No Urut Ruta</TableHead>
-            <TableHead className="p-1 text-xs text-center">
-              Hasil Pencacahan Ruta (R203) MSBP
-            </TableHead>
-            <TableHead className="p-1 text-xs text-center">
-              Hasil Pencacahan Ruta (R203) KP
-            </TableHead>
-            <TableHead className="p-1 text-center">Aksi</TableHead>
+            <TableHead className="text-black p-1 text-center">NKS</TableHead>
+            <TableHead className="text-black p-1 text-center">PML</TableHead>
+            <TableHead className="text-black p-1 text-center">PPL</TableHead>
+            <TableHead className="text-black p-1 text-center">Status Pencacahan</TableHead>
+            <TableHead className="text-black py-1 text-center">No Urut Ruta</TableHead>
+            <TableHead className="text-black p-1 text-xs text-center">Hasil Pencacahan Ruta (R203) MSBP</TableHead>
+            <TableHead className="text-black p-1 text-xs text-center">Hasil Pencacahan Ruta (R203) KP</TableHead>
+            <TableHead className="text-black p-1 text-center">Aksi</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>

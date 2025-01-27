@@ -28,17 +28,17 @@ export function MutakhirTable({ updates, onEdit }: MutakhirTableProps) {
       <Table>
         <TableHeader className="bg-yellow-300">
           <TableRow className="sticky top-0 z-1">
-            <TableHead className="p-1 text-center">Kecamatan</TableHead>
-            <TableHead className="p-1 text-center">Desa/Kelurahan</TableHead>
-            <TableHead className="p-1 text-center">NKS</TableHead>
-            <TableHead className="p-1 text-center">Perkiraan Jumlah Ruta</TableHead>
-            <TableHead className="p-1 text-center">PML</TableHead>
-            <TableHead className="p-1 text-center">PPL</TableHead>
-            <TableHead className="p-1 text-center">Status Pemutakhiran</TableHead>
-            <TableHead className="p-1 text-xs text-center">Jumlah Keluarga Sebelum (Blok II)</TableHead>
-            <TableHead className="p-1 text-xs text-center">Jumlah Keluarga Hasil (Blok II)</TableHead>
-            <TableHead className="p-1 text-xs text-center">Jumlah Ruta Hasil (Blok II)</TableHead>
-            <TableHead className="p-1 text-center">Aksi</TableHead>
+            <TableHead className="text-black p-1 text-center">Kecamatan</TableHead>
+            <TableHead className="text-black p-1 text-center">Desa/Kelurahan</TableHead>
+            <TableHead className="text-black p-1 text-center">NKS</TableHead>
+            <TableHead className="text-black p-1 text-center">Perkiraan Jumlah Ruta</TableHead>
+            <TableHead className="text-black p-1 text-center">PML</TableHead>
+            <TableHead className="text-black p-1 text-center">PPL</TableHead>
+            <TableHead className="text-black p-1 text-center">Status Pemutakhiran</TableHead>
+            <TableHead className="text-black p-1 text-xs text-center">Jumlah Keluarga Sebelum (Blok II)</TableHead>
+            <TableHead className="text-black p-1 text-xs text-center">Jumlah Keluarga Hasil (Blok II)</TableHead>
+            <TableHead className="text-black p-1 text-xs text-center">Jumlah Ruta Hasil (Blok II)</TableHead>
+            <TableHead className="text-black p-1 text-center">Aksi</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
