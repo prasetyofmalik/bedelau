@@ -8,12 +8,6 @@ import { SKSection } from "@/components/general-subsection/SKSection";
 export default function MailsRecap() {
   return (
     <div className="container pt-4 px-2 md:px-8 max-w-full">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-semibold">
-          Rekap Surat Masuk, Surat Keluar, dan SK
-        </h2>
-      </div>
-
       <Tabs defaultValue="incoming" className="space-y-6 mt-6">
         <TabsList className="w-full border-b border-gray-200 space-x-8 p-0 h-auto bg-transparent">
           <TabsTrigger

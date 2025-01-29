@@ -71,13 +71,13 @@ export function CacahTable({ cacahs, onEdit }: CacahSsnM25TableProps) {
                         {sample.sample_code}
                       </TableCell>
                       <TableCell
-                        className="text-secondary p-1"
+                        className="text-secondary p-1 text-xs md:text-base"
                         rowSpan={rowCount}
                       >
                         {sample.pml}
                       </TableCell>
                       <TableCell
-                        className="text-secondary p-1"
+                        className="text-secondary p-1 text-xs md:text-base"
                         rowSpan={rowCount}
                       >
                         {sample.ppl}
@@ -114,10 +114,10 @@ export function CacahTable({ cacahs, onEdit }: CacahSsnM25TableProps) {
                 <TableCell className="text-secondary p-1">
                   {sample.sample_code}
                 </TableCell>
-                <TableCell className="text-secondary p-1">
+                <TableCell className="text-secondary p-1 text-xs md:text-base">
                   {sample.pml}
                 </TableCell>
-                <TableCell className="text-secondary p-1">
+                <TableCell className="text-secondary p-1 text-xs md:text-base">
                   {sample.ppl}
                 </TableCell>
                 <TableCell className="text-secondary p-1 text-center whitespace-nowrap">

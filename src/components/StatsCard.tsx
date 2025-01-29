@@ -19,7 +19,7 @@ export const StatsCard = ({ title, value, subStats, redirectTo }: StatsCardProps
 
   return (
     <Card 
-      className={`p-6 hover:shadow-lg transition-shadow duration-200 ${redirectTo ? 'cursor-pointer' : ''}`}
+      className={`p-6 hover:shadow-lg bg-gray-50 transition-shadow duration-200 ${redirectTo ? 'cursor-pointer' : ''}`}
       onClick={handleClick}
     >
       <h3 className="text-secondary text-sm font-medium">{title}</h3>

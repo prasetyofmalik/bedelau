@@ -64,8 +64,8 @@ export function PeriksaTable({ periksas, onEdit }: PeriksaSsnM25TableProps) {
                       <TableCell className="text-secondary p-1" rowSpan={rowCount}>
                         {sample.sample_code}
                       </TableCell>
-                      <TableCell className="text-secondary p-1" rowSpan={rowCount}>{sample.pml}</TableCell>
-                      <TableCell className="text-secondary p-1" rowSpan={rowCount}>{sample.ppl}</TableCell>
+                      <TableCell className="text-secondary p-1 text-xs md:text-base" rowSpan={rowCount}>{sample.pml}</TableCell>
+                      <TableCell className="text-secondary p-1 text-xs md:text-base" rowSpan={rowCount}>{sample.ppl}</TableCell>
                     </>
                   ) : null}
                   <TableCell className="text-secondary p-1 whitespace-nowrap">{getStatusBadge(periksa.status)}</TableCell>
@@ -93,8 +93,8 @@ export function PeriksaTable({ periksas, onEdit }: PeriksaSsnM25TableProps) {
             ) : (
               <TableRow key={sample.sample_code}>
                 <TableCell className="text-secondary p-1">{sample.sample_code}</TableCell>
-                <TableCell className="text-secondary p-1">{sample.pml}</TableCell>
-                <TableCell className="text-secondary p-1">{sample.ppl}</TableCell>
+                <TableCell className="text-secondary p-1 text-xs md:text-base">{sample.pml}</TableCell>
+                <TableCell className="text-secondary p-1 text-xs md:text-base">{sample.ppl}</TableCell>
                 <TableCell className="text-secondary p-1 text-center whitespace-nowrap">{getStatusBadge(undefined)}</TableCell>
                 <TableCell className="text-secondary py-1 text-right">-</TableCell>
                 <TableCell className="text-secondary py-1 text-right">-</TableCell>

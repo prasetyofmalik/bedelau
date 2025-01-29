@@ -32,8 +32,8 @@ export function MutakhirTable({ updates, onEdit }: MutakhirTableProps) {
             <TableHead className="text-black p-1 text-center">Desa/Kelurahan</TableHead>
             <TableHead className="text-black p-1 text-center">NKS</TableHead>
             <TableHead className="text-black p-1 text-center">Perkiraan Jumlah Ruta</TableHead>
-            <TableHead className="text-black p-1 text-center">PML</TableHead>
-            <TableHead className="text-black p-1 text-center">PPL</TableHead>
+            <TableHead className="text-black py-1 text-center">PML</TableHead>
+            <TableHead className="text-black py-1 text-center">PPL</TableHead>
             <TableHead className="text-black p-1 text-center">Status Pemutakhiran</TableHead>
             <TableHead className="text-black p-1 text-xs text-center">Jumlah Keluarga Sebelum (Blok II)</TableHead>
             <TableHead className="text-black p-1 text-xs text-center">Jumlah Keluarga Hasil (Blok II)</TableHead>
@@ -44,12 +44,12 @@ export function MutakhirTable({ updates, onEdit }: MutakhirTableProps) {
         <TableBody>
           {updates.map((update) => (
             <TableRow key={update.sample_code}>
-              <TableCell className="text-secondary p-1">{update.kecamatan}</TableCell>
-              <TableCell className="text-secondary p-1">{update.desa_kelurahan}</TableCell>
+              <TableCell className="text-secondary text-xs md:text-base p-1">{update.kecamatan}</TableCell>
+              <TableCell className="text-secondary text-xs md:text-base p-1">{update.desa_kelurahan}</TableCell>
               <TableCell className="text-secondary p-1">{update.sample_code}</TableCell>
               <TableCell className="text-secondary py-1 text-right">{update.households_before}</TableCell>
-              <TableCell className="text-secondary p-1 whitespace-nowrap">{update.pml}</TableCell>
-              <TableCell className="text-secondary p-1 whitespace-nowrap">{update.ppl}</TableCell>
+              <TableCell className="text-secondary text-xs md:text-base p-1">{update.pml}</TableCell>
+              <TableCell className="text-secondary text-xs md:text-base p-1">{update.ppl}</TableCell>
               <TableCell className="text-secondary p-1 text-center">{getStatusBadge(update.status)}</TableCell>
               <TableCell className="text-secondary py-1 text-right">{update.families_before || "-"}</TableCell>
               <TableCell className="text-secondary py-1 text-right">{update.families_after || "-"}</TableCell>

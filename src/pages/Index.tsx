@@ -91,26 +91,28 @@ const Index = () => {
         {/* Hero Section */}
         <section className="relative text-white py-20 h-[85vh] md:h-auto flex items-center justify-center">
           <div
-            className="absolute inset-0 bg-cover bg-center z-0 "
+            className="absolute inset-0 bg-center b-0 z-1"
             style={{
               backgroundImage: "url('/img/bedelau-hero.png')",
+              filter: "saturate(2)",
+              opacity: 0.8,
             }}
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-blue-500 to-blue-700 opacity-90 z-1" />
+          <div className="absolute inset-0 bg-gradient-to-b from-yellow-300 to-yellow-500 opacity-85" />
           <div className="container mx-auto px-4 text-center relative z-10">
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
               Beranda Elektronik dan Administrasi Umum
             </h1>
-            <h1 className="text-3xl md:text-4xl font-bold mb-6">
+            <h1 className="text-3xl md:text-4xl font-bold mb-6 ">
               BPS Kabupaten Siak
             </h1>
-            <p className="text-xl mb-8 text-gray-100">
+            <p className="text-xl mb-8">
               Bantu efisiensi, notifikasi dan administrasi terintegrasi.
             </p>
             <Button
               size="lg"
               variant="secondary"
-              className="bg-white text-primary hover:bg-gray-100"
+              className="bg-primary hover:bg-blue-500"
               onClick={() => (window.location.href = "/login")}
             >
               Mulai Sekarang

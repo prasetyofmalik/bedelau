@@ -1,6 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { loginSchema, type LoginFormValues } from "@/lib/schemas/auth";
 import { Button } from "@/components/ui/button";
 import {
@@ -8,16 +9,17 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
+import { useState } from "react";
 
 export function LoginForm() {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [showPassword, setShowPassword] = useState(false);
   
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -29,7 +31,6 @@ export function LoginForm() {
 
   async function onSubmit(values: LoginFormValues) {
     try {
-      // First, sign in the user
       const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
         email: values.email,
         password: values.password,
@@ -43,7 +44,6 @@ export function LoginForm() {
         throw new Error("No user data returned");
       }
 
-      // Then fetch their profile
       let userProfile = null;
       const { data: profile, error: profileError } = await supabase
         .from('profiles')
@@ -54,7 +54,6 @@ export function LoginForm() {
       if (profile && !profileError) {
         userProfile = profile;
       } else {
-        // Create new profile if none exists
         const { data: newProfile, error: insertError } = await supabase
           .from('profiles')
           .insert([
@@ -80,7 +79,6 @@ export function LoginForm() {
         description: "Mengarahkan ke dasbor...",
       });
 
-      // Redirect based on role
       if (userProfile?.role === 'admin') {
         navigate('/admin');
       } else {
@@ -104,14 +102,17 @@ export function LoginForm() {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
-              <FormControl>
-                <Input
-                  type="email"
-                  placeholder="Masukkan email"
-                  {...field}
-                />
-              </FormControl>
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 h-4 w-4" />
+                <FormControl>
+                  <Input
+                    type="email"
+                    placeholder="Masukkan email"
+                    className="pl-10 text-sm md:text-base"
+                    {...field}
+                  />
+                </FormControl>
+              </div>
               <FormMessage />
             </FormItem>
           )}
@@ -122,14 +123,28 @@ export function LoginForm() {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Kata Sandi</FormLabel>
-              <FormControl>
-                <Input
-                  type="password"
-                  placeholder="Masukkan kata sandi"
-                  {...field}
-                />
-              </FormControl>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 h-4 w-4" />
+                <FormControl>
+                  <Input
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Masukkan kata sandi"
+                    className="pl-10 pr-10 text-sm md:text-base"
+                    {...field}
+                  />
+                </FormControl>
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-4 w-4" />
+                  ) : (
+                    <Eye className="h-4 w-4" />
+                  )}
+                </button>
+              </div>
               <FormMessage />
             </FormItem>
           )}

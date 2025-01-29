@@ -8,6 +8,7 @@ export function DashboardSearch() {
       <Input
         placeholder="Cari pengumuman, pegawai, atau postingan..."
         className="pl-10"
+        aria-label="Search dashboard content"
       />
     </div>
   );

@@ -51,44 +51,48 @@ export default function AdminDashboard() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
-      <main className="container mx-auto px-4 py-8">
-        <DashboardWelcome profile={profile} />
-        <DashboardSearch />
+      <main className="w-full py-5 overflow-x-auto">
+        <div className="container px-3">
+          <DashboardWelcome profile={profile} />
+          <DashboardSearch />
 
-        <Tabs defaultValue="employees" className="space-y-6 mt-8">
-          <TabsList className="w-full border-b border-gray-200 space-x-8 p-0 h-auto bg-transparent">
-            <TabsTrigger
-              value="announcements"
-              className="px-4 py-3 data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none rounded-none bg-transparent font-medium"
-            >
-              Pengumuman
-            </TabsTrigger>
-            <TabsTrigger
-              value="employees"
-              className="px-4 py-3 data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none rounded-none bg-transparent font-medium"
-            >
-              Pegawai
-            </TabsTrigger>
-            <TabsTrigger
-              value="posts"
-              className="px-4 py-3 data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none rounded-none bg-transparent font-medium"
-            >
-              Postingan
-            </TabsTrigger>
-          </TabsList>
+          <Tabs defaultValue="employees" className="space-y-6 mt-8">
+            <div className="overflow-x-auto">
+              <TabsList className="w-full border-b border-gray-200 space-x-4 sm:space-x-8 p-0 h-auto bg-transparent">
+                <TabsTrigger
+                  value="announcements"
+                  className="px-3 sm:px-4 py-3 data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none rounded-none bg-transparent font-medium whitespace-nowrap"
+                >
+                  Pengumuman
+                </TabsTrigger>
+                <TabsTrigger
+                  value="employees"
+                  className="px-3 sm:px-4 py-3 data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none rounded-none bg-transparent font-medium whitespace-nowrap"
+                >
+                  Pegawai
+                </TabsTrigger>
+                <TabsTrigger
+                  value="posts"
+                  className="px-3 sm:px-4 py-3 data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none rounded-none bg-transparent font-medium whitespace-nowrap"
+                >
+                  Postingan
+                </TabsTrigger>
+              </TabsList>
+            </div>
 
-          <TabsContent value="announcements" className="mt-6">
-            <AnnouncementSection />
-          </TabsContent>
+            <TabsContent value="announcements" className="mt-6">
+              <AnnouncementSection />
+            </TabsContent>
 
-          <TabsContent value="employees" className="mt-6">
-            <EmployeeSection />
-          </TabsContent>
+            <TabsContent value="employees" className="mt-6">
+              <EmployeeSection />
+            </TabsContent>
 
-          <TabsContent value="posts" className="mt-6">
-            <PostSection />
-          </TabsContent>
-        </Tabs>
+            <TabsContent value="posts" className="mt-6">
+              <PostSection />
+            </TabsContent>
+          </Tabs>
+        </div>
       </main>
     </div>
   );

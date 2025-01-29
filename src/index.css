@@ -78,6 +78,10 @@
     @apply font-display;
   }
 
+  h1, h2 {
+    @apply text-blue-500;
+  }
+
   body {
     @apply font-body;
   }

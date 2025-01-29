@@ -16,7 +16,8 @@ export function UserEmployeeDirectory() {
       const { data } = await supabase
         .from('profiles')
         .select('*')
-        .eq('role', 'employee');
+        .eq('role', 'employee')
+        .order("created_at");
       return data;
     },
   });
@@ -24,21 +25,21 @@ export function UserEmployeeDirectory() {
   return (
     <div className="space-y-4">
       <h2 className="text-2xl font-semibold">Daftar Pegawai</h2>
-      <div className="bg-white rounded-lg shadow">
+      <div className="bg-white rounded-lg shadow  max-h-[70vh] overflow-auto">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Nama</TableHead>
-              <TableHead>NIP</TableHead>
-              <TableHead>Email</TableHead>
+              <TableHead className="text-center">Nama</TableHead>
+              <TableHead className="text-center">NIP</TableHead>
+              <TableHead className="text-center">Email</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {employees?.map((employee) => (
               <TableRow key={employee.id}>
-                <TableCell>{employee.full_name}</TableCell>
-                <TableCell>{employee.nip}</TableCell>
-                <TableCell>{employee.email}</TableCell>
+                <TableCell className="py-1">{employee.full_name}</TableCell>
+                <TableCell className="py-1">{employee.nip}</TableCell>
+                <TableCell className="py-1">{employee.email}</TableCell>
               </TableRow>
             ))}
           </TableBody>
