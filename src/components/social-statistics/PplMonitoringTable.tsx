@@ -168,7 +168,7 @@ export function PplMonitoringTable({
         />
         <DateRangePicker date={date} onDateChange={setDate} />
       </div>
-      <div className="overflow-auto max-h-[78vh]">
+      <div className="overflow-auto max-h-[95vh]">
         <Table>
           <TableHeader className="sticky top-0 bg-white z-10">
             <TableRow>
