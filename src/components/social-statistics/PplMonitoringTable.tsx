@@ -13,6 +13,8 @@ import { id } from "date-fns/locale";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { PplMonitoringTableProps } from "./types";
+import { DateRangePicker } from "./DateRangePicker";
+import { DateRange } from "react-day-picker";
 
 interface MonitoringData {
   ppl: string;
@@ -25,15 +27,25 @@ export function PplMonitoringTable({
   surveyType,
 }: PplMonitoringTableProps) {
   const [searchQuery, setSearchQuery] = useState("");
-  const currentDate = new Date();
-  const daysInMonth = eachDayOfInterval({
-    start: startOfMonth(currentDate),
-    end: endOfMonth(currentDate),
+  const [date, setDate] = useState<DateRange | undefined>({
+    from: startOfMonth(new Date()),
+    to: endOfMonth(new Date()),
   });
+
+  const daysInRange =
+    date?.from && date?.to
+      ? eachDayOfInterval({
+          start: date.from,
+          end: date.to,
+        })
+      : eachDayOfInterval({
+          start: startOfMonth(new Date()),
+          end: endOfMonth(new Date()),
+        });
 
   // Fetch PPL list and their daily counts
   const { data: monitoringData } = useQuery({
-    queryKey: [`${surveyType}_ppl_monitoring`, type],
+    queryKey: [`${surveyType}_ppl_monitoring`, type, date?.from, date?.to],
     queryFn: async () => {
       // First get all unique PPLs from samples
       const { data: pplList, error: pplError } = await supabase
@@ -70,7 +82,7 @@ export function PplMonitoringTable({
       const processedData: MonitoringData[] = [];
 
       uniquePpls.forEach((ppl) => {
-        daysInMonth.forEach((date) => {
+        daysInRange.forEach((date) => {
           const dateStr = format(date, "yyyy-MM-dd");
           const count = dailyCounts.filter(
             (item) =>
@@ -113,7 +125,7 @@ export function PplMonitoringTable({
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col md:flex-row justify-between space-y-4 md:space-y-0">
         <Input
           type="search"
           placeholder="Cari PPL..."
@@ -121,15 +133,34 @@ export function PplMonitoringTable({
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
+        <DateRangePicker date={date} onDateChange={setDate} />
       </div>
       <div className="overflow-auto max-h-[78vh]">
         <Table>
           <TableHeader className="sticky top-0 bg-white z-10">
             <TableRow>
-              <TableHead className="bg-white sticky left-0 z-10 p-1 pr-3 text-sm">
+              <TableHead className="bg-white sticky left-0 z-10" rowSpan={2}>
                 Nama PPL
               </TableHead>
-              {daysInMonth.map((date) => (
+                <TableHead
+                colSpan={daysInRange.length}
+                className="text-center bg-white"
+                >
+                {date?.from && date?.to
+                  ? format(date.from, "MMM yyyy", { locale: id }) ===
+                  format(date.to, "MMM yyyy", { locale: id })
+                  ? format(date.from, "MMM yyyy", { locale: id })
+                  : `${format(date.from, "MMM yyyy", {
+                    locale: id,
+                    })} - ${format(date.to, "MMM yyyy", { locale: id })}`
+                  : format(new Date(), "MMMM yyyy", { locale: id })}
+                </TableHead>
+              <TableHead className="bg-white text-center" rowSpan={2}>
+                Jumlah
+              </TableHead>
+            </TableRow>
+            <TableRow>
+              {daysInRange.map((date) => (
                 <TableHead
                   key={date.toString()}
                   className="bg-white text-center w-12"
@@ -137,7 +168,6 @@ export function PplMonitoringTable({
                   {format(date, "d", { locale: id })}
                 </TableHead>
               ))}
-              <TableHead>Jumlah</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -146,7 +176,7 @@ export function PplMonitoringTable({
                 <TableCell className="text-sm bg-white sticky left-0 z-10 p-1 pr-3">
                   {ppl}
                 </TableCell>
-                {daysInMonth.map((date) => {
+                {daysInRange.map((date) => {
                   const dateStr = format(date, "yyyy-MM-dd");
                   const dayData = data.find((d) => d.date === dateStr);
                   return (
