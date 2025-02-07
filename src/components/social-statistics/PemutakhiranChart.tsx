@@ -3,24 +3,30 @@ import { PemutakhiranChartProps } from "./types";
 
 export function PemutakhiranChart({ data, surveyType }: PemutakhiranChartProps) {
   // Count updates by status
-  const completedCount = data.filter(item => item.status !== 'belum').length;
-  const pendingCount = data.filter(item => item.status === 'belum').length;
-  const total = completedCount + pendingCount;
+  const completedCount = data.filter(item => item.status === 'sudah').length;
+  const inProgressCount = data.filter(item => item.status === 'belum').length;
+  const notStartedCount = data.filter(item => !item.status).length;
+  const total = completedCount + inProgressCount + notStartedCount;
 
   const chartData = [
     { 
-      name: 'Sudah', 
+      name: 'Sudah Selesai', 
       value: completedCount,
       percentage: ((completedCount / total) * 100).toFixed(2)
     },
     { 
-      name: 'Belum', 
-      value: pendingCount,
-      percentage: ((pendingCount / total) * 100).toFixed(2)
+      name: 'Belum Selesai', 
+      value: inProgressCount,
+      percentage: ((inProgressCount / total) * 100).toFixed(2)
     },
+    { 
+      name: 'Belum Input', 
+      value: notStartedCount,
+      percentage: ((notStartedCount / total) * 100).toFixed(2)
+    }
   ];
 
-  const COLORS = ['#ffcc5c', '#fff0ae'];
+  const COLORS = ['#4ade80', '#fbbf24', '#94a3b8'];
   const HOVER_COLOR = '#e5e7eb';
 
   const CustomTooltip = ({ active, payload }: any) => {
