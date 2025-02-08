@@ -170,9 +170,9 @@ export function PplMonitoringTable({
       </div>
       <div className="overflow-auto max-h-[95vh]">
         <Table>
-          <TableHeader className="sticky top-0 bg-white z-10">
+          <TableHeader className="sticky top-0 bg-white z-2">
             <TableRow>
-              <TableHead className="bg-white sticky left-0 z-10" rowSpan={2}>
+              <TableHead className="bg-white sticky left-0 z-2" rowSpan={2}>
                 Nama PPL
               </TableHead>
               <TableHead
@@ -206,7 +206,7 @@ export function PplMonitoringTable({
           <TableBody>
             {filteredPplGroups.map(([ppl, data]) => (
               <TableRow key={ppl} className="h-8">
-                <TableCell className="text-sm bg-white sticky left-0 z-10 p-1 pr-3">
+                <TableCell className="text-sm bg-white sticky left-0 z-2 p-1 pr-3">
                   {ppl}
                 </TableCell>
                 {daysInRange.map((date) => {
