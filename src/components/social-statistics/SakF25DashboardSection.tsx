@@ -32,10 +32,14 @@ export function DashboardSakF25Section() {
       });
 
       // Combine samples with their updates
-      return allSamples.map((sample) => ({
-        ...sample,
-        status: updatesMap.has(sample.sample_code) ? "sudah" : "belum",
-      }));
+      return allSamples.map((sample) => {
+        const update = updatesMap.get(sample.sample_code);
+        if (!update) return { ...sample }; // No update record = "Belum Input"
+        return {
+          ...sample,
+          status: update.status || 'belum', // If has update but no status = "Belum Selesai"
+        };
+      });
     },
   });
 

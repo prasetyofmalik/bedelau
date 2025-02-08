@@ -7,23 +7,29 @@ interface PencacahanChartProps {
 export function PencacahanChart({ data }: PencacahanChartProps) {
   // Count updates by status
   const completedCount = data.filter(item => item.status === 'sudah').length;
-  const pendingCount = data.filter(item => item.status !== 'sudah').length;
-  const total = completedCount + pendingCount;
+  const inProgressCount = data.filter(item => item.status === 'belum').length;
+  const notStartedCount = data.filter(item => !item.status).length;
+  const total = completedCount + inProgressCount + notStartedCount;
 
   const chartData = [
     { 
-      name: 'Sudah', 
+      name: 'Sudah Selesai', 
       value: completedCount,
       percentage: ((completedCount / total) * 100).toFixed(2)
     },
     { 
-      name: 'Belum', 
-      value: pendingCount,
-      percentage: ((pendingCount / total) * 100).toFixed(2)
+      name: 'Belum Selesai', 
+      value: inProgressCount,
+      percentage: ((inProgressCount / total) * 100).toFixed(2)
     },
+    { 
+      name: 'Belum Input', 
+      value: notStartedCount,
+      percentage: ((notStartedCount / total) * 100).toFixed(2)
+    }
   ];
 
-  const COLORS = ['#ffcc5c', '#fff0ae'];
+  const COLORS = ['#4ade80', '#fbbf24', '#94a3b8'];
   const HOVER_COLOR = '#e5e7eb';
 
   const CustomTooltip = ({ active, payload }: any) => {
@@ -54,15 +60,15 @@ export function PencacahanChart({ data }: PencacahanChartProps) {
             onMouseEnter={(data, index) => {
               const paths = document.querySelectorAll('.pencacahan-chart .recharts-sector');
               paths.forEach((path, i) => {
-                if (i !== index) {
-                  (path as SVGPathElement).style.fill = HOVER_COLOR;
-                }
+          if (i !== index) {
+            (path as SVGPathElement).style.fill = HOVER_COLOR;
+          }
               });
             }}
             onMouseLeave={() => {
               const paths = document.querySelectorAll('.pencacahan-chart .recharts-sector');
               paths.forEach((path, i) => {
-                (path as SVGPathElement).style.fill = COLORS[i];
+          (path as SVGPathElement).style.fill = COLORS[i];
               });
             }}
           >
@@ -77,6 +83,9 @@ export function PencacahanChart({ data }: PencacahanChartProps) {
             formatter={(value, entry) => {
               const { payload } = entry as any;
               return `${value} ${payload.value}`;
+            }}
+            wrapperStyle={{
+              fontSize: window.innerWidth < 768 ? '11px' : '14px'
             }}
           />
         </PieChart>
