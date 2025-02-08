@@ -13,6 +13,9 @@ import { id } from "date-fns/locale";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { PplMonitoringTableProps } from "./types";
+import { DateRangePicker } from "./DateRangePicker";
+import { DateRange } from "react-day-picker";
+import { ArrowUp, ArrowDown } from "lucide-react";
 
 interface MonitoringData {
   ppl: string;
@@ -20,20 +23,36 @@ interface MonitoringData {
   count: number;
 }
 
+type SortConfig = {
+  direction: "asc" | "desc";
+} | null;
+
 export function PplMonitoringTable({
   type,
   surveyType,
 }: PplMonitoringTableProps) {
   const [searchQuery, setSearchQuery] = useState("");
-  const currentDate = new Date();
-  const daysInMonth = eachDayOfInterval({
-    start: startOfMonth(currentDate),
-    end: endOfMonth(currentDate),
+  const [date, setDate] = useState<DateRange | undefined>({
+    from: startOfMonth(new Date()),
+    to: endOfMonth(new Date()),
   });
+  const [sortConfig, setSortConfig] = useState<SortConfig>(null);
+  const [isHovered, setIsHovered] = useState(false);
+
+  const daysInRange =
+    date?.from && date?.to
+      ? eachDayOfInterval({
+          start: date.from,
+          end: date.to,
+        })
+      : eachDayOfInterval({
+          start: startOfMonth(new Date()),
+          end: endOfMonth(new Date()),
+        });
 
   // Fetch PPL list and their daily counts
   const { data: monitoringData } = useQuery({
-    queryKey: [`${surveyType}_ppl_monitoring`, type],
+    queryKey: [`${surveyType}_ppl_monitoring`, type, date?.from, date?.to],
     queryFn: async () => {
       // First get all unique PPLs from samples
       const { data: pplList, error: pplError } = await supabase
@@ -70,7 +89,7 @@ export function PplMonitoringTable({
       const processedData: MonitoringData[] = [];
 
       uniquePpls.forEach((ppl) => {
-        daysInMonth.forEach((date) => {
+        daysInRange.forEach((date) => {
           const dateStr = format(date, "yyyy-MM-dd");
           const count = dailyCounts.filter(
             (item) =>
@@ -92,7 +111,31 @@ export function PplMonitoringTable({
 
   if (!monitoringData) return null;
 
-  // Group data by PPL
+  const handleSort = () => {
+    setSortConfig((currentSort) => {
+      if (!currentSort) {
+        return { direction: "asc" };
+      }
+      if (currentSort.direction === "asc") {
+        return { direction: "desc" };
+      }
+      return null;
+    });
+  };
+  const renderSortIcon = () => {
+    if (sortConfig) {
+      return sortConfig.direction === "asc" ? (
+        <ArrowUp className="inline h-4 w-4 ml-1" />
+      ) : (
+        <ArrowDown className="inline h-4 w-4 ml-1" />
+      );
+    }
+    return isHovered ? (
+      <ArrowUp className="inline h-4 w-4 ml-1 opacity-50" />
+    ) : null;
+  };
+
+  // Group and sort data
   const pplGroups = monitoringData.reduce((acc, curr) => {
     if (!acc[curr.ppl]) {
       acc[curr.ppl] = [];
@@ -102,18 +145,20 @@ export function PplMonitoringTable({
   }, {} as Record<string, MonitoringData[]>);
 
   // Filter PPLs based on search query
-  const filteredPplGroups = Object.entries(pplGroups).filter(([ppl]) =>
-    ppl.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredPplGroups = Object.entries(pplGroups || {})
+    .filter(([ppl]) => ppl.toLowerCase().includes(searchQuery.toLowerCase()))
+    .sort((a, b) => {
+      if (!sortConfig) return 0;
 
-  const getStatusColor = (count: number) => {
-    if (count > 0) return "bg-green-600 text-white";
-    return "bg-yellow-400";
-  };
+      const sumA = a[1].reduce((sum, d) => sum + d.count, 0);
+      const sumB = b[1].reduce((sum, d) => sum + d.count, 0);
+
+      return sortConfig.direction === "asc" ? sumA - sumB : sumB - sumA;
+    });
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col md:flex-row justify-between space-y-4 md:space-y-0">
         <Input
           type="search"
           placeholder="Cari PPL..."
@@ -121,15 +166,34 @@ export function PplMonitoringTable({
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
+        <DateRangePicker date={date} onDateChange={setDate} />
       </div>
-      <div className="overflow-auto max-h-[78vh]">
+      <div className="overflow-auto max-h-[95vh]">
         <Table>
           <TableHeader className="sticky top-0 bg-white z-10">
             <TableRow>
-              <TableHead className="bg-white sticky left-0 z-10 p-1 pr-3 text-sm">
+              <TableHead className="bg-white sticky left-0 z-10" rowSpan={2}>
                 Nama PPL
               </TableHead>
-              {daysInMonth.map((date) => (
+              <TableHead
+                colSpan={daysInRange.length}
+                className="text-center bg-white"
+              >
+                {date?.from && date?.to
+                  ? format(date.from, "MMM yyyy", { locale: id }) ===
+                    format(date.to, "MMM yyyy", { locale: id })
+                    ? format(date.from, "MMM yyyy", { locale: id })
+                    : `${format(date.from, "MMM yyyy", {
+                        locale: id,
+                      })} - ${format(date.to, "MMM yyyy", { locale: id })}`
+                  : format(new Date(), "MMMM yyyy", { locale: id })}
+              </TableHead>
+              <TableHead className="bg-white text-center cursor-pointer hover:bg-gray-100" rowSpan={2} onClick={handleSort} onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
+                Jumlah {renderSortIcon()}
+              </TableHead>
+            </TableRow>
+            <TableRow>
+              {daysInRange.map((date) => (
                 <TableHead
                   key={date.toString()}
                   className="bg-white text-center w-12"
@@ -137,7 +201,6 @@ export function PplMonitoringTable({
                   {format(date, "d", { locale: id })}
                 </TableHead>
               ))}
-              <TableHead>Jumlah</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -146,15 +209,15 @@ export function PplMonitoringTable({
                 <TableCell className="text-sm bg-white sticky left-0 z-10 p-1 pr-3">
                   {ppl}
                 </TableCell>
-                {daysInMonth.map((date) => {
+                {daysInRange.map((date) => {
                   const dateStr = format(date, "yyyy-MM-dd");
                   const dayData = data.find((d) => d.date === dateStr);
                   return (
                     <TableCell
                       key={dateStr}
-                      className={`text-center ${getStatusColor(
-                        dayData?.count || 0
-                      )}`}
+                      className={`text-center ${
+                        dayData?.count ? "bg-green-600 text-white" : "bg-yellow-400"
+                      }`}
                     >
                       {dayData?.count || 0}
                     </TableCell>

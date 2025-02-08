@@ -299,7 +299,7 @@ export function MutakhirDataForm({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    Jumlah Keluarga Hasil pemutakhiran (Blok II)
+                    Jumlah Keluarga Hasil Pemutakhiran (Blok II)
                   </FormLabel>
                   <FormControl>
                     <Input
