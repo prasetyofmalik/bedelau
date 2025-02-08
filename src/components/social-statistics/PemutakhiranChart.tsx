@@ -81,6 +81,9 @@ export function PemutakhiranChart({ data, surveyType }: PemutakhiranChartProps) 
               const { payload } = entry as any;
               return `${value} ${payload.value}`;
             }}
+            wrapperStyle={{
+              fontSize: window.innerWidth < 768 ? '11px' : '14px'
+            }}
           />
         </PieChart>
       </ResponsiveContainer>

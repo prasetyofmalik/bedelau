@@ -65,7 +65,7 @@ export function DashboardSsnM25Section() {
           expectedRutaEntries.push({
             sample_code: sample.sample_code,
             no_ruta: i,
-            status: "belum",
+            status: null, // Initialize with null for "Belum Input"
           });
         }
       });
@@ -81,9 +81,10 @@ export function DashboardSsnM25Section() {
       return expectedRutaEntries.map((entry) => {
         const key = `${entry.sample_code}_${entry.no_ruta}`;
         const existingCacah = cacahMap.get(key);
+        if (!existingCacah) return entry; // Keep as "Belum Input" (null)
         return {
           ...entry,
-          status: existingCacah ? "sudah" : "belum",
+          status: existingCacah.status || 'belum', // If exists but no status = "Belum Selesai",
         };
       });
     },
@@ -111,7 +112,7 @@ export function DashboardSsnM25Section() {
           expectedRutaEntries.push({
             sample_code: sample.sample_code,
             no_ruta: i,
-            status: "belum",
+            status: null, // Initialize with null for "Belum Input"
           });
         }
       });
@@ -127,9 +128,10 @@ export function DashboardSsnM25Section() {
       return expectedRutaEntries.map((entry) => {
         const key = `${entry.sample_code}_${entry.no_ruta}`;
         const existingPeriksa = periksaMap.get(key);
+        if (!existingPeriksa) return entry; // Keep as "Belum Input" (null)
         return {
           ...entry,
-          status: existingPeriksa ? "sudah" : "belum",
+          status: existingPeriksa.status || 'belum', // If exists but no status = "Belum Selesai",
         };
       });
     },
