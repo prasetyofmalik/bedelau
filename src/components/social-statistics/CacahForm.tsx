@@ -114,7 +114,7 @@ export function CacahDataForm({
       sample_code: initialData?.sample_code || "",
       no_ruta: initialData?.no_ruta || 0,
       status: initialData?.status || "belum",
-      r203_msbp: initialData?.r203_msbp || 0,
+      r203_kor: initialData?.r203_kor || 0,
       r203_kp: initialData?.r203_kp || 0,
     },
   });
@@ -126,7 +126,7 @@ export function CacahDataForm({
         sample_code: initialData?.sample_code,
         no_ruta: initialData.no_ruta || 0,
         status: initialData.status || "belum",
-        r203_msbp: initialData?.r203_msbp || 0,
+        r203_kor: initialData?.r203_kor || 0,
         r203_kp: initialData?.r203_kp || 0,
       });
 
@@ -146,7 +146,7 @@ export function CacahDataForm({
     try {
       const cacahData = {
         ...data,
-        r203_msbp: Number(data.r203_msbp),
+        r203_kor: Number(data.r203_kor),
         r203_kp: Number(data.r203_kp),
       };
 
@@ -309,11 +309,11 @@ export function CacahDataForm({
 
             <FormField
               control={form.control}
-              name="r203_msbp"
+              name="r203_kor"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    Hasil Pencacahan Rumah Tangga (R203) MSBP
+                    Hasil Pencacahan Rumah Tangga (R203) Kor
                   </FormLabel>
                   <UISelect
                     onValueChange={field.onChange}
@@ -321,7 +321,7 @@ export function CacahDataForm({
                   >
                     <FormControl>
                       <SelectTrigger className="bg-white">
-                        <SelectValue placeholder="Pilih hasil pencacahan MSBP" />
+                        <SelectValue placeholder="Pilih hasil pencacahan Kor" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent className="bg-white">

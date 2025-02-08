@@ -24,7 +24,7 @@ export interface CacahSsnM25Data {
   sample_code: string;
   no_ruta: string;
   status?: 'belum' | 'sudah';
-  r203_msbp: string;
+  r203_kor: string;
   r203_kp: string;
   created_at?: string;
 }

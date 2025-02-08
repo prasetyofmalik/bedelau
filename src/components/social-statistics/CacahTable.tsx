@@ -48,10 +48,18 @@ export function CacahTable({ cacahs, onEdit }: CacahSsnM25TableProps) {
             <TableHead className="text-black p-1 text-center">NKS</TableHead>
             <TableHead className="text-black p-1 text-center">PML</TableHead>
             <TableHead className="text-black p-1 text-center">PPL</TableHead>
-            <TableHead className="text-black p-1 text-center">Status Pencacahan</TableHead>
-            <TableHead className="text-black py-1 text-center">No Urut Ruta</TableHead>
-            <TableHead className="text-black p-1 text-xs text-center">Hasil Pencacahan Ruta (R203) MSBP</TableHead>
-            <TableHead className="text-black p-1 text-xs text-center">Hasil Pencacahan Ruta (R203) KP</TableHead>
+            <TableHead className="text-black p-1 text-center">
+              Status Pencacahan
+            </TableHead>
+            <TableHead className="text-black py-1 text-center">
+              No Urut Ruta
+            </TableHead>
+            <TableHead className="text-black p-1 text-xs text-center">
+              Hasil Pencacahan Ruta (R203) Kor
+            </TableHead>
+            <TableHead className="text-black p-1 text-xs text-center">
+              Hasil Pencacahan Ruta (R203) KP
+            </TableHead>
             <TableHead className="text-black p-1 text-center">Aksi</TableHead>
           </TableRow>
         </TableHeader>
@@ -91,7 +99,7 @@ export function CacahTable({ cacahs, onEdit }: CacahSsnM25TableProps) {
                     {cacah.no_ruta || "-"}
                   </TableCell>
                   <TableCell className="text-secondary p-1 pr-4 text-right">
-                    {getR203Label(cacah.r203_msbp?.toString())}
+                    {getR203Label(cacah.r203_kor?.toString())}
                   </TableCell>
                   <TableCell className="text-secondary p-1 pr-4 text-right">
                     {getR203Label(cacah.r203_kp?.toString())}
