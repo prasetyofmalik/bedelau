@@ -98,10 +98,10 @@ export function CacahTable({ cacahs, onEdit }: CacahSsnM25TableProps) {
                   <TableCell className="text-secondary p-1 pr-4 text-right">
                     {cacah.no_ruta || "-"}
                   </TableCell>
-                  <TableCell className="text-secondary p-1 pr-4 text-right">
+                  <TableCell className="text-secondary p-1 text-xs md:text-base">
                     {getR203Label(cacah.r203_kor?.toString())}
                   </TableCell>
-                  <TableCell className="text-secondary p-1 pr-4 text-right">
+                  <TableCell className="text-secondary p-1 text-xs md:text-base">
                     {getR203Label(cacah.r203_kp?.toString())}
                   </TableCell>
                   <TableCell className="text-secondary p-1">

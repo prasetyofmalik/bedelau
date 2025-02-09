@@ -150,7 +150,7 @@ export function DashboardSsnM25Section() {
 
       <div className="bg-white mt-6 rounded-lg shadow-sm pt-6">
         <h3 className="text-xl font-semibold px-6 pb-3">Progress Harian</h3>
-        <Tabs defaultValue="pemutakhiran" className="w-full">
+        <Tabs defaultValue="pencacahan" className="w-full">
           <TabsList className="w-full inline-flex p-1 bg-muted/10 gap-2 rounded-t-lg border-b">
             <TabsTrigger
               value="pemutakhiran"

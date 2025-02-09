@@ -1,4 +1,12 @@
-import { format, eachDayOfInterval, startOfMonth, endOfMonth } from "date-fns";
+import {
+  format,
+  eachDayOfInterval,
+  startOfMonth,
+  endOfMonth,
+  isBefore,
+  startOfDay,
+  isSameMonth,
+} from "date-fns";
 import {
   Table,
   TableBody,
@@ -32,9 +40,18 @@ export function PplMonitoringTable({
   surveyType,
 }: PplMonitoringTableProps) {
   const [searchQuery, setSearchQuery] = useState("");
-  const [date, setDate] = useState<DateRange | undefined>({
-    from: startOfMonth(new Date()),
-    to: endOfMonth(new Date()),
+  const [date, setDate] = useState<DateRange | undefined>(() => {
+    if (type === "pemutakhiran") {
+      return {
+        from: new Date(2025, 1, 1), // February 1, 2025
+        to: new Date(2025, 1, 6), // February 6, 2025
+      };
+    } else {
+      return {
+        from: new Date(2025, 1, 8), // February 8, 2025
+        to: new Date(2025, 1, 27), // February 27, 2025
+      };
+    }
   });
   const [sortConfig, setSortConfig] = useState<SortConfig>(null);
   const [isHovered, setIsHovered] = useState(false);
@@ -46,8 +63,14 @@ export function PplMonitoringTable({
           end: date.to,
         })
       : eachDayOfInterval({
-          start: startOfMonth(new Date()),
-          end: endOfMonth(new Date()),
+          start:
+            type === "pemutakhiran"
+              ? new Date(2025, 1, 1)
+              : new Date(2025, 1, 8),
+          end:
+            type === "pemutakhiran"
+              ? new Date(2025, 1, 6)
+              : new Date(2025, 1, 27),
         });
 
   // Fetch PPL list and their daily counts
@@ -87,20 +110,43 @@ export function PplMonitoringTable({
 
       // Process data into required format
       const processedData: MonitoringData[] = [];
+      const firstDayOfMonth = startOfMonth(new Date());
+      const isViewingCurrentMonth =
+        date?.from && isSameMonth(date.from, new Date());
 
       uniquePpls.forEach((ppl) => {
+        // Create a map to store counts per date
+        const countsPerDate = new Map<string, number>();
+        // Process each daily count
+        dailyCounts.forEach((item) => {
+          if (item[`${surveyType}_samples`].ppl === ppl) {
+            const createdDate = new Date(item.created_at);
+            const dateStr = format(createdDate, "yyyy-MM-dd");
+
+            // add the count to the 1st of the current month
+            if (
+              type === "pemutakhiran" &&
+              isViewingCurrentMonth &&
+              isBefore(createdDate, firstDayOfMonth)
+            ) {
+              const firstDayStr = format(firstDayOfMonth, "yyyy-MM-dd");
+              countsPerDate.set(
+                firstDayStr,
+                (countsPerDate.get(firstDayStr) || 0) + 1
+              );
+            } else {
+              countsPerDate.set(dateStr, (countsPerDate.get(dateStr) || 0) + 1);
+            }
+          }
+        });
+
+        // Convert the map to array entries
         daysInRange.forEach((date) => {
           const dateStr = format(date, "yyyy-MM-dd");
-          const count = dailyCounts.filter(
-            (item) =>
-              item[`${surveyType}_samples`].ppl === ppl &&
-              item.created_at.startsWith(dateStr)
-          ).length;
-
           processedData.push({
             ppl,
             date: dateStr,
-            count,
+            count: countsPerDate.get(dateStr) || 0,
           });
         });
       });
@@ -188,7 +234,13 @@ export function PplMonitoringTable({
                       })} - ${format(date.to, "MMM yyyy", { locale: id })}`
                   : format(new Date(), "MMMM yyyy", { locale: id })}
               </TableHead>
-              <TableHead className="bg-white text-center cursor-pointer hover:bg-gray-100" rowSpan={2} onClick={handleSort} onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
+              <TableHead
+                className="bg-white text-center cursor-pointer hover:bg-gray-100"
+                rowSpan={2}
+                onClick={handleSort}
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+              >
                 Jumlah {renderSortIcon()}
               </TableHead>
             </TableRow>
@@ -216,7 +268,9 @@ export function PplMonitoringTable({
                     <TableCell
                       key={dateStr}
                       className={`text-center ${
-                        dayData?.count ? "bg-green-600 text-white" : "bg-yellow-400"
+                        dayData?.count
+                          ? "bg-green-600 text-white"
+                          : "bg-yellow-400"
                       }`}
                     >
                       {dayData?.count || 0}

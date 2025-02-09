@@ -10,7 +10,7 @@ export function DashboardSsnM25Section() {
 
 export function InputPplSsnM25Section() {
   return (
-    <Tabs defaultValue="pemutakhiran" className="space-y-6">
+    <Tabs defaultValue="pencacahan" className="space-y-6">
       <TabsList className="inline-flex p-1 bg-muted/10 rounded-lg gap-2">
         <TabsTrigger
           value="pemutakhiran"
