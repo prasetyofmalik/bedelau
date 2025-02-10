@@ -5,6 +5,7 @@ interface PencacahanChartProps {
 }
 
 export function PencacahanChart({ data }: PencacahanChartProps) {
+
   // Separate data into Susenas-only and Susenas+Seruti
   const susenasData = data.filter((item) => item.sample_code?.startsWith("1"));
   const serutiData = data.filter((item) => item.sample_code?.startsWith("2"));
@@ -55,7 +56,7 @@ export function PencacahanChart({ data }: PencacahanChartProps) {
       name: "Belum Input",
       value: notStarted,
       percentage: ((notStarted / total) * 100).toFixed(2),
-    },
+    }
   ];
 
   const susenasChartData = createChartData(
@@ -103,15 +104,15 @@ export function PencacahanChart({ data }: PencacahanChartProps) {
             onMouseEnter={(data, index) => {
               const paths = document.querySelectorAll( `.${className} .recharts-sector`);
               paths.forEach((path, i) => {
-                if (i !== index) {
-                  (path as SVGPathElement).style.fill = HOVER_COLOR;
-                }
+          if (i !== index) {
+            (path as SVGPathElement).style.fill = HOVER_COLOR;
+          }
               });
             }}
             onMouseLeave={() => {
               const paths = document.querySelectorAll( `.${className} .recharts-sector` );
               paths.forEach((path, i) => {
-                (path as SVGPathElement).style.fill = COLORS[i];
+          (path as SVGPathElement).style.fill = COLORS[i];
               });
             }}
           >
@@ -128,7 +129,7 @@ export function PencacahanChart({ data }: PencacahanChartProps) {
               return `${value} ${payload.value}`;
             }}
             wrapperStyle={{
-              fontSize: window.innerWidth < 768 ? "11px" : "14px",
+              fontSize: window.innerWidth < 768 ? '11px' : '14px',
             }}
           />
         </PieChart>
