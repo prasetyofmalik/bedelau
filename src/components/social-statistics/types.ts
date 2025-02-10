@@ -26,6 +26,7 @@ export interface CacahSsnM25Data {
   status?: 'belum' | 'sudah';
   r203_kor: string;
   r203_kp: string;
+  r203_seruti: string;
   created_at?: string;
 }
 

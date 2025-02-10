@@ -155,19 +155,19 @@ export function DashboardSsnM25Section() {
           <TabsList className="w-full inline-flex p-1 bg-muted/10 gap-2 rounded-t-lg border-b">
             <TabsTrigger
               value="pemutakhiran"
-              className="rounded-md px-6 py-2 data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm"
+              className="rounded-md px-2 md:px-6 py-2 data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm"
             >
               Pemutakhiran
             </TabsTrigger>
             <TabsTrigger
               value="pencacahan"
-              className="rounded-md px-6 py-2 data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm"
+              className="rounded-md px-2 md:px-6 py-2 data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm"
             >
               Pencacahan
             </TabsTrigger>
             <TabsTrigger
               value="pemeriksaan"
-              className="rounded-md px-6 py-2 data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm"
+              className="rounded-md px-2 md:px-6 py-2 data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm"
             >
               Pemeriksaan
             </TabsTrigger>

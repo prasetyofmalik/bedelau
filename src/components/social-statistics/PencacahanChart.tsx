@@ -5,29 +5,72 @@ interface PencacahanChartProps {
 }
 
 export function PencacahanChart({ data }: PencacahanChartProps) {
-  // Count updates by status
-  const completedCount = data.filter(item => item.status === 'sudah').length;
-  const inProgressCount = data.filter(item => item.status === 'belum').length;
-  const notStartedCount = data.filter(item => !item.status).length;
-  const total = completedCount + inProgressCount + notStartedCount;
+  // Separate data into Susenas-only and Susenas+Seruti
+  const susenasData = data.filter((item) => item.sample_code?.startsWith("1"));
+  const serutiData = data.filter((item) => item.sample_code?.startsWith("2"));
 
-  const chartData = [
-    { 
-      name: 'Sudah Selesai', 
-      value: completedCount,
-      percentage: ((completedCount / total) * 100).toFixed(2)
+  // Calculate stats for Susenas-only
+  const susenasCompletedCount = susenasData.filter(
+    (item) => item.status === "sudah"
+  ).length;
+  const susenasInProgressCount = susenasData.filter(
+    (item) => item.status === "belum"
+  ).length;
+  const susenasNotStartedCount = susenasData.filter(
+    (item) => !item.status
+  ).length;
+  const susenasTotal =
+    susenasCompletedCount + susenasInProgressCount + susenasNotStartedCount;
+
+  // Calculate stats for Susenas+Seruti
+  const serutiCompletedCount = serutiData.filter(
+    (item) => item.status === "sudah"
+  ).length;
+  const serutiInProgressCount = serutiData.filter(
+    (item) => item.status === "belum"
+  ).length;
+  const serutiNotStartedCount = serutiData.filter(
+    (item) => !item.status
+  ).length;
+  const serutiTotal =
+    serutiCompletedCount + serutiInProgressCount + serutiNotStartedCount;
+
+  const createChartData = (
+    completed: number,
+    inProgress: number,
+    notStarted: number,
+    total: number
+  ) => [
+    {
+      name: "Sudah Selesai",
+      value: completed,
+      percentage: ((completed / total) * 100).toFixed(2),
     },
-    { 
-      name: 'Belum Selesai', 
-      value: inProgressCount,
-      percentage: ((inProgressCount / total) * 100).toFixed(2)
+    {
+      name: "Belum Selesai",
+      value: inProgress,
+      percentage: ((inProgress / total) * 100).toFixed(2),
     },
-    { 
-      name: 'Belum Input', 
-      value: notStartedCount,
-      percentage: ((notStartedCount / total) * 100).toFixed(2)
-    }
+    {
+      name: "Belum Input",
+      value: notStarted,
+      percentage: ((notStarted / total) * 100).toFixed(2),
+    },
   ];
+
+  const susenasChartData = createChartData(
+    susenasCompletedCount,
+    susenasInProgressCount,
+    susenasNotStartedCount,
+    susenasTotal
+  );
+
+  const serutiChartData = createChartData(
+    serutiCompletedCount,
+    serutiInProgressCount,
+    serutiNotStartedCount,
+    serutiTotal
+  );
 
   const COLORS = ['#4ade80', '#fbbf24', '#94a3b8'];
   const HOVER_COLOR = '#e5e7eb';
@@ -43,53 +86,71 @@ export function PencacahanChart({ data }: PencacahanChartProps) {
     return null;
   };
 
-  return (
-    <div className="w-[80%] aspect-square max-w-md mx-auto mb-4">
-      <h3 className="text-xl font-semibold text-secondary mx-3 text-center">Pencacahan</h3>
+  const RenderPieChart = ({ data, className, title }: { data: any[], className: string, title: string }) => (
+    <div className="w-[80%] md:w-full aspect-square max-w-md mx-auto">
+      <h4 className="text-lg font-semibold text-secondary mx-3 text-center">{title}</h4>
       <ResponsiveContainer width="100%" height="90%">
         <PieChart>
           <Pie
-            data={chartData}
+            data={data}
             cx="50%"
             cy="50%"
             innerRadius="60%"
             outerRadius="80%"
             paddingAngle={0}
             dataKey="value"
-            className="pencacahan-chart"
+            className={className}
             onMouseEnter={(data, index) => {
-              const paths = document.querySelectorAll('.pencacahan-chart .recharts-sector');
+              const paths = document.querySelectorAll( `.${className} .recharts-sector`);
               paths.forEach((path, i) => {
-          if (i !== index) {
-            (path as SVGPathElement).style.fill = HOVER_COLOR;
-          }
+                if (i !== index) {
+                  (path as SVGPathElement).style.fill = HOVER_COLOR;
+                }
               });
             }}
             onMouseLeave={() => {
-              const paths = document.querySelectorAll('.pencacahan-chart .recharts-sector');
+              const paths = document.querySelectorAll( `.${className} .recharts-sector` );
               paths.forEach((path, i) => {
-          (path as SVGPathElement).style.fill = COLORS[i];
+                (path as SVGPathElement).style.fill = COLORS[i];
               });
             }}
           >
-            {chartData.map((entry, index) => (
+            {data.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={COLORS[index]} />
             ))}
           </Pie>
           <Tooltip content={<CustomTooltip />} />
-          <Legend 
-            verticalAlign="bottom" 
+          <Legend
+            verticalAlign="bottom"
             height={36}
             formatter={(value, entry) => {
               const { payload } = entry as any;
               return `${value} ${payload.value}`;
             }}
             wrapperStyle={{
-              fontSize: window.innerWidth < 768 ? '11px' : '14px'
+              fontSize: window.innerWidth < 768 ? "11px" : "14px",
             }}
           />
         </PieChart>
       </ResponsiveContainer>
+    </div>
+  );
+
+  return (
+    <div className="space-y-4 mb-4 md:mb-0">
+      <h3 className="text-xl font-semibold text-secondary mb-4 text-center">Progress Pencacahan</h3>
+      <div className="grid md:grid-cols-2 gap-2">
+        <RenderPieChart 
+          data={susenasChartData} 
+          className="susenas-chart" 
+          title="Susenas"
+        />
+        <RenderPieChart 
+          data={serutiChartData} 
+          className="seruti-chart" 
+          title="Susenas + Seruti"
+        />
+      </div>
     </div>
   );
 }
