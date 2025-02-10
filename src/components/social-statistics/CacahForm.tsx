@@ -31,7 +31,7 @@ import { supabase } from "@/lib/supabase";
 import { CacahSsnM25DataFormProps } from "./types";
 
 const r203Options = [
-  { value: 1, label: "Terisi Lengkap" },
+  { value: 1, label: "Terisi lengkap" },
   { value: 2, label: "Terisi tidak lengkap" },
   {
     value: 3,
@@ -59,6 +59,7 @@ export function CacahDataForm({
     null
   );
   const [selectedDesa, setSelectedDesa] = useState<string | null>(null);
+  const [isSerutiSample, setIsSerutiSample] = useState(false);
 
   const { data: samples = [] } = useQuery({
     queryKey: ["ssn_m25_samples"],
@@ -114,8 +115,9 @@ export function CacahDataForm({
       sample_code: initialData?.sample_code || "",
       no_ruta: initialData?.no_ruta || 0,
       status: initialData?.status || "belum",
-      r203_msbp: initialData?.r203_msbp || 0,
+      r203_kor: initialData?.r203_kor || 0,
       r203_kp: initialData?.r203_kp || 0,
+      r203_seruti: initialData?.r203_seruti || 0,
     },
   });
 
@@ -126,8 +128,9 @@ export function CacahDataForm({
         sample_code: initialData?.sample_code,
         no_ruta: initialData.no_ruta || 0,
         status: initialData.status || "belum",
-        r203_msbp: initialData?.r203_msbp || 0,
+        r203_kor: initialData?.r203_kor || 0,
         r203_kp: initialData?.r203_kp || 0,
+        r203_seruti: initialData?.r203_seruti || 0,
       });
 
       // Find and set initial kecamatan and desa
@@ -146,8 +149,9 @@ export function CacahDataForm({
     try {
       const cacahData = {
         ...data,
-        r203_msbp: Number(data.r203_msbp),
+        r203_kor: Number(data.r203_kor),
         r203_kp: Number(data.r203_kp),
+        r203_seruti: isSerutiSample ? Number(data.r203_seruti) : null,
       };
 
       if (initialData?.id) {
@@ -201,6 +205,12 @@ export function CacahDataForm({
     } finally {
       setIsDeleting(false);
     }
+  };
+
+  // Update isSerutiSample when sample_code changes
+  const handleSampleCodeChange = (sampleCode: string) => {
+    setIsSerutiSample(sampleCode?.startsWith("2") || false);
+    form.setValue("sample_code", sampleCode);
   };
 
   return (
@@ -268,7 +278,7 @@ export function CacahDataForm({
                           value={sampleOptions.find(
                             (option) => option.value === field.value
                           )}
-                          onChange={(option) => field.onChange(option?.value)}
+                          onChange={(option) => handleSampleCodeChange(option?.value || "" )}
                           placeholder="Pilih NKS..."
                           isClearable
                           isSearchable
@@ -309,11 +319,11 @@ export function CacahDataForm({
 
             <FormField
               control={form.control}
-              name="r203_msbp"
+              name="r203_kor"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    Hasil Pencacahan Rumah Tangga (R203) MSBP
+                    Hasil Pencacahan Rumah Tangga (R203) Kor
                   </FormLabel>
                   <UISelect
                     onValueChange={field.onChange}
@@ -321,7 +331,7 @@ export function CacahDataForm({
                   >
                     <FormControl>
                       <SelectTrigger className="bg-white">
-                        <SelectValue placeholder="Pilih hasil pencacahan MSBP" />
+                        <SelectValue placeholder="Pilih hasil pencacahan Kor" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent className="bg-white">
@@ -370,6 +380,41 @@ export function CacahDataForm({
                 </FormItem>
               )}
             />
+
+            {isSerutiSample && (
+              <FormField
+                control={form.control}
+                name="r203_seruti"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      Hasil Pencacahan Rumah Tangga (R203) Seruti
+                    </FormLabel>
+                    <UISelect
+                      onValueChange={field.onChange}
+                      value={field.value.toString()}
+                    >
+                      <FormControl>
+                        <SelectTrigger className="bg-white">
+                          <SelectValue placeholder="Pilih hasil pencacahan Seruti" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent className="bg-white">
+                        {r203Options.map((option) => (
+                          <SelectItem
+                            key={option.value}
+                            value={option.value.toString()}
+                          >
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </UISelect>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
 
             <FormField
               control={form.control}

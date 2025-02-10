@@ -35,7 +35,7 @@ export function CacahSection() {
           ssn_m25_cacah (
             id,
             no_ruta,
-            r203_msbp,
+            r203_kor,
             r203_kp,
             status,
             created_at
@@ -70,7 +70,7 @@ export function CacahSection() {
             "kode NKS [6 digit]": sample.sample_code,
             "No Urut Ruta [max: 10]": cacah.no_ruta,
             "Sudah Selesai [sudah/belum]": cacah.status,
-            "Hasil Pencacahan Ruta (R203) MSBP": cacah.r203_msbp || "-",
+            "Hasil Pencacahan Ruta (R203) Kor": cacah.r203_kor || "-",
             "Hasil Pencacahan Ruta (R203) KP": cacah.r203_kp || "-",
           }))
         : [
@@ -80,7 +80,7 @@ export function CacahSection() {
               "kode NKS [6 digit]": sample.sample_code,
               "No Urut Ruta [max: 10]": "-",
               "Sudah Selesai [sudah/belum]": "-",
-              "Hasil Pencacahan Ruta (R203) MSBP": "-",
+              "Hasil Pencacahan Ruta (R203) Kor": "-",
               "Hasil Pencacahan Ruta (R203) KP": "-",
             },
           ]

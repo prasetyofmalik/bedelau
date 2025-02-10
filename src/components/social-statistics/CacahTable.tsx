@@ -14,7 +14,7 @@ import { Pencil } from "lucide-react";
 const getR203Label = (value?: string) => {
   switch (value) {
     case "1":
-      return "Terisi Lengkap";
+      return "Terisi lengkap";
     case "2":
       return "Terisi tdk lengkap";
     case "3":
@@ -48,10 +48,21 @@ export function CacahTable({ cacahs, onEdit }: CacahSsnM25TableProps) {
             <TableHead className="text-black p-1 text-center">NKS</TableHead>
             <TableHead className="text-black p-1 text-center">PML</TableHead>
             <TableHead className="text-black p-1 text-center">PPL</TableHead>
-            <TableHead className="text-black p-1 text-center">Status Pencacahan</TableHead>
-            <TableHead className="text-black py-1 text-center">No Urut Ruta</TableHead>
-            <TableHead className="text-black p-1 text-xs text-center">Hasil Pencacahan Ruta (R203) MSBP</TableHead>
-            <TableHead className="text-black p-1 text-xs text-center">Hasil Pencacahan Ruta (R203) KP</TableHead>
+            <TableHead className="text-black p-1 text-center">
+              Status Pencacahan
+            </TableHead>
+            <TableHead className="text-black py-1 text-center">
+              No Urut Ruta
+            </TableHead>
+            <TableHead className="text-black p-1 text-xs text-center">
+              Hasil Pencacahan Ruta (R203) Kor
+            </TableHead>
+            <TableHead className="text-black p-1 text-xs text-center">
+              Hasil Pencacahan Ruta (R203) KP
+            </TableHead>
+            <TableHead className="text-black p-1 text-xs text-center">
+              Hasil Pencacahan Ruta (R203) Seruti
+            </TableHead>
             <TableHead className="text-black p-1 text-center">Aksi</TableHead>
           </TableRow>
         </TableHeader>
@@ -90,11 +101,16 @@ export function CacahTable({ cacahs, onEdit }: CacahSsnM25TableProps) {
                   <TableCell className="text-secondary p-1 pr-4 text-right">
                     {cacah.no_ruta || "-"}
                   </TableCell>
-                  <TableCell className="text-secondary p-1 pr-4 text-right">
-                    {getR203Label(cacah.r203_msbp?.toString())}
+                  <TableCell className="text-secondary p-1 text-xs md:text-base">
+                    {getR203Label(cacah.r203_kor?.toString())}
                   </TableCell>
-                  <TableCell className="text-secondary p-1 pr-4 text-right">
+                  <TableCell className="text-secondary p-1 text-xs md:text-base">
                     {getR203Label(cacah.r203_kp?.toString())}
+                  </TableCell>
+                  <TableCell className="text-secondary p-1 text-xs md:text-base">
+                    {sample.sample_code?.startsWith("2")
+                      ? getR203Label(cacah.r203_seruti?.toString())
+                      : "-"}
                   </TableCell>
                   <TableCell className="text-secondary p-1">
                     {cacah.status == "belum" && (
@@ -126,10 +142,13 @@ export function CacahTable({ cacahs, onEdit }: CacahSsnM25TableProps) {
                 <TableCell className="text-secondary p-1 pr-4 text-right">
                   -
                 </TableCell>
-                <TableCell className="text-secondary p-1 pr-4 text-right">
+                <TableCell className="text-secondary p-1 text-xs md:text-base">
                   -
                 </TableCell>
-                <TableCell className="text-secondary p-1 pr-4 text-right">
+                <TableCell className="text-secondary p-1 text-xs md:text-base">
+                  -
+                </TableCell>
+                <TableCell className="text-secondary p-1 text-xs md:text-base">
                   -
                 </TableCell>
                 <TableCell className="text-secondary p-1"></TableCell>

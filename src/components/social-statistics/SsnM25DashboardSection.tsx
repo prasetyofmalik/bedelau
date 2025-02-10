@@ -4,6 +4,7 @@ import { PemutakhiranChart } from "./PemutakhiranChart";
 import { PencacahanChart } from "./PencacahanChart";
 import { PemeriksaanChart } from "./PemeriksaanChart";
 import { PplMonitoringTable } from "./PplMonitoringTable";
+import { PmlMonitoringTable } from "./PmlMonitoringTable";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export function DashboardSsnM25Section() {
@@ -150,19 +151,25 @@ export function DashboardSsnM25Section() {
 
       <div className="bg-white mt-6 rounded-lg shadow-sm pt-6">
         <h3 className="text-xl font-semibold px-6 pb-3">Progress Harian</h3>
-        <Tabs defaultValue="pemutakhiran" className="w-full">
+        <Tabs defaultValue="pencacahan" className="w-full">
           <TabsList className="w-full inline-flex p-1 bg-muted/10 gap-2 rounded-t-lg border-b">
             <TabsTrigger
               value="pemutakhiran"
-              className="rounded-md px-6 py-2 data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm"
+              className="rounded-md px-2 md:px-6 py-2 data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm"
             >
               Pemutakhiran
             </TabsTrigger>
             <TabsTrigger
               value="pencacahan"
-              className="rounded-md px-6 py-2 data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm"
+              className="rounded-md px-2 md:px-6 py-2 data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm"
             >
               Pencacahan
+            </TabsTrigger>
+            <TabsTrigger
+              value="pemeriksaan"
+              className="rounded-md px-2 md:px-6 py-2 data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm"
+            >
+              Pemeriksaan
             </TabsTrigger>
           </TabsList>
           <div className="p-6">
@@ -171,6 +178,9 @@ export function DashboardSsnM25Section() {
             </TabsContent>
             <TabsContent value="pencacahan">
               <PplMonitoringTable type="pencacahan" surveyType="ssn_m25" />
+            </TabsContent>
+            <TabsContent value="pemeriksaan">
+              <PmlMonitoringTable surveyType="ssn_m25" />
             </TabsContent>
           </div>
         </Tabs>
