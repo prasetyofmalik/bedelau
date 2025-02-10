@@ -37,6 +37,7 @@ export function CacahSection() {
             no_ruta,
             r203_kor,
             r203_kp,
+            r203_seruti,
             status,
             created_at
           )
