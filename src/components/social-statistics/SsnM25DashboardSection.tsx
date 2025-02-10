@@ -4,6 +4,7 @@ import { PemutakhiranChart } from "./PemutakhiranChart";
 import { PencacahanChart } from "./PencacahanChart";
 import { PemeriksaanChart } from "./PemeriksaanChart";
 import { PplMonitoringTable } from "./PplMonitoringTable";
+import { PmlMonitoringTable } from "./PmlMonitoringTable";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export function DashboardSsnM25Section() {
@@ -164,6 +165,12 @@ export function DashboardSsnM25Section() {
             >
               Pencacahan
             </TabsTrigger>
+            <TabsTrigger
+              value="pemeriksaan"
+              className="rounded-md px-6 py-2 data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm"
+            >
+              Pemeriksaan
+            </TabsTrigger>
           </TabsList>
           <div className="p-6">
             <TabsContent value="pemutakhiran">
@@ -171,6 +178,9 @@ export function DashboardSsnM25Section() {
             </TabsContent>
             <TabsContent value="pencacahan">
               <PplMonitoringTable type="pencacahan" surveyType="ssn_m25" />
+            </TabsContent>
+            <TabsContent value="pemeriksaan">
+              <PmlMonitoringTable surveyType="ssn_m25" />
             </TabsContent>
           </div>
         </Tabs>

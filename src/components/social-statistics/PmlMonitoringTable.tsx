@@ -1,4 +1,12 @@
-import { format, eachDayOfInterval, startOfMonth, isBefore, isSameMonth } from "date-fns";
+import {
+  format,
+  eachDayOfInterval,
+  startOfMonth,
+  endOfMonth,
+  isBefore,
+  startOfDay,
+  isSameMonth,
+} from "date-fns";
 import {
   Table,
   TableBody,
@@ -12,42 +20,25 @@ import { supabase } from "@/lib/supabase";
 import { id } from "date-fns/locale";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
-import { PplMonitoringTableProps } from "./types";
 import { DateRangePicker } from "./DateRangePicker";
 import { DateRange } from "react-day-picker";
 import { ArrowUp, ArrowDown } from "lucide-react";
-
 interface MonitoringData {
-  ppl: string;
+  pml: string;
   date: string;
   count: number;
 }
-
 type SortConfig = {
   direction: "asc" | "desc";
 } | null;
-
-export function PplMonitoringTable({
-  type,
-  surveyType,
-}: PplMonitoringTableProps) {
+export function PmlMonitoringTable({ surveyType }: { surveyType: string }) {
   const [searchQuery, setSearchQuery] = useState("");
-  const [date, setDate] = useState<DateRange | undefined>(() => {
-    if (type === "pemutakhiran") {
-      return {
-        from: new Date(2025, 1, 1), // February 1, 2025
-        to: new Date(2025, 1, 6), // February 6, 2025
-      };
-    } else {
-      return {
-        from: new Date(2025, 1, 8), // February 8, 2025
-        to: new Date(2025, 1, 27), // February 27, 2025
-      };
-    }
+  const [date, setDate] = useState<DateRange | undefined>({
+    from: new Date(2025, 1, 8), // February 8, 2025
+    to: new Date(2025, 1, 27), // February 27, 2025
   });
   const [sortConfig, setSortConfig] = useState<SortConfig>(null);
   const [isHovered, setIsHovered] = useState(false);
-
   const daysInRange =
     date?.from && date?.to
       ? eachDayOfInterval({
@@ -55,94 +46,52 @@ export function PplMonitoringTable({
           end: date.to,
         })
       : eachDayOfInterval({
-          start:
-            type === "pemutakhiran"
-              ? new Date(2025, 1, 1)
-              : new Date(2025, 1, 8),
-          end:
-            type === "pemutakhiran"
-              ? new Date(2025, 1, 6)
-              : new Date(2025, 1, 27),
+          start: new Date(2025, 1, 8), // February 8, 2025
+          end: new Date(2025, 1, 27), // February 27, 2025
         });
-
-  // Fetch PPL list and their daily counts
   const { data: monitoringData } = useQuery({
-    queryKey: [`${surveyType}_ppl_monitoring`, type, date?.from, date?.to],
+    queryKey: [`${surveyType}_pml_monitoring`, date?.from, date?.to],
     queryFn: async () => {
-      // First get all unique PPLs from samples
-      const { data: pplList, error: pplError } = await supabase
+      const { data: pmlList, error: pmlError } = await supabase
         .from(`${surveyType}_samples`)
-        .select("ppl");
-
-      if (pplError) throw pplError;
-      if (!pplList) return [];
-
-      // Get unique PPLs, filtering out null values
-      const uniquePpls = Array.from(
+        .select("pml");
+      if (pmlError) throw pmlError;
+      if (!pmlList) return [];
+      const uniquePmls = Array.from(
         new Set(
-          pplList.filter((item) => item.ppl !== null).map((item) => item.ppl)
+          pmlList.filter((item) => item.pml !== null).map((item) => item.pml)
         )
       );
-
-      // Get daily counts for each PPL
       const { data: dailyCounts, error: countsError } = await supabase.from(
-        type === "pemutakhiran"
-          ? `${surveyType}_updates`
-          : `${surveyType}_cacah`
+        `${surveyType}_periksa`
       ).select(`
           created_at,
           sample_code,
           ${surveyType}_samples!inner (
-            ppl
+            pml
           )
         `);
-
       if (countsError) throw countsError;
       if (!dailyCounts) return [];
-
-      // Process data into required format
       const processedData: MonitoringData[] = [];
-      const firstDayOfMonth = startOfMonth(new Date());
-      const isViewingCurrentMonth =
-        date?.from && isSameMonth(date.from, new Date());
-
-      uniquePpls.forEach((ppl) => {
-        // Create a map to store counts per date
+      uniquePmls.forEach((pml) => {
         const countsPerDate = new Map<string, number>();
-        // Process each daily count
         dailyCounts.forEach((item) => {
-          if (item[`${surveyType}_samples`].ppl === ppl) {
+          if (item[`${surveyType}_samples`].pml === pml) {
             const createdDate = new Date(item.created_at);
             const dateStr = format(createdDate, "yyyy-MM-dd");
-
-            // add the count to the 1st of the current month
-            if (
-              type === "pemutakhiran" &&
-              isViewingCurrentMonth &&
-              isBefore(createdDate, firstDayOfMonth)
-            ) {
-              const firstDayStr = format(firstDayOfMonth, "yyyy-MM-dd");
-              countsPerDate.set(
-                firstDayStr,
-                (countsPerDate.get(firstDayStr) || 0) + 1
-              );
-            } else {
-              countsPerDate.set(dateStr, (countsPerDate.get(dateStr) || 0) + 1);
-            }
+            countsPerDate.set(dateStr, (countsPerDate.get(dateStr) || 0) + 1);
           }
         });
-
-        // Convert the map to array entries
         daysInRange.forEach((date) => {
           const dateStr = format(date, "yyyy-MM-dd");
           processedData.push({
-            ppl,
+            pml,
             date: dateStr,
             count: countsPerDate.get(dateStr) || 0,
           });
         });
       });
-
       return processedData;
     },
   });
@@ -172,19 +121,15 @@ export function PplMonitoringTable({
       <ArrowUp className="inline h-4 w-4 ml-1 opacity-50" />
     ) : null;
   };
-
-  // Group and sort data
-  const pplGroups = monitoringData.reduce((acc, curr) => {
-    if (!acc[curr.ppl]) {
-      acc[curr.ppl] = [];
+  const pmlGroups = monitoringData?.reduce((acc, curr) => {
+    if (!acc[curr.pml]) {
+      acc[curr.pml] = [];
     }
-    acc[curr.ppl].push(curr);
+    acc[curr.pml].push(curr);
     return acc;
   }, {} as Record<string, MonitoringData[]>);
-
-  // Filter PPLs based on search query
-  const filteredPplGroups = Object.entries(pplGroups || {})
-    .filter(([ppl]) => ppl.toLowerCase().includes(searchQuery.toLowerCase()))
+  const filteredPmlGroups = Object.entries(pmlGroups || {})
+    .filter(([pml]) => pml.toLowerCase().includes(searchQuery.toLowerCase()))
     .sort((a, b) => {
       if (!sortConfig) return 0;
 
@@ -193,13 +138,12 @@ export function PplMonitoringTable({
 
       return sortConfig.direction === "asc" ? sumA - sumB : sumB - sumA;
     });
-
   return (
     <div className="space-y-4">
       <div className="flex flex-col md:flex-row justify-between space-y-4 md:space-y-0">
         <Input
           type="search"
-          placeholder="Cari PPL..."
+          placeholder="Cari PML..."
           className="max-w-xs"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
@@ -211,7 +155,7 @@ export function PplMonitoringTable({
           <TableHeader className="sticky top-0 bg-white z-2">
             <TableRow>
               <TableHead className="bg-white sticky left-0 z-2" rowSpan={2}>
-                Nama PPL
+                Nama PML
               </TableHead>
               <TableHead
                 colSpan={daysInRange.length}
@@ -248,10 +192,10 @@ export function PplMonitoringTable({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredPplGroups.map(([ppl, data]) => (
-              <TableRow key={ppl} className="h-8">
+            {filteredPmlGroups.map(([pml, data]) => (
+              <TableRow key={pml} className="h-8">
                 <TableCell className="text-sm bg-white sticky left-0 z-2 p-1 pr-3">
-                  {ppl}
+                  {pml}
                 </TableCell>
                 {daysInRange.map((date) => {
                   const dateStr = format(date, "yyyy-MM-dd");
