@@ -74,6 +74,23 @@ export function CacahDataForm({
     },
   });
 
+  // Query to get sample data for editing
+  const { data: sampleData } = useQuery({
+    queryKey: ["ssn_m25_sample", initialData?.sample_code],
+    queryFn: async () => {
+      if (!initialData?.sample_code) return null;
+      
+      const { data, error } = await supabase
+        .from("ssn_m25_samples")
+        .select("kecamatan, desa_kelurahan")
+        .eq("sample_code", initialData.sample_code)
+        .single();
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!initialData?.sample_code,
+  });
+
   // Get unique kecamatan options
   const kecamatanOptions = Array.from(
     new Set(samples.map((sample) => sample.kecamatan))
@@ -121,11 +138,11 @@ export function CacahDataForm({
     },
   });
 
-  // Reset form when initialData changes
+  // Reset form and set location fields when initialData or sampleData changes
   useEffect(() => {
     if (initialData) {
       form.reset({
-        sample_code: initialData?.sample_code,
+        sample_code: initialData.sample_code,
         no_ruta: initialData.no_ruta || 0,
         status: initialData.status || "belum",
         r203_kor: initialData?.r203_kor || 0,
@@ -134,15 +151,17 @@ export function CacahDataForm({
       });
 
       // Find and set initial kecamatan and desa
-      const sample = samples.find(
-        (s) => s.sample_code === initialData.sample_code
-      );
-      if (sample) {
-        setSelectedKecamatan(sample.kecamatan);
-        setSelectedDesa(sample.desa_kelurahan);
-      }
+      setIsSerutiSample(initialData.sample_code?.startsWith("2") || false);
     }
-  }, [initialData, form, samples]);
+  }, [initialData, form]);
+
+  // Set location fields when sampleData is available
+  useEffect(() => {
+    if (sampleData) {
+      setSelectedKecamatan(sampleData.kecamatan);
+      setSelectedDesa(sampleData.desa_kelurahan);
+    }
+  }, [sampleData]);
 
   const onSubmit = async (data: any) => {
     setIsSubmitting(true);

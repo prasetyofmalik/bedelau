@@ -16,6 +16,28 @@ export function CacahSection() {
     null
   );
 
+  // Query to get all samples
+  const { data: allSamples = [] } = useQuery({
+    queryKey: ['ssn_m25_samples', searchQuery2],
+    queryFn: async () => {
+      let query = supabase.from('ssn_m25_samples').select("*");
+
+      if (searchQuery2) {
+        query = query.or(
+          `sample_code.ilike.%${searchQuery2}%, kecamatan.ilike.%${searchQuery2}%, desa_kelurahan.ilike.%${searchQuery2}%, pml.ilike.%${searchQuery2}%, ppl.ilike.%${searchQuery2}%`
+        );
+      }
+
+      const { data, error } = await query;
+      if (error) {
+        console.error("Error fetching samples:", error);
+        throw error;
+      }
+      return data;
+    },
+  });
+
+  // Query to get all cacah data
   const {
     data: tercacahSamples = [],
     isLoading,
@@ -95,7 +117,13 @@ export function CacahSection() {
   };
 
   const handleEdit = (data: CacahSsnM25Data) => {
-    setEditingCacah(data);
+    const enrichedData = {
+      ...data,
+      sample_code: tercacahSamples.find(
+        (sample) => sample.cacah_data.some((cacah: any) => cacah.id === data.id)
+      )?.sample_code || "",
+    };
+    setEditingCacah(enrichedData);
     setIsAddCacahOpen(true);
   };
 
