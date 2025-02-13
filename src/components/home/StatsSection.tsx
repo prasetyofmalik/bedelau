@@ -1,11 +1,13 @@
 import { StatsCard } from "@/components/StatsCard";
 import { useMailStats } from "@/hooks/useMailStats";
+import { useEmployeeStats } from "@/hooks/useStatsSection";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { teams } from "@/components/monitoring/teamsData";
 
 export const StatsSection = () => {
   const { data: stats, isLoading: isMailStatsLoading } = useMailStats();
+  const { data: employeeStats, isLoading: isEmployeeStatsLoading } = useEmployeeStats();
 
   const { data: session } = useQuery({
     queryKey: ["session"],
@@ -30,28 +32,6 @@ export const StatsSection = () => {
     },
   });
 
-  const { data: employeeStats, isLoading: isEmployeeStatsLoading } = useQuery({
-    queryKey: ["employeeStats"],
-    queryFn: async () => {
-      const { data: employees } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("role", "employee");
-
-      const totalEmployees = employees?.length || 0;
-      const maleEmployees =
-        employees?.filter((emp) => emp.gender === "l").length || 0;
-      const femaleEmployees =
-        employees?.filter((emp) => emp.gender === "p").length || 0;
-
-      return {
-        total: totalEmployees,
-        male: maleEmployees,
-        female: femaleEmployees,
-      };
-    },
-  });
-
   if (isMailStatsLoading || isEmployeeStatsLoading) {
     return (
       <section className="py-12 w-full bg-gradient-to-b from-yellow-500 via-yellow-500/5 to-white opacity-85">
@@ -69,7 +49,7 @@ export const StatsSection = () => {
   const employeeRedirectPath = profile?.role === "admin" ? "/admin" : "/user";
 
   return (
-    <section className="py-12 w-full bg-gradient-to-b from-yellow-500 via-yellow-500/5 to-white opacity-85">
+    <section className="py-12 w-full bg-gradient-to-b from-yellow-500 via-yellow-500/3 to-white opacity-85">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <StatsCard
