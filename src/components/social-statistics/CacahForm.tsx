@@ -79,7 +79,7 @@ export function CacahDataForm({
     queryKey: ["ssn_m25_sample", initialData?.sample_code],
     queryFn: async () => {
       if (!initialData?.sample_code) return null;
-      
+
       const { data, error } = await supabase
         .from("ssn_m25_samples")
         .select("kecamatan, desa_kelurahan")
@@ -297,7 +297,9 @@ export function CacahDataForm({
                           value={sampleOptions.find(
                             (option) => option.value === field.value
                           )}
-                          onChange={(option) => handleSampleCodeChange(option?.value || "" )}
+                          onChange={(option) =>
+                            handleSampleCodeChange(option?.value || "")
+                          }
                           placeholder="Pilih NKS..."
                           isClearable
                           isSearchable
@@ -342,7 +344,7 @@ export function CacahDataForm({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    Hasil Pencacahan Rumah Tangga (R203) Kor
+                    Hasil Pencacahan Rumah Tangga (R203) KOR
                   </FormLabel>
                   <UISelect
                     onValueChange={field.onChange}
@@ -350,7 +352,7 @@ export function CacahDataForm({
                   >
                     <FormControl>
                       <SelectTrigger className="bg-white">
-                        <SelectValue placeholder="Pilih hasil pencacahan Kor" />
+                        <SelectValue placeholder="Pilih hasil pencacahan KOR" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent className="bg-white">

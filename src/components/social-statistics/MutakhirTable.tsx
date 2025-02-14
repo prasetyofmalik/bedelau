@@ -27,7 +27,7 @@ export function MutakhirTable({ updates, onEdit }: MutakhirTableProps) {
     <div className="rounded-md border max-h-[78vh] overflow-x-auto">
       <Table>
         <TableHeader className="bg-yellow-300">
-          <TableRow className="sticky top-0 z-1">
+          <TableRow className="border-b border-gray-400">
             <TableHead className="text-black p-1 text-center">Kecamatan</TableHead>
             <TableHead className="text-black p-1 text-center">Desa/Kelurahan</TableHead>
             <TableHead className="text-black p-1 text-center">NKS</TableHead>
@@ -43,7 +43,7 @@ export function MutakhirTable({ updates, onEdit }: MutakhirTableProps) {
         </TableHeader>
         <TableBody>
           {updates.map((update) => (
-            <TableRow key={update.sample_code}>
+            <TableRow key={update.sample_code} className="border-b border-gray-400">
               <TableCell className="text-secondary text-xs md:text-base p-1">{update.kecamatan}</TableCell>
               <TableCell className="text-secondary text-xs md:text-base p-1">{update.desa_kelurahan}</TableCell>
               <TableCell className="text-secondary p-1">{update.sample_code}</TableCell>

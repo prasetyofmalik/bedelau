@@ -38,7 +38,7 @@ export function PeriksaTable({ periksas, onEdit }: PeriksaSsnM25TableProps) {
     <div className="rounded-md border max-h-[78vh] overflow-x-auto">
       <Table>
         <TableHeader className="bg-yellow-300">
-          <TableRow>
+          <TableRow className="border-b border-gray-400">
             <TableHead className="text-black p-1 text-center">NKS</TableHead>
             <TableHead className="text-black p-1 text-center">PML</TableHead>
             <TableHead className="text-black p-1 text-center">PPL</TableHead>
@@ -58,17 +58,17 @@ export function PeriksaTable({ periksas, onEdit }: PeriksaSsnM25TableProps) {
 
             return sample.periksa_data.length > 0 ? (
               sample.periksa_data.map((periksa: any, index: number) => (
-                <TableRow key={`${sample.sample_code}_${periksa.no_ruta}`}>
+                <TableRow key={`${sample.sample_code}_${periksa.no_ruta}`} className="border-b border-gray-400">
                   {index === 0 ? (
                     <>
                       <TableCell className="text-secondary p-1 text-center" rowSpan={rowCount}>
                         {sample.sample_code}
                       </TableCell>
-                      <TableCell className="text-secondary p-1 text-xs md:text-base text-center" rowSpan={rowCount}>{sample.pml}</TableCell>
-                      <TableCell className="text-secondary p-1 text-xs md:text-base text-center" rowSpan={rowCount}>{sample.ppl}</TableCell>
+                      <TableCell className="text-secondary p-1 text-xs md:text-base" rowSpan={rowCount}>{sample.pml}</TableCell>
+                      <TableCell className="text-secondary p-1 text-xs md:text-base" rowSpan={rowCount}>{sample.ppl}</TableCell>
                     </>
                   ) : null}
-                  <TableCell className="text-secondary p-1 flex justify-center items-center whitespace-nowrap">
+                  <TableCell className="text-secondary p-1 text-center whitespace-nowrap">
                     {getStatusBadge(periksa.status)}
                   </TableCell>
                   <TableCell className="text-secondary py-1 text-center">{periksa.no_ruta || "-"}</TableCell>
@@ -76,7 +76,7 @@ export function PeriksaTable({ periksas, onEdit }: PeriksaSsnM25TableProps) {
                   <TableCell className="text-secondary py-1 text-center">{periksa.iv3_3_8 || "-"}</TableCell>
                   <TableCell className="text-secondary py-1 text-center">{periksa.r304_kp || "-"}</TableCell>
                   <TableCell className="text-secondary py-1 text-center">{periksa.r305_kp || "-"}</TableCell>
-                  <TableCell className="text-secondary p-1 flex justify-center items-center">
+                  <TableCell className="text-secondary p-1 text-center">
                     {getResponseBadge(periksa.non_response)}
                   </TableCell>
                   <TableCell className="text-secondary p-1 text-center">
@@ -93,17 +93,17 @@ export function PeriksaTable({ periksas, onEdit }: PeriksaSsnM25TableProps) {
                 </TableRow>
               ))
             ) : (
-              <TableRow key={sample.sample_code}>
+              <TableRow key={sample.sample_code} className="border-b border-gray-400">
                 <TableCell className="text-secondary p-1 text-center">{sample.sample_code}</TableCell>
-                <TableCell className="text-secondary p-1 text-xs md:text-base text-center">{sample.pml}</TableCell>
-                <TableCell className="text-secondary p-1 text-xs md:text-base text-center">{sample.ppl}</TableCell>
-                <TableCell className="text-secondary p-1 flex justify-center items-center whitespace-nowrap">{getStatusBadge(undefined)}</TableCell>
+                <TableCell className="text-secondary p-1 text-xs md:text-base">{sample.pml}</TableCell>
+                <TableCell className="text-secondary p-1 text-xs md:text-base">{sample.ppl}</TableCell>
+                <TableCell className="text-secondary p-1 text-center whitespace-nowrap">{getStatusBadge(undefined)}</TableCell>
                 <TableCell className="text-secondary py-1 text-center">-</TableCell>
                 <TableCell className="text-secondary py-1 text-center">-</TableCell>
                 <TableCell className="text-secondary py-1 text-center">-</TableCell>
                 <TableCell className="text-secondary py-1 text-center">-</TableCell>
                 <TableCell className="text-secondary py-1 text-center">-</TableCell>
-                <TableCell className="text-secondary p-1 flex justify-center items-center">{getResponseBadge()}</TableCell>
+                <TableCell className="text-secondary p-1 text-center">{getResponseBadge()}</TableCell>
                 <TableCell className="text-secondary p-1 text-center"></TableCell>
               </TableRow>
             );

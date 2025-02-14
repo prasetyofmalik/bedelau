@@ -72,7 +72,7 @@ export function PeriksaSection() {
             "kode NKS [6 digit]": sample.sample_code,
             "No Urut Ruta [max: 10]": periksa.no_ruta,
             "Sudah Selesai [sudah/belum]": periksa.status,
-            "Hasil Pemeriksaan Ruta (R203) Kor": periksa.r203_kor || "-",
+            "Hasil Pemeriksaan Ruta (R203) KOR": periksa.r203_kor || "-",
             "Rata-rata Pengeluaran Makanan Sebulan": periksa.iv3_2_16 || "-",
             "Rata-rata Pengeluaran Bukan Makanan Sebulan":
               periksa.iv3_3_8 || "-",
@@ -86,7 +86,7 @@ export function PeriksaSection() {
               "kode NKS [6 digit]": sample.sample_code,
               "No Urut Ruta [max: 10]": "-",
               "Sudah Selesai [sudah/belum]": "belum",
-              "Hasil Pemeriksaan Ruta (R203) Kor": "-",
+              "Hasil Pemeriksaan Ruta (R203) KOR": "-",
               "Rata-rata Pengeluaran Makanan Sebulan": "-",
               "Rata-rata Pengeluaran Bukan Makanan Sebulan": "-",
               "Jumlah Komoditas Makanan (R304) KP": "-",
