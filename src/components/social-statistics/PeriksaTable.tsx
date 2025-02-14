@@ -61,23 +61,25 @@ export function PeriksaTable({ periksas, onEdit }: PeriksaSsnM25TableProps) {
                 <TableRow key={`${sample.sample_code}_${periksa.no_ruta}`}>
                   {index === 0 ? (
                     <>
-                      <TableCell className="text-secondary p-1" rowSpan={rowCount}>
+                      <TableCell className="text-secondary p-1 text-center" rowSpan={rowCount}>
                         {sample.sample_code}
                       </TableCell>
-                      <TableCell className="text-secondary p-1 text-xs md:text-base" rowSpan={rowCount}>{sample.pml}</TableCell>
-                      <TableCell className="text-secondary p-1 text-xs md:text-base" rowSpan={rowCount}>{sample.ppl}</TableCell>
+                      <TableCell className="text-secondary p-1 text-xs md:text-base text-center" rowSpan={rowCount}>{sample.pml}</TableCell>
+                      <TableCell className="text-secondary p-1 text-xs md:text-base text-center" rowSpan={rowCount}>{sample.ppl}</TableCell>
                     </>
                   ) : null}
-                  <TableCell className="text-secondary p-1 whitespace-nowrap">{getStatusBadge(periksa.status)}</TableCell>
-                  <TableCell className="text-secondary py-1 text-right">{periksa.no_ruta || "-"}</TableCell>
-                  <TableCell className="text-secondary py-1 text-right">{periksa.iv3_2_16 || "-"}</TableCell>
-                  <TableCell className="text-secondary py-1 text-right">{periksa.iv3_3_8 || "-"}</TableCell>
-                  <TableCell className="text-secondary py-1 text-right">{periksa.r304_kp || "-"}</TableCell>
-                  <TableCell className="text-secondary py-1 text-right">{periksa.r305_kp || "-"}</TableCell>
-                  <TableCell className="text-secondary p-1">
+                  <TableCell className="text-secondary p-1 flex justify-center items-center whitespace-nowrap">
+                    {getStatusBadge(periksa.status)}
+                  </TableCell>
+                  <TableCell className="text-secondary py-1 text-center">{periksa.no_ruta || "-"}</TableCell>
+                  <TableCell className="text-secondary py-1 text-center">{periksa.iv3_2_16 || "-"}</TableCell>
+                  <TableCell className="text-secondary py-1 text-center">{periksa.iv3_3_8 || "-"}</TableCell>
+                  <TableCell className="text-secondary py-1 text-center">{periksa.r304_kp || "-"}</TableCell>
+                  <TableCell className="text-secondary py-1 text-center">{periksa.r305_kp || "-"}</TableCell>
+                  <TableCell className="text-secondary p-1 flex justify-center items-center">
                     {getResponseBadge(periksa.non_response)}
                   </TableCell>
-                  <TableCell className="text-secondary p-1">
+                  <TableCell className="text-secondary p-1 text-center">
                     {periksa.status == "belum" && (
                       <Button
                         variant="ghost"
@@ -92,17 +94,17 @@ export function PeriksaTable({ periksas, onEdit }: PeriksaSsnM25TableProps) {
               ))
             ) : (
               <TableRow key={sample.sample_code}>
-                <TableCell className="text-secondary p-1">{sample.sample_code}</TableCell>
-                <TableCell className="text-secondary p-1 text-xs md:text-base">{sample.pml}</TableCell>
-                <TableCell className="text-secondary p-1 text-xs md:text-base">{sample.ppl}</TableCell>
-                <TableCell className="text-secondary p-1 text-center whitespace-nowrap">{getStatusBadge(undefined)}</TableCell>
-                <TableCell className="text-secondary py-1 text-right">-</TableCell>
-                <TableCell className="text-secondary py-1 text-right">-</TableCell>
-                <TableCell className="text-secondary py-1 text-right">-</TableCell>
-                <TableCell className="text-secondary py-1 text-right">-</TableCell>
-                <TableCell className="text-secondary py-1 text-right">-</TableCell>
-                <TableCell className="text-secondary p-1 text-center">{getResponseBadge()}</TableCell>
-                <TableCell className="text-secondary p-1"></TableCell>
+                <TableCell className="text-secondary p-1 text-center">{sample.sample_code}</TableCell>
+                <TableCell className="text-secondary p-1 text-xs md:text-base text-center">{sample.pml}</TableCell>
+                <TableCell className="text-secondary p-1 text-xs md:text-base text-center">{sample.ppl}</TableCell>
+                <TableCell className="text-secondary p-1 flex justify-center items-center whitespace-nowrap">{getStatusBadge(undefined)}</TableCell>
+                <TableCell className="text-secondary py-1 text-center">-</TableCell>
+                <TableCell className="text-secondary py-1 text-center">-</TableCell>
+                <TableCell className="text-secondary py-1 text-center">-</TableCell>
+                <TableCell className="text-secondary py-1 text-center">-</TableCell>
+                <TableCell className="text-secondary py-1 text-center">-</TableCell>
+                <TableCell className="text-secondary p-1 flex justify-center items-center">{getResponseBadge()}</TableCell>
+                <TableCell className="text-secondary p-1 text-center"></TableCell>
               </TableRow>
             );
           })}
