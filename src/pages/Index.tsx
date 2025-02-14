@@ -1,7 +1,7 @@
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { StatsSection } from "@/components/home/StatsSection";
-import { AnnouncementCard } from "@/components/AnnouncementCard";
+import { AnnouncementsSection } from "@/components/home/AnnouncementsSection";
 import { PostCard } from "@/components/PostCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -89,7 +89,7 @@ const Index = () => {
 
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="relative text-white py-20 h-[85vh] md:h-auto flex items-center justify-center">
+        <section className="relative text-white py-20 h-[85vh] md:h-[50vh] flex items-center justify-center">
           <div
             className="absolute inset-0 bg-center b-0 z-1"
             style={{
@@ -100,13 +100,13 @@ const Index = () => {
           />
           <div className="absolute inset-0 bg-gradient-to-b from-yellow-300 to-yellow-500 opacity-85" />
           <div className="container mx-auto px-4 text-center relative z-10">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">
+            <h1 className="text-4xl md:text-5xl font-bold mb-4" style={{ textShadow: "2px 2px 4px rgba(98, 98, 99, 0.4)" }}>
               Beranda Elektronik dan Administrasi Umum
             </h1>
-            <h1 className="text-3xl md:text-4xl font-bold mb-6 ">
+            <h1 className="text-3xl md:text-4xl font-bold mb-6" style={{ textShadow: "2px 2px 4px rgba(98, 98, 99, 0.4)" }}>
               BPS Kabupaten Siak
             </h1>
-            <p className="text-xl mb-8">
+            <p className="text-xl mb-8" style={{ textShadow: "2px 2px 4px rgba(98, 98, 99, 0.5)" }}>
               Bantu efisiensi, notifikasi dan administrasi terintegrasi.
             </p>
             <Button
@@ -124,46 +124,7 @@ const Index = () => {
         <StatsSection />
 
         {/* Announcements Section */}
-        <section className="py-12 bg-white">
-          <div className="container mx-auto px-4">
-            <h2 className="text-2xl font-bold mb-2">Pengumuman</h2>
-            <p className="text-secondary mb-8">
-              Tetap terinformasi dengan pengumuman dan pembaruan terbaru
-            </p>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <AnnouncementCard
-                title="Warning: System Emergency Maintenance"
-                status="critical"
-                date="10 min ago"
-                description="Emergency system maintenance required. All services will be unavailable for approximately 30 minutes starting at 15:00 UTC."
-              />
-              <AnnouncementCard
-                title="Important Meeting Schedule Changes"
-                status="high"
-                date="1 hour ago"
-                description="The quarterly review meeting has been rescheduled to next Monday. All department heads must attend."
-              />
-              <AnnouncementCard
-                title="Updated Company Policies"
-                status="medium"
-                date="2 days ago"
-                description="New workplace policies have been implemented. Please review the updated documentation in the company portal."
-              />
-              <AnnouncementCard
-                title="Company Social Event Next Week"
-                status="low"
-                date="3 days ago"
-                description="Join us for the annual company picnic next Saturday at Central Park. Family members are welcome!"
-              />
-              <AnnouncementCard
-                title="New Office Equipment Arrival"
-                status="general"
-                date="1 week ago"
-                description="New printers have been installed on each floor. Please check your email for usage guidelines."
-              />
-            </div>
-          </div>
-        </section>
+        <AnnouncementsSection />
 
         {/* Latest Posts Section */}
         <section className="py-12 container mx-auto px-4">

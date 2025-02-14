@@ -1,5 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { formatDistanceToNow } from "date-fns";
+import { id } from "date-fns/locale";
 
 type AnnouncementStatus = "critical" | "high" | "medium" | "low" | "general";
 
@@ -79,6 +81,11 @@ export const AnnouncementCard = ({ title, status, date, description }: Announcem
     }
   };
 
+  const getRelativeTime = (dateString: string) => {
+    const date = new Date(dateString);
+    return formatDistanceToNow(date, { addSuffix: true, locale: id });
+  };
+
   return (
     <Card className={`p-6 hover:shadow-lg transition-shadow duration-200 ${getBgColor(status)} cursor-pointer`}>
       <div className="flex justify-between items-start mb-4">
@@ -94,7 +101,7 @@ export const AnnouncementCard = ({ title, status, date, description }: Announcem
         </Badge>
       </div>
       <p className="text-sm text-gray-700 leading-relaxed mb-3">{description}</p>
-      <p className="text-xs text-secondary">{date}</p>
+      <p className="text-xs text-secondary">{getRelativeTime(date)}</p>
     </Card>
   );
 };
