@@ -18,9 +18,9 @@ export function CacahSection() {
 
   // Query to get all samples
   const { data: allSamples = [] } = useQuery({
-    queryKey: ['ssn_m25_samples', searchQuery2],
+    queryKey: ["ssn_m25_samples", searchQuery2],
     queryFn: async () => {
-      let query = supabase.from('ssn_m25_samples').select("*");
+      let query = supabase.from("ssn_m25_samples").select("*");
 
       if (searchQuery2) {
         query = query.or(
@@ -93,7 +93,7 @@ export function CacahSection() {
             "kode NKS [6 digit]": sample.sample_code,
             "No Urut Ruta [max: 10]": cacah.no_ruta,
             "Sudah Selesai [sudah/belum]": cacah.status,
-            "Hasil Pencacahan Ruta (R203) Kor": cacah.r203_kor || "-",
+            "Hasil Pencacahan Ruta (R203) KOR": cacah.r203_kor || "-",
             "Hasil Pencacahan Ruta (R203) KP": cacah.r203_kp || "-",
           }))
         : [
@@ -103,7 +103,7 @@ export function CacahSection() {
               "kode NKS [6 digit]": sample.sample_code,
               "No Urut Ruta [max: 10]": "-",
               "Sudah Selesai [sudah/belum]": "-",
-              "Hasil Pencacahan Ruta (R203) Kor": "-",
+              "Hasil Pencacahan Ruta (R203) KOR": "-",
               "Hasil Pencacahan Ruta (R203) KP": "-",
             },
           ]
@@ -119,9 +119,10 @@ export function CacahSection() {
   const handleEdit = (data: CacahSsnM25Data) => {
     const enrichedData = {
       ...data,
-      sample_code: tercacahSamples.find(
-        (sample) => sample.cacah_data.some((cacah: any) => cacah.id === data.id)
-      )?.sample_code || "",
+      sample_code:
+        tercacahSamples.find((sample) =>
+          sample.cacah_data.some((cacah: any) => cacah.id === data.id)
+        )?.sample_code || "",
     };
     setEditingCacah(enrichedData);
     setIsAddCacahOpen(true);
