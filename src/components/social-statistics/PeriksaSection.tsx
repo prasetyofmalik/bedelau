@@ -34,6 +34,7 @@ export function PeriksaSection() {
           ssn_m25_periksa (
             id,
             no_ruta,
+            r301_kp,
             iv3_2_16,
             iv3_3_8,
             r304_kp,
@@ -72,7 +73,7 @@ export function PeriksaSection() {
             "kode NKS [6 digit]": sample.sample_code,
             "No Urut Ruta [max: 10]": periksa.no_ruta,
             "Sudah Selesai [sudah/belum]": periksa.status,
-            "Hasil Pemeriksaan Ruta (R203) KOR": periksa.r203_kor || "-",
+            "Jumlah ART (R301) VSEN 25.KP": periksa.r301_kp || "-",
             "Rata-rata Pengeluaran Makanan Sebulan": periksa.iv3_2_16 || "-",
             "Rata-rata Pengeluaran Bukan Makanan Sebulan":
               periksa.iv3_3_8 || "-",
@@ -86,7 +87,7 @@ export function PeriksaSection() {
               "kode NKS [6 digit]": sample.sample_code,
               "No Urut Ruta [max: 10]": "-",
               "Sudah Selesai [sudah/belum]": "belum",
-              "Hasil Pemeriksaan Ruta (R203) KOR": "-",
+              "Jumlah ART (R301) VSEN 25.KP": "-",
               "Rata-rata Pengeluaran Makanan Sebulan": "-",
               "Rata-rata Pengeluaran Bukan Makanan Sebulan": "-",
               "Jumlah Komoditas Makanan (R304) KP": "-",

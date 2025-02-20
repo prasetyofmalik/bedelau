@@ -35,6 +35,7 @@ export interface PeriksaSsnM25Data {
   sample_code: string;
   no_ruta: string;
   status?: 'belum' | 'sudah';
+  r301_kp: string;
   iv3_2_16: string;
   iv3_3_8: string;
   r304_kp: string;
