@@ -15,7 +15,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { LogOut, User, Monitor, Menu } from "lucide-react";
+import { LogOut, User, Monitor, Menu, MessagesSquare } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 export const Header = () => {
@@ -77,6 +77,12 @@ export const Header = () => {
         <Link to="/monitoring" className="flex items-center gap-2">
           <Monitor className="h-4 w-4" />
           Monitoring
+        </Link>
+      </Button>
+      <Button variant="ghost" asChild>
+        <Link to="https://webapps.bps.go.id/siakkab/ai-bps-siak/" className="flex items-center gap-2">
+          <MessagesSquare className="h-4 w-4" />
+          Dara AI
         </Link>
       </Button>
     </>
