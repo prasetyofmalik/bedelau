@@ -107,6 +107,7 @@ export function PeriksaDataForm({
       sample_code: initialData?.sample_code || "",
       no_ruta: initialData?.no_ruta || 0,
       status: initialData?.status || "belum",
+      r301_kp: initialData?.r301_kp || 0,
       iv3_2_16: initialData?.iv3_2_16 || 0,
       iv3_3_8: initialData?.iv3_3_8 || 0,
       r304_kp: initialData?.r304_kp || 0,
@@ -122,6 +123,7 @@ export function PeriksaDataForm({
         sample_code: initialData.sample_code,
         no_ruta: initialData?.no_ruta || 0,
         status: initialData?.status || "belum",
+        r301_kp: initialData?.r301_kp || 0,
         iv3_2_16: initialData?.iv3_2_16 || 0,
         iv3_3_8: initialData?.iv3_3_8 || 0,
         r304_kp: initialData?.r304_kp || 0,
@@ -297,6 +299,31 @@ export function PeriksaDataForm({
                       }}
                       min="1"
                       max="10"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="r301_kp"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Jumlah ART (R301) VSEN 25.KP</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      {...field}
+                      onChange={(e) => {
+                        const value =
+                          e.target.value === "" ? null : Number(e.target.value);
+                        if (value === null || value >= 0) {
+                          field.onChange(value);
+                        }
+                      }}
+                      min="0"
                     />
                   </FormControl>
                   <FormMessage />

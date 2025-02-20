@@ -44,6 +44,7 @@ export function PeriksaTable({ periksas, onEdit }: PeriksaSsnM25TableProps) {
             <TableHead className="text-black p-1 text-center">PPL</TableHead>
             <TableHead className="text-black p-1 text-center">Status Selesai Pemeriksaan</TableHead>
             <TableHead className="text-black py-1 text-center">No Urut Ruta</TableHead>
+            <TableHead className="text-black py-1 text-center">Jumlah ART (R301) KP</TableHead>
             <TableHead className="text-black p-1 text-xs text-center">Rata-rata Pengeluaran Makanan Sebulan</TableHead>
             <TableHead className="text-black p-1 text-xs text-center">Rata-rata Pengeluaran Bukan Makanan Sebulan</TableHead>
             <TableHead className="text-black p-1 text-xs text-center">Jumlah Komoditas Makanan (R304) KP</TableHead>
@@ -72,6 +73,7 @@ export function PeriksaTable({ periksas, onEdit }: PeriksaSsnM25TableProps) {
                     {getStatusBadge(periksa.status)}
                   </TableCell>
                   <TableCell className="text-secondary py-1 text-center">{periksa.no_ruta || "-"}</TableCell>
+                  <TableCell className="text-secondary py-1 text-center">{periksa.r301_kp || "-"}</TableCell>
                   <TableCell className="text-secondary py-1 text-center">{periksa.iv3_2_16 || "-"}</TableCell>
                   <TableCell className="text-secondary py-1 text-center">{periksa.iv3_3_8 || "-"}</TableCell>
                   <TableCell className="text-secondary py-1 text-center">{periksa.r304_kp || "-"}</TableCell>
@@ -98,6 +100,7 @@ export function PeriksaTable({ periksas, onEdit }: PeriksaSsnM25TableProps) {
                 <TableCell className="text-secondary p-1 text-xs md:text-base">{sample.pml}</TableCell>
                 <TableCell className="text-secondary p-1 text-xs md:text-base">{sample.ppl}</TableCell>
                 <TableCell className="text-secondary p-1 text-center whitespace-nowrap">{getStatusBadge(undefined)}</TableCell>
+                <TableCell className="text-secondary py-1 text-center">-</TableCell>
                 <TableCell className="text-secondary py-1 text-center">-</TableCell>
                 <TableCell className="text-secondary py-1 text-center">-</TableCell>
                 <TableCell className="text-secondary py-1 text-center">-</TableCell>
