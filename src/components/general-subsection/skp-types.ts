@@ -1,26 +1,34 @@
-export interface SKP {
+export interface BaseSKP {
   id: string;
   employee_id: string;
   employee_name: string;
-  skp_type: "monthly" | "yearly";
   period: string;
-  document_link: string;
-  folder_link?: string;
   created_at?: string;
   updated_at?: string;
+}
+
+export interface YearlySKP extends BaseSKP {
+  skp_link: string;
+}
+
+export interface MonthlySKP extends BaseSKP {
+  skp_link: string;
+  ckp_link?: string;
 }
 
 export interface SKPFormProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
-  initialData?: SKP | null;
+  initialData?: YearlySKP | MonthlySKP | null;
+  type: "yearly" | "monthly";
 }
 
 export interface SKPTableProps {
-  skps: SKP[];
-  onEdit: (data: SKP) => void;
+  skps: (YearlySKP | MonthlySKP)[];
+  onEdit: (data: YearlySKP | MonthlySKP) => void;
   refetch: () => void;
+  type: "yearly" | "monthly";
 }
 
 // Define the type for fetching employee profiles

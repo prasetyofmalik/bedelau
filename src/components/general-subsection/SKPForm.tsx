@@ -18,17 +18,10 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import {
-  Select as UISelect,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
-import { SKPFormProps } from "./skp-types";
+import { SKPFormProps, YearlySKP, MonthlySKP } from "./skp-types";
 import { useEmployees } from "./hooks/useEmployees";
 import { ExternalLink, Folder } from "lucide-react";
 
@@ -37,6 +30,7 @@ export function SKPForm({
   onClose,
   onSuccess,
   initialData,
+  type,
 }: SKPFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -47,10 +41,10 @@ export function SKPForm({
     defaultValues: {
       employee_id: initialData?.employee_id || "",
       employee_name: initialData?.employee_name || "",
-      skp_type: initialData?.skp_type || "yearly",
-      period: initialData?.period || "penetapan",
-      document_link: initialData?.document_link || "",
-      folder_link: initialData?.folder_link || "",
+      period: initialData?.period || (type === "yearly" ? "penetapan" : "01"),
+      skp_link: (initialData as any)?.skp_link || "",
+      ckp_link:
+        type === "monthly" ? (initialData as MonthlySKP)?.ckp_link || "" : "",
     },
   });
 
@@ -60,38 +54,28 @@ export function SKPForm({
       form.reset({
         employee_id: initialData.employee_id,
         employee_name: initialData.employee_name,
-        skp_type: initialData.skp_type,
         period: initialData.period,
-        document_link: initialData.document_link,
-        folder_link: initialData.folder_link || "",
+        skp_link: (initialData as any).skp_link || "",
+        ckp_link:
+          type === "monthly" ? (initialData as MonthlySKP)?.ckp_link || "" : "",
       });
     } else {
       form.reset({
         employee_id: "",
         employee_name: "",
-        skp_type: "yearly",
-        period: "penetapan",
-        document_link: "",
-        folder_link: "",
+        period: type === "yearly" ? "penetapan" : "01",
+        skp_link: "",
+        ckp_link: "",
       });
     }
-  }, [initialData, form]);
+  }, [initialData, form, type]);
 
-  const skpType = form.watch("skp_type");
   const period = form.watch("period");
 
-  // Generate default folder link based on type and period
-  useEffect(() => {
-    if (
-      !form.getValues("folder_link") ||
-      form.getValues("folder_link") === ""
-    ) {
-      const folderLink = generateFolderLink(skpType, period);
-      form.setValue("folder_link", folderLink);
-    }
-  }, [skpType, period, form]);
-
-  const generateFolderLink = (type: string, period: string): string => {
+  const generateFolderLink = (
+    type: "yearly" | "monthly",
+    period: string
+  ): string => {
     const baseLink = "https://drive.google.com/drive/folders/";
 
     if (type === "yearly") {
@@ -133,26 +117,30 @@ export function SKPForm({
       const { data: userData } = await supabase.auth.getUser();
       const userId = userData.user?.id;
 
-      // Only save required fields to Supabase, exclude folder_link
-      const skpData = {
+      // Only save required fields to Supabase
+      const tableName = type === "yearly" ? "skp_yearly" : "skp_monthly";
+
+      const skpData: any = {
         employee_id: userId,
         employee_name: data.employee_name,
-        skp_type: data.skp_type,
         period: data.period,
-        document_link: data.document_link,
+        skp_link: data.skp_link,
       };
+
+      // Add ckp_link only for monthly SKP
+      if (type === "monthly") {
+        skpData.ckp_link = data.ckp_link;
+      }
 
       if (initialData?.id) {
         const { error } = await supabase
-          .from("skp_documents")
+          .from(tableName)
           .update(skpData)
           .eq("id", initialData.id);
 
         if (error) throw error;
       } else {
-        const { error } = await supabase
-          .from("skp_documents")
-          .insert([skpData]);
+        const { error } = await supabase.from(tableName).insert([skpData]);
 
         if (error) throw error;
       }
@@ -174,8 +162,10 @@ export function SKPForm({
 
     setIsDeleting(true);
     try {
+      const tableName = type === "yearly" ? "skp_yearly" : "skp_monthly";
+
       const { error } = await supabase
-        .from("skp_documents")
+        .from(tableName)
         .delete()
         .eq("id", initialData.id);
 
@@ -197,14 +187,15 @@ export function SKPForm({
     form.setValue("employee_name", selectedOption?.label || "");
   };
 
-  const folderLink = form.watch("folder_link");
+  const folderLink = generateFolderLink(type, period);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle>
-            {initialData?.id ? "Edit" : "Tambah"} Dokumen SKP
+            {initialData?.id ? "Edit" : "Tambah"} Dokumen SKP{" "}
+            {type === "yearly" ? "Tahunan" : "Bulanan"}
           </DialogTitle>
           <DialogDescription>
             Isi detail dokumen SKP di bawah ini
@@ -241,121 +232,92 @@ export function SKPForm({
 
             <FormField
               control={form.control}
-              name="skp_type"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Tipe SKP</FormLabel>
-                  <UISelect
-                    onValueChange={(value) => {
-                      field.onChange(value);
-                      // Reset period when type changes
-                      form.setValue(
-                        "period",
-                        value === "yearly" ? "penetapan" : "01"
-                      );
-                      // Update folder link when type changes
-                      const newFolderLink = generateFolderLink(
-                        value,
-                        value === "yearly" ? "penetapan" : "01"
-                      );
-                      form.setValue("folder_link", newFolderLink);
-                    }}
-                    value={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger className="bg-white">
-                        <SelectValue placeholder="Pilih tipe SKP" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent className="bg-white">
-                      <SelectItem value="yearly">Tahunan</SelectItem>
-                      <SelectItem value="monthly">Bulanan</SelectItem>
-                    </SelectContent>
-                  </UISelect>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
               name="period"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Periode</FormLabel>
-                  <UISelect
-                    onValueChange={(value) => {
-                      field.onChange(value);
-                      // Update folder link when period changes
-                      const newFolderLink = generateFolderLink(skpType, value);
-                      form.setValue("folder_link", newFolderLink);
+                  <Select
+                    options={
+                      type === "yearly"
+                        ? [
+                            { value: "penetapan", label: "Penetapan" },
+                            { value: "penilaian", label: "Penilaian" },
+                            { value: "evaluasi", label: "Evaluasi" },
+                          ]
+                        : [
+                            { value: "01", label: "Januari" },
+                            { value: "02", label: "Februari" },
+                            { value: "03", label: "Maret" },
+                            { value: "04", label: "April" },
+                            { value: "05", label: "Mei" },
+                            { value: "06", label: "Juni" },
+                            { value: "07", label: "Juli" },
+                            { value: "08", label: "Agustus" },
+                            { value: "09", label: "September" },
+                            { value: "10", label: "Oktober" },
+                            { value: "11", label: "November" },
+                            { value: "12", label: "Desember" },
+                          ]
+                    }
+                    value={
+                      type === "yearly"
+                        ? [
+                            { value: "penetapan", label: "Penetapan" },
+                            { value: "penilaian", label: "Penilaian" },
+                            { value: "evaluasi", label: "Evaluasi" },
+                          ].find((option) => option.value === field.value)
+                        : [
+                            { value: "01", label: "Januari" },
+                            { value: "02", label: "Februari" },
+                            { value: "03", label: "Maret" },
+                            { value: "04", label: "April" },
+                            { value: "05", label: "Mei" },
+                            { value: "06", label: "Juni" },
+                            { value: "07", label: "Juli" },
+                            { value: "08", label: "Agustus" },
+                            { value: "09", label: "September" },
+                            { value: "10", label: "Oktober" },
+                            { value: "11", label: "November" },
+                            { value: "12", label: "Desember" },
+                          ].find((option) => option.value === field.value)
+                    }
+                    onChange={(selectedOption) => {
+                      field.onChange(selectedOption?.value);
                     }}
-                    value={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger className="bg-white">
-                        <SelectValue placeholder="Pilih periode" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent className="bg-white">
-                      {skpType === "yearly" ? (
-                        <>
-                          <SelectItem value="penetapan">Penetapan</SelectItem>
-                          <SelectItem value="penilaian">Penilaian</SelectItem>
-                          <SelectItem value="evaluasi">Evaluasi</SelectItem>
-                        </>
-                      ) : (
-                        <>
-                          <SelectItem value="01">Januari</SelectItem>
-                          <SelectItem value="02">Februari</SelectItem>
-                          <SelectItem value="03">Maret</SelectItem>
-                          <SelectItem value="04">April</SelectItem>
-                          <SelectItem value="05">Mei</SelectItem>
-                          <SelectItem value="06">Juni</SelectItem>
-                          <SelectItem value="07">Juli</SelectItem>
-                          <SelectItem value="08">Agustus</SelectItem>
-                          <SelectItem value="09">September</SelectItem>
-                          <SelectItem value="10">Oktober</SelectItem>
-                          <SelectItem value="11">November</SelectItem>
-                          <SelectItem value="12">Desember</SelectItem>
-                        </>
-                      )}
-                    </SelectContent>
-                  </UISelect>
+                    placeholder="Pilih periode..."
+                    className="react-select-container"
+                    classNamePrefix="react-select"
+                  />
                   <FormMessage />
                 </FormItem>
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="folder_link"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Folder SKP</FormLabel>
-                  <div className="flex items-center space-x-2">
-                    <a
-                      href={folderLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center px-4 py-2 bg-gray-100 rounded-md text-blue-600 hover:text-blue-800 border border-gray-300"
-                    >
-                      <Folder className="mr-2 h-4 w-4" />
-                      Buka Folder Google Drive
-                      <ExternalLink className="ml-2 h-4 w-4" />
-                    </a>
-                  </div>
-                  <FormDescription>
-                    Gunakan folder ini untuk menyimpan dokumen SKP Anda secara
-                    terstruktur
-                  </FormDescription>
-                </FormItem>
-              )}
-            />
+            <FormItem>
+              <FormLabel>
+                Folder {type === "yearly" ? "SKP" : "SKP/CKP"}
+              </FormLabel>
+              <div className="flex items-center space-x-2">
+                <a
+                  href={folderLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center px-4 py-2 bg-gray-100 rounded-md text-blue-600 hover:text-blue-800 border border-gray-300"
+                >
+                  <Folder className="mr-2 h-4 w-4" />
+                  Buka Folder Google Drive
+                  <ExternalLink className="ml-2 h-4 w-4" />
+                </a>
+              </div>
+              <FormDescription>
+                Gunakan folder ini untuk menyimpan dokumen SKP
+                {type === "monthly" ? " dan CKP" : ""} Anda secara terstruktur
+              </FormDescription>
+            </FormItem>
 
             <FormField
               control={form.control}
-              name="document_link"
+              name="skp_link"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Link Dokumen SKP</FormLabel>
@@ -372,6 +334,28 @@ export function SKPForm({
                 </FormItem>
               )}
             />
+
+            {type === "monthly" && (
+              <FormField
+                control={form.control}
+                name="ckp_link"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Link Dokumen CKP</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        placeholder="https://drive.google.com/..."
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      Link ke dokumen CKP yang telah Anda upload ke Google Drive
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
 
             <div className="flex justify-between items-center pt-2">
               {initialData?.id && (

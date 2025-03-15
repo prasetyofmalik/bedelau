@@ -1,15 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
-import { SKP } from "../skp-types";
+import { YearlySKP, MonthlySKP } from "../skp-types";
 
-export function useSKPDocuments(type: string, period?: string) {
+export function useSKPDocuments(type: "yearly" | "monthly", period?: string) {
   return useQuery({
     queryKey: ["skp_documents", type, period],
     queryFn: async () => {
-      let query = supabase
-        .from("skp_documents")
-        .select("*")
-        .eq("skp_type", type);
+      const tableName = type === "yearly" ? "skp_yearly" : "skp_monthly";
+
+      let query = supabase.from(tableName).select("*");
 
       if (period) {
         query = query.eq("period", period);
@@ -21,7 +20,7 @@ export function useSKPDocuments(type: string, period?: string) {
 
       if (error) throw error;
 
-      return data as SKP[];
+      return data as (YearlySKP | MonthlySKP)[];
     },
   });
 }
