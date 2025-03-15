@@ -1,8 +1,7 @@
-import React from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { Button } from "../ui/button";
+import Select from "react-select";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -10,130 +9,181 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../ui/form";
-import { Input } from "../ui/input";
+} from "@/components/ui/form";
 import {
-  Select,
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import {
+  Select as UISelect,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../ui/select";
+} from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
+import { supabase } from "@/lib/supabase";
+import { SKPFormProps } from "./skp-types";
+import { useEmployees } from "./hooks/useEmployees";
 
-interface SKPFormProps {
-  onCancel: () => void;
-  isEditing?: boolean;
-  editData?: any;
-}
+export function SKPForm({
+  isOpen,
+  onClose,
+  onSuccess,
+  initialData,
+}: SKPFormProps) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const { data: employees = [], isLoading: isLoadingEmployees } =
+    useEmployees();
 
-const formSchema = z.object({
-  nip: z.string().min(1, { message: "NIP wajib diisi" }),
-  nama: z.string().min(1, { message: "Nama wajib diisi" }),
-  tahun: z.string().min(1, { message: "Tahun wajib diisi" }),
-  semester: z.string().min(1, { message: "Semester wajib diisi" }),
-  nilai: z.string().min(1, { message: "Nilai wajib diisi" }),
-  status: z.string().min(1, { message: "Status wajib diisi" }),
-});
-
-const SKPForm: React.FC<SKPFormProps> = ({
-  onCancel,
-  isEditing = false,
-  editData,
-}) => {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm({
     defaultValues: {
-      nip: editData?.nip || "",
-      nama: editData?.nama || "",
-      tahun: editData?.tahun || "",
-      semester: editData?.semester || "",
-      nilai: editData?.nilai || "",
-      status: editData?.status || "",
+      employee_id: initialData?.employee_id || "",
+      employee_name: initialData?.employee_name || "",
+      skp_type: initialData?.skp_type || "yearly",
+      period: initialData?.period || "penetapan",
+      document_link: initialData?.document_link || "",
     },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    // This is just a placeholder. In a real implementation, you would submit to your backend
-    console.log(values);
+  // Reset form when initialData changes
+  useEffect(() => {
+    if (initialData) {
+      form.reset({
+        employee_id: initialData.employee_id,
+        employee_name: initialData.employee_name,
+        skp_type: initialData.skp_type,
+        period: initialData.period,
+        document_link: initialData.document_link,
+      });
+    } else {
+      form.reset({
+        employee_id: "",
+        employee_name: "",
+        skp_type: "yearly",
+        period: "penetapan",
+        document_link: "",
+      });
+    }
+  }, [initialData, form]);
 
-    toast.success(
-      isEditing ? "Data berhasil diperbarui!" : "Data berhasil ditambahkan!"
-    );
+  const skpType = form.watch("skp_type");
 
-    onCancel();
+  // Employee options for Select component
+  const employeeOptions = employees.map((employee) => ({
+    value: employee.id,
+    label: employee.full_name,
+  }));
+
+  const onSubmit = async (data: any) => {
+    setIsSubmitting(true);
+    try {
+      // For current user, get their ID
+      const { data: userData } = await supabase.auth.getUser();
+      const userId = userData.user?.id;
+
+      const skpData = {
+        employee_id: userId,
+        employee_name: data.employee_name,
+        skp_type: data.skp_type,
+        period: data.period,
+        document_link: data.document_link,
+      };
+
+      if (initialData?.id) {
+        const { error } = await supabase
+          .from("skp_documents")
+          .update(skpData)
+          .eq("id", initialData.id);
+
+        if (error) throw error;
+      } else {
+        const { error } = await supabase
+          .from("skp_documents")
+          .insert([skpData]);
+
+        if (error) throw error;
+      }
+
+      onSuccess();
+      onClose();
+    } catch (error) {
+      console.error("Error saving SKP document:", error);
+      toast.error(
+        `Gagal ${initialData?.id ? "memperbarui" : "menambahkan"} dokumen SKP`
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!initialData?.id) return;
+
+    setIsDeleting(true);
+    try {
+      const { error } = await supabase
+        .from("skp_documents")
+        .delete()
+        .eq("id", initialData.id);
+
+      if (error) throw error;
+      toast.success("Dokumen SKP berhasil dihapus");
+      onSuccess();
+      onClose();
+    } catch (error) {
+      console.error("Error deleting SKP document:", error);
+      toast.error("Gagal menghapus dokumen SKP");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  // Handle employee selection
+  const handleEmployeeChange = (selectedOption: any) => {
+    form.setValue("employee_id", selectedOption?.value || "");
+    form.setValue("employee_name", selectedOption?.label || "");
   };
 
   return (
-    <div className="bg-white rounded-xl p-6 border border-gray-200">
-      <h3 className="text-lg font-semibold mb-4">
-        {isEditing ? "Edit Data SKP" : "Tambah Data SKP"}
-      </h3>
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="sm:max-w-[500px]">
+        <DialogHeader>
+          <DialogTitle>
+            {initialData?.id ? "Edit" : "Tambah"} Dokumen SKP
+          </DialogTitle>
+          <DialogDescription>
+            Isi detail dokumen SKP di bawah ini
+          </DialogDescription>
+        </DialogHeader>
 
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
-              name="nip"
+              name="employee_name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>NIP</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Masukkan NIP" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="nama"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Nama</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Masukkan nama pegawai" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="tahun"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Tahun</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Masukkan tahun" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="semester"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Semester</FormLabel>
+                  <FormLabel>Nama Pegawai</FormLabel>
                   <FormControl>
                     <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Pilih semester" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="1">Semester 1</SelectItem>
-                        <SelectItem value="2">Semester 2</SelectItem>
-                      </SelectContent>
-                    </Select>
+                      isLoading={isLoadingEmployees}
+                      options={employeeOptions}
+                      value={employeeOptions.find(
+                        (option) => option.label === field.value
+                      )}
+                      onChange={handleEmployeeChange}
+                      placeholder="Pilih Pegawai..."
+                      isClearable
+                      isSearchable
+                      className="react-select-container"
+                      classNamePrefix="react-select"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -142,13 +192,31 @@ const SKPForm: React.FC<SKPFormProps> = ({
 
             <FormField
               control={form.control}
-              name="nilai"
+              name="skp_type"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Nilai</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Masukkan nilai" {...field} />
-                  </FormControl>
+                  <FormLabel>Tipe SKP</FormLabel>
+                  <UISelect
+                    onValueChange={(value) => {
+                      field.onChange(value);
+                      // Reset period when type changes
+                      form.setValue(
+                        "period",
+                        value === "yearly" ? "penetapan" : "01"
+                      );
+                    }}
+                    value={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Pilih tipe SKP" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="yearly">Tahunan</SelectItem>
+                      <SelectItem value="monthly">Bulanan</SelectItem>
+                    </SelectContent>
+                  </UISelect>
                   <FormMessage />
                 </FormItem>
               )}
@@ -156,44 +224,90 @@ const SKPForm: React.FC<SKPFormProps> = ({
 
             <FormField
               control={form.control}
-              name="status"
+              name="period"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Status</FormLabel>
-                  <FormControl>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
+                  <FormLabel>Periode</FormLabel>
+                  <UISelect onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Pilih status" />
+                        <SelectValue placeholder="Pilih periode" />
                       </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Sangat Baik">Sangat Baik</SelectItem>
-                        <SelectItem value="Baik">Baik</SelectItem>
-                        <SelectItem value="Cukup">Cukup</SelectItem>
-                        <SelectItem value="Kurang">Kurang</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    </FormControl>
+                    <SelectContent>
+                      {skpType === "yearly" ? (
+                        <>
+                          <SelectItem value="penetapan">Penetapan</SelectItem>
+                          <SelectItem value="penilaian">Penilaian</SelectItem>
+                          <SelectItem value="evaluasi">Evaluasi</SelectItem>
+                        </>
+                      ) : (
+                        <>
+                          <SelectItem value="01">Januari</SelectItem>
+                          <SelectItem value="02">Februari</SelectItem>
+                          <SelectItem value="03">Maret</SelectItem>
+                          <SelectItem value="04">April</SelectItem>
+                          <SelectItem value="05">Mei</SelectItem>
+                          <SelectItem value="06">Juni</SelectItem>
+                          <SelectItem value="07">Juli</SelectItem>
+                          <SelectItem value="08">Agustus</SelectItem>
+                          <SelectItem value="09">September</SelectItem>
+                          <SelectItem value="10">Oktober</SelectItem>
+                          <SelectItem value="11">November</SelectItem>
+                          <SelectItem value="12">Desember</SelectItem>
+                        </>
+                      )}
+                    </SelectContent>
+                  </UISelect>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="document_link"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Link Dokumen Google Drive</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      placeholder="https://drive.google.com/..."
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-          </div>
 
-          <div className="flex justify-end space-x-2 pt-4">
-            <Button type="button" variant="outline" onClick={onCancel}>
-              Batal
-            </Button>
-            <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
-              {isEditing ? "Perbarui" : "Simpan"}
-            </Button>
-          </div>
-        </form>
-      </Form>
-    </div>
+            <div className="flex justify-between items-center pt-2">
+              {initialData?.id && (
+                <Button
+                  type="button"
+                  variant="destructive"
+                  onClick={handleDelete}
+                  disabled={isDeleting}
+                >
+                  {isDeleting ? "Menghapus..." : "Hapus"}
+                </Button>
+              )}
+              <div className="flex gap-2 ml-auto">
+                <Button type="button" variant="outline" onClick={onClose}>
+                  Batal
+                </Button>
+                <Button type="submit" disabled={isSubmitting}>
+                  {isSubmitting
+                    ? "Menyimpan..."
+                    : initialData?.id
+                    ? "Update"
+                    : "Simpan"}
+                </Button>
+              </div>
+            </div>
+          </form>
+        </Form>
+      </DialogContent>
+    </Dialog>
   );
-};
-
-export default SKPForm;
+}
