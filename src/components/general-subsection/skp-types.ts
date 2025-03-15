@@ -2,9 +2,10 @@ export interface SKP {
   id: string;
   employee_id: string;
   employee_name: string;
-  skp_type: 'monthly' | 'yearly';
+  skp_type: "monthly" | "yearly";
   period: string;
   document_link: string;
+  folder_link?: string;
   created_at?: string;
   updated_at?: string;
 }

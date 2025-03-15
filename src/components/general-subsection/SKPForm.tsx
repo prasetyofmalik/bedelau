@@ -9,6 +9,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  FormDescription,
 } from "@/components/ui/form";
 import {
   Dialog,
@@ -48,6 +49,7 @@ export function SKPForm({
       skp_type: initialData?.skp_type || "yearly",
       period: initialData?.period || "penetapan",
       document_link: initialData?.document_link || "",
+      folder_link: initialData?.folder_link || "",
     },
   });
 
@@ -60,6 +62,7 @@ export function SKPForm({
         skp_type: initialData.skp_type,
         period: initialData.period,
         document_link: initialData.document_link,
+        folder_link: initialData.folder_link || "",
       });
     } else {
       form.reset({
@@ -68,11 +71,53 @@ export function SKPForm({
         skp_type: "yearly",
         period: "penetapan",
         document_link: "",
+        folder_link: "",
       });
     }
   }, [initialData, form]);
 
   const skpType = form.watch("skp_type");
+  const period = form.watch("period");
+
+  // Generate default folder link based on type and period
+  useEffect(() => {
+    if (
+      !form.getValues("folder_link") ||
+      form.getValues("folder_link") === ""
+    ) {
+      const folderLink = generateFolderLink(skpType, period);
+      form.setValue("folder_link", folderLink);
+    }
+  }, [skpType, period, form]);
+
+  const generateFolderLink = (type: string, period: string): string => {
+    const baseLink = "https://drive.google.com/drive/folders/";
+
+    if (type === "yearly") {
+      const periodLinks: Record<string, string> = {
+        penetapan: "1-mho2qgn1d0O7TEDzhO_6nk1r0BdaqZa",
+        penilaian: "1Nn4yhH7dzZfuSRZC3RI2BYKC_nngL7B9",
+        evaluasi: "1S5r73B6X5AaQGvmJkdQlS6IeR7DDZKcD",
+      };
+      return `${baseLink}${periodLinks[period] || period}`;
+    } else {
+      const monthLinks: Record<string, string> = {
+        "01": "17MDMvWEqjNSuKfFf7Slp77bWfi_k4OX7",
+        "02": "1lfL_22cRzXzVBkSZ86RaBwGxUr3EAQqx",
+        "03": "1e1nuUtHqtnKgxUiS7w96QUs6hRfRsULf",
+        "04": "1W2gjwrw2bWvgwUS1FRzZuLB8_ppwTmlB",
+        "05": "1NonwxNHBu8Vt_xA8e8fsmLKV8P20MkmG",
+        "06": "1bIKyj7sBbRRg1FXf8WCtIGltAyJc7LMI",
+        "07": "1hd08kxogHcJqoheUtW-bBsIRIaA3tTgu",
+        "08": "1Ry-NvemBAgRvgbWafdZyp4JH6c_k4aYV",
+        "09": "1w2TQlvfHyRmb3bwiwC6FRvkgpvpQi9w0",
+        "10": "1iwJ_q-laTbLAvbz_tf_f6Eb0B0op86i8",
+        "11": "1L7e87ohaaQb6rnj_YMO8m0EBbGHanoCY",
+        "12": "1VCmhndPixoKj56K9Atv_ZtrOYgbyeFO5",
+      };
+      return `${baseLink}${monthLinks[period] || period}`;
+    }
+  };
 
   // Employee options for Select component
   const employeeOptions = employees.map((employee) => ({
@@ -93,6 +138,7 @@ export function SKPForm({
         skp_type: data.skp_type,
         period: data.period,
         document_link: data.document_link,
+        folder_link: data.folder_link,
       };
 
       if (initialData?.id) {
@@ -204,15 +250,21 @@ export function SKPForm({
                         "period",
                         value === "yearly" ? "penetapan" : "01"
                       );
+                      // Update folder link when type changes
+                      const newFolderLink = generateFolderLink(
+                        value,
+                        value === "yearly" ? "penetapan" : "01"
+                      );
+                      form.setValue("folder_link", newFolderLink);
                     }}
                     value={field.value}
                   >
                     <FormControl>
-                      <SelectTrigger>
+                      <SelectTrigger className="bg-white">
                         <SelectValue placeholder="Pilih tipe SKP" />
                       </SelectTrigger>
                     </FormControl>
-                    <SelectContent>
+                    <SelectContent className="bg-white">
                       <SelectItem value="yearly">Tahunan</SelectItem>
                       <SelectItem value="monthly">Bulanan</SelectItem>
                     </SelectContent>
@@ -228,13 +280,21 @@ export function SKPForm({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Periode</FormLabel>
-                  <UISelect onValueChange={field.onChange} value={field.value}>
+                  <UISelect
+                    onValueChange={(value) => {
+                      field.onChange(value);
+                      // Update folder link when period changes
+                      const newFolderLink = generateFolderLink(skpType, value);
+                      form.setValue("folder_link", newFolderLink);
+                    }}
+                    value={field.value}
+                  >
                     <FormControl>
-                      <SelectTrigger>
+                      <SelectTrigger className="bg-white">
                         <SelectValue placeholder="Pilih periode" />
                       </SelectTrigger>
                     </FormControl>
-                    <SelectContent>
+                    <SelectContent className="bg-white">
                       {skpType === "yearly" ? (
                         <>
                           <SelectItem value="penetapan">Penetapan</SelectItem>
@@ -266,16 +326,40 @@ export function SKPForm({
 
             <FormField
               control={form.control}
+              name="folder_link"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Link Folder SKP</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      placeholder="https://drive.google.com/drive/folders/..."
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Gunakan folder ini untuk menyimpan dokumen SKP Anda secara
+                    terstruktur
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
               name="document_link"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Link Dokumen Google Drive</FormLabel>
+                  <FormLabel>Link Dokumen SKP</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
                       placeholder="https://drive.google.com/..."
                     />
                   </FormControl>
+                  <FormDescription>
+                    Link ke dokumen SKP yang telah Anda upload ke Google Drive
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}

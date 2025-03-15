@@ -24,15 +24,25 @@ export function SKPTable({ skps, onEdit, refetch }: SKPTableProps) {
   const getPeriodLabel = (type: string, period: string) => {
     if (type === "yearly") {
       const labels: Record<string, string> = {
-        "penetapan": "Penetapan",
-        "penilaian": "Penilaian",
-        "evaluasi": "Evaluasi"
+        penetapan: "Penetapan",
+        penilaian: "Penilaian",
+        evaluasi: "Evaluasi",
       };
       return labels[period] || period;
     } else {
       const months = [
-        "Januari", "Februari", "Maret", "April", "Mei", "Juni",
-        "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+        "Januari",
+        "Februari",
+        "Maret",
+        "April",
+        "Mei",
+        "Juni",
+        "Juli",
+        "Agustus",
+        "September",
+        "Oktober",
+        "November",
+        "Desember",
       ];
       const monthIndex = parseInt(period, 10) - 1;
       return months[monthIndex] || period;
@@ -47,7 +57,7 @@ export function SKPTable({ skps, onEdit, refetch }: SKPTableProps) {
             <TableHead className="py-2">Nama Pegawai</TableHead>
             <TableHead className="py-2">Periode</TableHead>
             <TableHead className="py-2">Tanggal Upload</TableHead>
-            <TableHead className="py-2">Link Dokumen</TableHead>
+            <TableHead className="py-2">SKP</TableHead>
             <TableHead className="py-2 text-right">Aksi</TableHead>
           </TableRow>
         </TableHeader>
