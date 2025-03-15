@@ -1,4 +1,4 @@
-import { Notebook, Coffee, Tablet, IdCard, Calculator, Laptop, Mails, LucideHome, ClipboardList, BarChart3 } from "lucide-react";
+import { Notebook, Coffee, Tablet, IdCard, Calculator, Laptop, Mails, ChevronsUp, ClipboardList, BarChart3 } from "lucide-react";
 
 export const teams = [
   {
@@ -51,6 +51,11 @@ const generalSubsectionItems = [
     title: "Rekap Surat",
     url: "/monitoring/general-subsection/mails-recap",
     icon: Mails,
+  },
+  {
+    title: "Rekap SKP",
+    url: "/monitoring/general-subsection/skp-recap",
+    icon: ChevronsUp,
   },
 ];
 

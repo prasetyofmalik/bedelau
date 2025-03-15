@@ -12,6 +12,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import UserDashboard from "./pages/UserDashboard";
 import Monitoring from "./pages/Monitoring";
 import MailsRecap from "./pages/general-subsection/MailsRecap";
+import SKPRecap from "./pages/general-subsection/SKPRecap";
 import SsnM25 from "./pages/social-statistics/SsnM25";
 import SakF25 from "./pages/social-statistics/SakF25";
 import { MonitoringLayout } from "@/components/monitoring/MonitoringLayout";
@@ -52,6 +53,7 @@ const App = () => (
               }
             />
             <Route path="general-subsection/mails-recap" element={<ProtectedRoute><MailsRecap /></ProtectedRoute>} />
+            <Route path="general-subsection/skp-recap" element={<ProtectedRoute><SKPRecap /></ProtectedRoute>} />
             <Route
               path="social-statistics"
               element={
