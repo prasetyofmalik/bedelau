@@ -7,7 +7,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { ExternalLink, Pencil } from "lucide-react";
+import { ExternalLink, Pencil, Folder } from "lucide-react";
 import { SKPTableProps } from "./skp-types";
 
 export function SKPTable({ skps, onEdit, refetch }: SKPTableProps) {
@@ -65,7 +65,7 @@ export function SKPTable({ skps, onEdit, refetch }: SKPTableProps) {
           {skps.length === 0 ? (
             <TableRow>
               <TableCell
-                colSpan={5}
+                colSpan={6}
                 className="h-24 text-center text-muted-foreground"
               >
                 Tidak ada data dokumen SKP.

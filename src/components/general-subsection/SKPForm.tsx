@@ -30,6 +30,7 @@ import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
 import { SKPFormProps } from "./skp-types";
 import { useEmployees } from "./hooks/useEmployees";
+import { ExternalLink, Folder } from "lucide-react";
 
 export function SKPForm({
   isOpen,
@@ -132,13 +133,13 @@ export function SKPForm({
       const { data: userData } = await supabase.auth.getUser();
       const userId = userData.user?.id;
 
+      // Only save required fields to Supabase, exclude folder_link
       const skpData = {
         employee_id: userId,
         employee_name: data.employee_name,
         skp_type: data.skp_type,
         period: data.period,
         document_link: data.document_link,
-        folder_link: data.folder_link,
       };
 
       if (initialData?.id) {
@@ -195,6 +196,8 @@ export function SKPForm({
     form.setValue("employee_id", selectedOption?.value || "");
     form.setValue("employee_name", selectedOption?.label || "");
   };
+
+  const folderLink = form.watch("folder_link");
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -329,18 +332,23 @@ export function SKPForm({
               name="folder_link"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Link Folder SKP</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      placeholder="https://drive.google.com/drive/folders/..."
-                    />
-                  </FormControl>
+                  <FormLabel>Folder SKP</FormLabel>
+                  <div className="flex items-center space-x-2">
+                    <a
+                      href={folderLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center px-4 py-2 bg-gray-100 rounded-md text-blue-600 hover:text-blue-800 border border-gray-300"
+                    >
+                      <Folder className="mr-2 h-4 w-4" />
+                      Buka Folder Google Drive
+                      <ExternalLink className="ml-2 h-4 w-4" />
+                    </a>
+                  </div>
                   <FormDescription>
                     Gunakan folder ini untuk menyimpan dokumen SKP Anda secara
                     terstruktur
                   </FormDescription>
-                  <FormMessage />
                 </FormItem>
               )}
             />
