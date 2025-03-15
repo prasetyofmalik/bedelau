@@ -74,7 +74,8 @@ export function SKPForm({
 
   const generateFolderLink = (
     type: "yearly" | "monthly",
-    period: string
+    period: string,
+    docType: "skp" | "ckp" = "skp"
   ): string => {
     const baseLink = "https://drive.google.com/drive/folders/";
 
@@ -86,21 +87,41 @@ export function SKPForm({
       };
       return `${baseLink}${periodLinks[period] || period}`;
     } else {
-      const monthLinks: Record<string, string> = {
-        "01": "17MDMvWEqjNSuKfFf7Slp77bWfi_k4OX7",
-        "02": "1lfL_22cRzXzVBkSZ86RaBwGxUr3EAQqx",
-        "03": "1e1nuUtHqtnKgxUiS7w96QUs6hRfRsULf",
-        "04": "1W2gjwrw2bWvgwUS1FRzZuLB8_ppwTmlB",
-        "05": "1NonwxNHBu8Vt_xA8e8fsmLKV8P20MkmG",
-        "06": "1bIKyj7sBbRRg1FXf8WCtIGltAyJc7LMI",
-        "07": "1hd08kxogHcJqoheUtW-bBsIRIaA3tTgu",
-        "08": "1Ry-NvemBAgRvgbWafdZyp4JH6c_k4aYV",
-        "09": "1w2TQlvfHyRmb3bwiwC6FRvkgpvpQi9w0",
-        "10": "1iwJ_q-laTbLAvbz_tf_f6Eb0B0op86i8",
-        "11": "1L7e87ohaaQb6rnj_YMO8m0EBbGHanoCY",
-        "12": "1VCmhndPixoKj56K9Atv_ZtrOYgbyeFO5",
-      };
-      return `${baseLink}${monthLinks[period] || period}`;
+      // Monthly SKP and CKP folders
+      if (docType === "skp") {
+        const monthLinks: Record<string, string> = {
+          "01": "17MDMvWEqjNSuKfFf7Slp77bWfi_k4OX7",
+          "02": "1lfL_22cRzXzVBkSZ86RaBwGxUr3EAQqx",
+          "03": "1e1nuUtHqtnKgxUiS7w96QUs6hRfRsULf",
+          "04": "1W2gjwrw2bWvgwUS1FRzZuLB8_ppwTmlB",
+          "05": "1NonwxNHBu8Vt_xA8e8fsmLKV8P20MkmG",
+          "06": "1bIKyj7sBbRRg1FXf8WCtIGltAyJc7LMI",
+          "07": "1hd08kxogHcJqoheUtW-bBsIRIaA3tTgu",
+          "08": "1Ry-NvemBAgRvgbWafdZyp4JH6c_k4aYV",
+          "09": "1w2TQlvfHyRmb3bwiwC6FRvkgpvpQi9w0",
+          "10": "1iwJ_q-laTbLAvbz_tf_f6Eb0B0op86i8",
+          "11": "1L7e87ohaaQb6rnj_YMO8m0EBbGHanoCY",
+          "12": "1VCmhndPixoKj56K9Atv_ZtrOYgbyeFO5",
+        };
+        return `${baseLink}${monthLinks[period] || period}`;
+      } else {
+        // CKP folders - Using different folder IDs for CKP
+        const ckpMonthLinks: Record<string, string> = {
+          "01": "153KriCsYcedVuBYRurnhcS0HrACmiHjh",
+          "02": "1mSiX-8jdf-CcUQUO-NBjlS6tHxZsJNrQ",
+          "03": "1WIwCu_t5WZI8PAYcbgNtxFrUoXVBdx8_",
+          "04": "1UU81qSiCiC6aUIvTmO_svvj7rX55Yuib",
+          "05": "17RQnVP9Da-rbUPgrPyxe43zI5I1TfllH",
+          "06": "11K0gMXfNI-WrwfOz1RdBD4o0PGXoGgdf",
+          "07": "1R6mZC4hqJclwZnPixFJp_HCTsUnjrkhW",
+          "08": "1QBDunf5Y8G6zYyzSCk8nAs50o1CAZ9g4",
+          "09": "1CdnZe1WJ7cd3XH7EDQSnwJfLAJ7u1iA4",
+          "10": "1PmvBb5qskZN9rOJsv3e7Ee3-hTqK6f8W",
+          "11": "1WGYainxGrGQheJJg3fF8CduXakpV_UhV",
+          "12": "1_acIUNXzRF9IsqbjT7Jp-gE9w7ZSEKLI",
+        };
+        return `${baseLink}${ckpMonthLinks[period] || period}`;
+      }
     }
   };
 
@@ -187,11 +208,13 @@ export function SKPForm({
     form.setValue("employee_name", selectedOption?.label || "");
   };
 
-  const folderLink = generateFolderLink(type, period);
+  const skpFolderLink = generateFolderLink(type, period, "skp");
+  const ckpFolderLink =
+    type === "monthly" ? generateFolderLink(type, period, "ckp") : "";
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>
             {initialData?.id ? "Edit" : "Tambah"} Dokumen SKP{" "}
@@ -293,27 +316,49 @@ export function SKPForm({
               )}
             />
 
+            {/* SKP Folder Link */}
             <FormItem>
-              <FormLabel>
-                Folder {type === "yearly" ? "SKP" : "SKP/CKP"}
-              </FormLabel>
+              <FormLabel>Folder SKP</FormLabel>
               <div className="flex items-center space-x-2">
                 <a
-                  href={folderLink}
+                  href={skpFolderLink}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center px-4 py-2 bg-gray-100 rounded-md text-blue-600 hover:text-blue-800 border border-gray-300"
                 >
                   <Folder className="mr-2 h-4 w-4" />
-                  Buka Folder Google Drive
+                  Buka Folder SKP di Google Drive
                   <ExternalLink className="ml-2 h-4 w-4" />
                 </a>
               </div>
               <FormDescription>
-                Gunakan folder ini untuk menyimpan dokumen SKP
-                {type === "monthly" ? " dan CKP" : ""} Anda secara terstruktur
+                Gunakan folder ini untuk menyimpan dokumen SKP Anda secara
+                terstruktur
               </FormDescription>
             </FormItem>
+
+            {/* CKP Folder Link - Only for Monthly */}
+            {type === "monthly" && (
+              <FormItem>
+                <FormLabel>Folder CKP</FormLabel>
+                <div className="flex items-center space-x-2">
+                  <a
+                    href={ckpFolderLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center px-4 py-2 bg-gray-100 rounded-md text-blue-600 hover:text-blue-800 border border-gray-300"
+                  >
+                    <Folder className="mr-2 h-4 w-4" />
+                    Buka Folder CKP di Google Drive
+                    <ExternalLink className="ml-2 h-4 w-4" />
+                  </a>
+                </div>
+                <FormDescription>
+                  Gunakan folder ini untuk menyimpan dokumen CKP Anda secara
+                  terstruktur
+                </FormDescription>
+              </FormItem>
+            )}
 
             <FormField
               control={form.control}

@@ -9,6 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { useSKPDocuments } from "./hooks/useSKPDocuments";
 import { SKPForm } from "./SKPForm";
@@ -19,7 +20,9 @@ import { exportToExcel } from "@/utils/excelExport";
 export default function SKPSection() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isAddSKPOpen, setIsAddSKPOpen] = useState(false);
-  const [editingSKP, setEditingSKP] = useState<YearlySKP | MonthlySKP | null>(null);
+  const [editingSKP, setEditingSKP] = useState<YearlySKP | MonthlySKP | null>(
+    null
+  );
 
   // Default periods
   const [yearlyPeriod, setYearlyPeriod] = useState("penetapan");
@@ -47,13 +50,13 @@ export default function SKPSection() {
     const exportData = filteredSKPs.map((skp) => {
       const baseData = {
         "Nama Pegawai": skp.employee_name,
-        "Periode": getPeriodLabel(mainTab, skp.period),
+        Periode: getPeriodLabel(mainTab, skp.period),
         "SKP Link": (skp as any).skp_link,
         "Tanggal Upload": new Date(skp.created_at || "").toLocaleDateString(
           "id-ID"
         ),
       };
-      
+
       // Add CKP link for monthly SKPs
       if (mainTab === "monthly") {
         return {
@@ -61,7 +64,7 @@ export default function SKPSection() {
           "CKP Link": (skp as MonthlySKP).ckp_link || "-",
         };
       }
-      
+
       return baseData;
     });
 
@@ -113,17 +116,16 @@ export default function SKPSection() {
 
   return (
     <div className="space-y-6">
-      <div className="w-full mb-6">
-        <Select value={mainTab} onValueChange={(value: "yearly" | "monthly") => setMainTab(value)}>
-          <SelectTrigger className="w-full sm:w-[200px] bg-white">
-            <SelectValue placeholder="Pilih tipe..." />
-          </SelectTrigger>
-          <SelectContent className="bg-white">
-            <SelectItem value="yearly">SKP Tahunan</SelectItem>
-            <SelectItem value="monthly">SKP Bulanan</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
+      <Tabs
+        value={mainTab}
+        onValueChange={(value: "yearly" | "monthly") => setMainTab(value)}
+        className="w-full"
+      >
+        <TabsList className="mb-4">
+          <TabsTrigger value="yearly">SKP Tahunan</TabsTrigger>
+          <TabsTrigger value="monthly">SKP Bulanan</TabsTrigger>
+        </TabsList>
+      </Tabs>
 
       <div className="w-full mb-6">
         {mainTab === "yearly" ? (

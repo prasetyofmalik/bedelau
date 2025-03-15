@@ -49,38 +49,6 @@ export function SKPTable({ skps, onEdit, refetch, type }: SKPTableProps) {
     }
   };
 
-  const generateFolderLink = (
-    type: "yearly" | "monthly",
-    period: string
-  ): string => {
-    const baseLink = "https://drive.google.com/drive/folders/";
-
-    if (type === "yearly") {
-      const periodLinks: Record<string, string> = {
-        penetapan: "1-mho2qgn1d0O7TEDzhO_6nk1r0BdaqZa",
-        penilaian: "1Nn4yhH7dzZfuSRZC3RI2BYKC_nngL7B9",
-        evaluasi: "1S5r73B6X5AaQGvmJkdQlS6IeR7DDZKcD",
-      };
-      return `${baseLink}${periodLinks[period] || period}`;
-    } else {
-      const monthLinks: Record<string, string> = {
-        "01": "17MDMvWEqjNSuKfFf7Slp77bWfi_k4OX7",
-        "02": "1lfL_22cRzXzVBkSZ86RaBwGxUr3EAQqx",
-        "03": "1e1nuUtHqtnKgxUiS7w96QUs6hRfRsULf",
-        "04": "1W2gjwrw2bWvgwUS1FRzZuLB8_ppwTmlB",
-        "05": "1NonwxNHBu8Vt_xA8e8fsmLKV8P20MkmG",
-        "06": "1bIKyj7sBbRRg1FXf8WCtIGltAyJc7LMI",
-        "07": "1hd08kxogHcJqoheUtW-bBsIRIaA3tTgu",
-        "08": "1Ry-NvemBAgRvgbWafdZyp4JH6c_k4aYV",
-        "09": "1w2TQlvfHyRmb3bwiwC6FRvkgpvpQi9w0",
-        "10": "1iwJ_q-laTbLAvbz_tf_f6Eb0B0op86i8",
-        "11": "1L7e87ohaaQb6rnj_YMO8m0EBbGHanoCY",
-        "12": "1VCmhndPixoKj56K9Atv_ZtrOYgbyeFO5",
-      };
-      return `${baseLink}${monthLinks[period] || period}`;
-    }
-  };
-
   return (
     <div className="rounded-md border max-h-[60vh] overflow-auto">
       <Table>
@@ -91,7 +59,6 @@ export function SKPTable({ skps, onEdit, refetch, type }: SKPTableProps) {
             <TableHead className="py-2">Tanggal Upload</TableHead>
             <TableHead className="py-2">SKP</TableHead>
             {type === "monthly" && <TableHead className="py-2">CKP</TableHead>}
-            <TableHead className="py-2">Folder</TableHead>
             <TableHead className="py-2 text-right">Aksi</TableHead>
           </TableRow>
         </TableHeader>
@@ -124,7 +91,7 @@ export function SKPTable({ skps, onEdit, refetch, type }: SKPTableProps) {
                     rel="noopener noreferrer"
                     className="text-blue-600 hover:text-blue-800 flex items-center"
                   >
-                    Lihat Dokumen <ExternalLink className="ml-1 h-4 w-4" />
+                    Lihat SKP <ExternalLink className="ml-1 h-4 w-4" />
                   </a>
                 </TableCell>
                 {type === "monthly" && (
@@ -143,17 +110,6 @@ export function SKPTable({ skps, onEdit, refetch, type }: SKPTableProps) {
                     )}
                   </TableCell>
                 )}
-                <TableCell className="py-2">
-                  <a
-                    href={generateFolderLink(type, skp.period)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-600 hover:text-blue-800 flex items-center"
-                  >
-                    <Folder className="mr-1 h-4 w-4" />
-                    Buka
-                  </a>
-                </TableCell>
                 <TableCell className="py-2 text-right">
                   <Button
                     variant="ghost"

@@ -1,10 +1,4 @@
 import React from "react";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "../../components/ui/tabs";
 import SKPSection from "../../components/general-subsection/SKPSection";
 
 const SKPRecap: React.FC = () => {
