@@ -16,6 +16,7 @@ import { SKPForm } from "./SKPForm";
 import { SKPTable } from "./SKPTable";
 import { YearlySKP, MonthlySKP } from "./skp-types";
 import { exportToExcel } from "@/utils/excelExport";
+import { SKPDashboard } from "./SKPDashboard";
 
 export default function SKPSection() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -28,6 +29,9 @@ export default function SKPSection() {
   const [yearlyPeriod, setYearlyPeriod] = useState("penetapan");
   const [monthlyPeriod, setMonthlyPeriod] = useState("01");
   const [mainTab, setMainTab] = useState<"yearly" | "monthly">("yearly");
+  const [contentTab, setContentTab] = useState<"dashboard" | "documents">(
+    "dashboard"
+  );
 
   // Fetch data based on selected tabs
   const {
@@ -162,46 +166,68 @@ export default function SKPSection() {
         )}
       </div>
 
-      <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center">
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-center w-full sm:w-auto">
-          <Input
-            placeholder="Cari dokumen SKP..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full sm:w-[300px]"
-          />
-        </div>
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-          <Button
-            variant="outline"
-            className="w-full sm:w-auto"
-            onClick={handleExport}
-          >
-            <FileDown className="mr-2 h-4 w-4" />
-            Export
-          </Button>
-          <Button
-            onClick={() => setIsAddSKPOpen(true)}
-            className="w-full sm:w-auto"
-          >
-            <Plus className="mr-2 h-4 w-4" />
-            Tambah Dokumen
-          </Button>
-        </div>
-      </div>
+      <Tabs
+        value={contentTab}
+        onValueChange={(value: "dashboard" | "documents") =>
+          setContentTab(value)
+        }
+        className="w-full"
+      >
+        <TabsList className="mb-4">
+          <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
+          <TabsTrigger value="documents">Dokumen</TabsTrigger>
+        </TabsList>
 
-      <div className="border rounded-lg mt-6 overflow-y-auto flex-grow">
-        {isLoading ? (
-          <div className="p-8 text-center">Loading...</div>
-        ) : (
-          <SKPTable
-            skps={filteredSKPs}
-            onEdit={handleEdit}
-            refetch={refetch}
+        <TabsContent value="dashboard" className="mt-6">
+          <SKPDashboard
             type={mainTab}
+            period={mainTab === "yearly" ? yearlyPeriod : monthlyPeriod}
           />
-        )}
-      </div>
+        </TabsContent>
+
+        <TabsContent value="documents" className="mt-6">
+          <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center w-full sm:w-auto">
+              <Input
+                placeholder="Cari dokumen SKP..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full sm:w-[300px]"
+              />
+            </div>
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+              <Button
+                variant="outline"
+                className="w-full sm:w-auto"
+                onClick={handleExport}
+              >
+                <FileDown className="mr-2 h-4 w-4" />
+                Export
+              </Button>
+              <Button
+                onClick={() => setIsAddSKPOpen(true)}
+                className="w-full sm:w-auto"
+              >
+                <Plus className="mr-2 h-4 w-4" />
+                Tambah Dokumen
+              </Button>
+            </div>
+          </div>
+
+          <div className="border rounded-lg mt-6 overflow-y-auto flex-grow">
+            {isLoading ? (
+              <div className="p-8 text-center">Loading...</div>
+            ) : (
+              <SKPTable
+                skps={filteredSKPs}
+                onEdit={handleEdit}
+                refetch={refetch}
+                type={mainTab}
+              />
+            )}
+          </div>
+        </TabsContent>
+      </Tabs>
 
       <SKPForm
         isOpen={isAddSKPOpen}
