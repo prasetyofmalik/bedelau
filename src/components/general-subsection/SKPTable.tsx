@@ -1,16 +1,15 @@
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { ExternalLink, Pencil, Folder } from "lucide-react";
+import { ExternalLink, Pencil } from "lucide-react";
 import { SKPTableProps, MonthlySKP } from "./skp-types";
+import Paper from '@mui/material/Paper';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
 
-export function SKPTable({ skps, onEdit, refetch, type }: SKPTableProps) {
+export function SKPTable({ skps, onEdit, type }: SKPTableProps) {
   const formatDate = (dateString?: string) => {
     if (!dateString) return "-";
     const date = new Date(dateString);
@@ -50,80 +49,76 @@ export function SKPTable({ skps, onEdit, refetch, type }: SKPTableProps) {
   };
 
   return (
-    <div className="rounded-md border max-h-[60vh] overflow-auto">
-      <Table>
-        <TableHeader className="bg-slate-100">
-          <TableRow>
-            <TableHead className="py-2">Nama Pegawai</TableHead>
-            <TableHead className="py-2">Periode</TableHead>
-            <TableHead className="py-2">Tanggal Upload</TableHead>
-            <TableHead className="py-2">SKP</TableHead>
-            {type === "monthly" && <TableHead className="py-2">CKP</TableHead>}
-            <TableHead className="py-2 text-right">Aksi</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {skps.length === 0 ? (
+    <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+      <TableContainer sx={{ maxHeight: '60vh' }}>
+        <Table stickyHeader aria-label="sticky table">
+          <TableHead>
             <TableRow>
-              <TableCell
-                colSpan={type === "monthly" ? 7 : 6}
-                className="h-24 text-center text-muted-foreground"
-              >
-                Tidak ada data dokumen SKP.
-              </TableCell>
+              <TableCell sx={{ fontWeight: 'bold', backgroundColor: '#f8f9fa', py: 2 }}>Nama Pegawai</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', backgroundColor: '#f8f9fa', py: 2 }}>Periode</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', backgroundColor: '#f8f9fa', py: 2 }}>Tanggal Upload</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', backgroundColor: '#f8f9fa', py: 2 }}>SKP</TableCell>
+              {type === "monthly" && <TableCell sx={{ fontWeight: 'bold', backgroundColor: '#f8f9fa', py: 2 }}>CKP</TableCell>}
+              <TableCell sx={{ fontWeight: 'bold', backgroundColor: '#f8f9fa', py: 2, textAlign: 'right' }}>Aksi</TableCell>
             </TableRow>
-          ) : (
-            skps.map((skp) => (
-              <TableRow key={skp.id}>
-                <TableCell className="py-2 font-medium">
-                  {skp.employee_name}
-                </TableCell>
-                <TableCell className="py-2">
-                  {getPeriodLabel(type, skp.period)}
-                </TableCell>
-                <TableCell className="py-2">
-                  {formatDate(skp.created_at)}
-                </TableCell>
-                <TableCell className="py-2">
-                  <a
-                    href={(skp as any).skp_link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-600 hover:text-blue-800 flex items-center"
-                  >
-                    Lihat SKP <ExternalLink className="ml-1 h-4 w-4" />
-                  </a>
-                </TableCell>
-                {type === "monthly" && (
-                  <TableCell className="py-2">
-                    {(skp as MonthlySKP).ckp_link ? (
-                      <a
-                        href={(skp as MonthlySKP).ckp_link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-600 hover:text-blue-800 flex items-center"
-                      >
-                        Lihat CKP <ExternalLink className="ml-1 h-4 w-4" />
-                      </a>
-                    ) : (
-                      <span className="text-gray-400">Tidak ada</span>
-                    )}
-                  </TableCell>
-                )}
-                <TableCell className="py-2 text-right">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => onEdit(skp)}
-                  >
-                    <Pencil className="h-4 w-4" />
-                  </Button>
+          </TableHead>
+          <TableBody>
+            {skps.length === 0 ? (
+              <TableRow>
+                <TableCell
+                  colSpan={type === "monthly" ? 6 : 5}
+                  sx={{ height: 96, textAlign: 'center', color: 'text.secondary' }}
+                >
+                  Tidak ada data dokumen SKP.
                 </TableCell>
               </TableRow>
-            ))
-          )}
-        </TableBody>
-      </Table>
-    </div>
+            ) : (
+              skps.map((skp) => (
+                <TableRow key={skp.id} hover>
+                  <TableCell sx={{ py: 2 }}>{skp.employee_name}</TableCell>
+                  <TableCell sx={{ py: 2 }}>{getPeriodLabel(type, skp.period)}</TableCell>
+                  <TableCell sx={{ py: 2 }}>{formatDate(skp.created_at)}</TableCell>
+                  <TableCell sx={{ py: 2 }}>
+                    <a
+                      href={(skp as any).skp_link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ color: '#3b82f6', display: 'flex', alignItems: 'center' }}
+                    >
+                      Lihat SKP <ExternalLink style={{ marginLeft: 4, width: 16, height: 16 }} />
+                    </a>
+                  </TableCell>
+                  {type === "monthly" && (
+                    <TableCell sx={{ py: 2 }}>
+                      {(skp as MonthlySKP).ckp_link ? (
+                        <a
+                          href={(skp as MonthlySKP).ckp_link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{ color: '#3b82f6', display: 'flex', alignItems: 'center' }}
+                        >
+                          Lihat CKP <ExternalLink style={{ marginLeft: 4, width: 16, height: 16 }} />
+                        </a>
+                      ) : (
+                        <span style={{ color: '#9ca3af' }}>Tidak ada</span>
+                      )}
+                    </TableCell>
+                  )}
+                  <TableCell sx={{ py: 2, textAlign: 'right' }}>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => onEdit(skp)}
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Paper>
   );
 }
