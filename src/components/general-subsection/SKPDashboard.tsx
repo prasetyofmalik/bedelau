@@ -1,4 +1,3 @@
-// import React from "react";
 import {
   ChartContainer,
   ChartTooltip,
@@ -98,21 +97,21 @@ export function SKPDashboard({ type, period }: SKPDashboardProps) {
             {getLabelText()}
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="w-full md:w-1/2">
+        <CardContent className="p-2 md:p-6">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="w-full md:w-3/5 h-[350px]">
               <ChartContainer
                 config={chartConfig}
-                className="aspect-square w-full max-w-md mx-auto"
+                className="w-full h-full"
               >
                 <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
+                  <PieChart margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
                     <Pie
                       data={submissionData}
                       cx="50%"
                       cy="50%"
                       labelLine={false}
-                      outerRadius={80}
+                      outerRadius={130}
                       fill="#8884d8"
                       dataKey="value"
                       nameKey="name"
@@ -135,7 +134,7 @@ export function SKPDashboard({ type, period }: SKPDashboardProps) {
                 </ResponsiveContainer>
               </ChartContainer>
             </div>
-            <div className="w-full md:w-1/2">
+            <div className="w-full md:w-2/5">
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <span className="flex items-center gap-2">
