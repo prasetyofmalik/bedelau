@@ -1,4 +1,4 @@
-import React from "react";
+// import React from "react";
 import {
   ChartContainer,
   ChartTooltip,
@@ -25,23 +25,24 @@ export function SKPDashboard({ type, period }: SKPDashboardProps) {
   // Define colors for the chart
   const COLORS = ["#4f46e5", "#f43f5e", "#10b981", "#f59e0b"];
 
-  // Calculate stats
   const totalEmployees = employees.length;
-  const employeesWithSkp = new Set(skpDocuments.map((skp) => skp.employee_id))
-    .size;
+  
+  // Get unique employee names from the skpDocuments
+  const employeeNamesWithSkp = new Set(skpDocuments.map((skp) => skp.employee_name));
+  const employeesWithSkp = employeeNamesWithSkp.size;
   const employeesWithoutSkp = totalEmployees - employeesWithSkp;
 
   // Prepare data for the charts
   const submissionData = [
     {
-      name: "Sudah Mengumpulkan",
+      name: "Sudah",
       value: employeesWithSkp,
-      color: "#4f46e5",
+      color: "#7cb305",
     },
     {
-      name: "Belum Mengumpulkan",
+      name: "Belum",
       value: employeesWithoutSkp,
-      color: "#f43f5e",
+      color: "#faad14",
     },
   ];
 
@@ -76,11 +77,11 @@ export function SKPDashboard({ type, period }: SKPDashboardProps) {
   const chartConfig = {
     submitted: {
       label: "Submitted",
-      color: "#4f46e5",
+      color: "#7cb305",
     },
     notSubmitted: {
       label: "Not Submitted",
-      color: "#f43f5e",
+      color: "#faad14",
     },
   };
 
@@ -126,7 +127,7 @@ export function SKPDashboard({ type, period }: SKPDashboardProps) {
                     <ChartTooltip
                       content={
                         <ChartTooltipContent
-                          formatter={(value) => [`${value} pegawai`, "Jumlah"]}
+                          formatter={(value) => [`${value} pegawai`]}
                         />
                       }
                     />
@@ -138,7 +139,7 @@ export function SKPDashboard({ type, period }: SKPDashboardProps) {
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <span className="flex items-center gap-2">
-                    <div className="h-3 w-3 rounded-full bg-indigo-600"></div>
+                    <div className="h-3 w-3 rounded-full bg-green-500"></div>
                     <span>Sudah Mengumpulkan</span>
                   </span>
                   <span className="font-medium">
@@ -149,7 +150,7 @@ export function SKPDashboard({ type, period }: SKPDashboardProps) {
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="flex items-center gap-2">
-                    <div className="h-3 w-3 rounded-full bg-rose-500"></div>
+                    <div className="h-3 w-3 rounded-full bg-yellow-500"></div>
                     <span>Belum Mengumpulkan</span>
                   </span>
                   <span className="font-medium">

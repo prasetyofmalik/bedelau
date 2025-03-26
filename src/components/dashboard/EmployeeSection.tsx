@@ -47,7 +47,7 @@ export function EmployeeSection() {
               <TableHead className="text-center">Rekening</TableHead>
               <TableHead className="text-center">NPWP</TableHead>
               <TableHead className="text-center">NIK</TableHead>
-              <TableHead className="text-center">Email</TableHead>
+              <TableHead className="text-center">Username</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>

@@ -31,7 +31,7 @@ export function UserEmployeeDirectory() {
             <TableRow>
               <TableHead className="text-center">Nama</TableHead>
               <TableHead className="text-center">NIP</TableHead>
-              <TableHead className="text-center">Email</TableHead>
+              <TableHead className="text-center">Username</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
