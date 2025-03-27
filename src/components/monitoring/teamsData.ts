@@ -1,4 +1,4 @@
-import { Notebook, Coffee, Tablet, IdCard, Calculator, Laptop, Mails, ChevronsUp, ClipboardList, BarChart3 } from "lucide-react";
+import { Notebook, Coffee, Tablet, IdCard, Calculator, Laptop, Mails, ChevronsUp, ClipboardList, BarChart3, FileSpreadsheet } from "lucide-react";
 
 export const teams = [
   {
@@ -56,6 +56,11 @@ const generalSubsectionItems = [
     title: "Rekap SKP",
     url: "/monitoring/general-subsection/skp-recap",
     icon: ChevronsUp,
+  },
+  {
+    title: "Evaluasi Tim Kerja",
+    url: "/monitoring/general-subsection/team-evaluation",
+    icon: FileSpreadsheet,
   },
 ];
 
