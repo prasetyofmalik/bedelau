@@ -26,7 +26,7 @@ export function WeeklySummary({ summaries }: WeeklySummaryProps) {
     return (
       <div className="flex items-center justify-center p-8 text-center">
         <div>
-          <p className="text-muted-foreground">No summaries found for this period.</p>
+          <p className="text-muted-foreground">Tidak ada ringkasan yang ditemukan untuk periode ini.</p>
         </div>
       </div>
     );
@@ -41,7 +41,7 @@ export function WeeklySummary({ summaries }: WeeklySummaryProps) {
               <div>
                 <CardTitle>{summary.team_name}</CardTitle>
                 <CardDescription>
-                  Week of {format(parseISO(summary.week_start), "PPP")} - {format(parseISO(summary.week_end), "PPP")}
+                  Minggu {format(parseISO(summary.week_start), "PPP")} - {format(parseISO(summary.week_end), "PPP")}
                 </CardDescription>
               </div>
             </div>
@@ -53,7 +53,7 @@ export function WeeklySummary({ summaries }: WeeklySummaryProps) {
                   <AccordionTrigger className="py-2">
                     <div className="flex items-center gap-2">
                       <AwardIcon className="h-5 w-5 text-green-500" />
-                      <span>Achievements ({summary.achievements.length})</span>
+                      <span>Pencapaian ({summary.achievements.length})</span>
                     </div>
                   </AccordionTrigger>
                   <AccordionContent>
@@ -73,7 +73,7 @@ export function WeeklySummary({ summaries }: WeeklySummaryProps) {
                   <AccordionTrigger className="py-2">
                     <div className="flex items-center gap-2">
                       <AlertTriangleIcon className="h-5 w-5 text-amber-500" />
-                      <span>Challenges ({summary.challenges.length})</span>
+                      <span>Tantangan ({summary.challenges.length})</span>
                     </div>
                   </AccordionTrigger>
                   <AccordionContent>
@@ -93,7 +93,7 @@ export function WeeklySummary({ summaries }: WeeklySummaryProps) {
                   <AccordionTrigger className="py-2">
                     <div className="flex items-center gap-2">
                       <ArrowUpIcon className="h-5 w-5 text-blue-500" />
-                      <span>Improvements ({summary.improvements.length})</span>
+                      <span>Perbaikan ({summary.improvements.length})</span>
                     </div>
                   </AccordionTrigger>
                   <AccordionContent>

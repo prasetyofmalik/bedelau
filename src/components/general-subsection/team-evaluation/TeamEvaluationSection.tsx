@@ -100,10 +100,10 @@ export default function TeamEvaluationSection() {
             onValueChange={(value) => setFilterTeamId(value === "all" ? undefined : parseInt(value))}
           >
             <SelectTrigger className="w-full md:w-[200px]">
-              <SelectValue placeholder="Select team" />
+              <SelectValue placeholder="Pilih tim" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Teams</SelectItem>
+              <SelectItem value="all">Semua Tim</SelectItem>
               {teams.map((team) => (
                 <SelectItem key={team.id} value={team.id.toString()}>
                   {team.text}
@@ -118,8 +118,8 @@ export default function TeamEvaluationSection() {
             className="w-full md:w-auto"
           >
             <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="daily">Daily View</TabsTrigger>
-              <TabsTrigger value="weekly">Weekly Summary</TabsTrigger>
+              <TabsTrigger value="daily">Tampilan Harian</TabsTrigger>
+              <TabsTrigger value="weekly">Ringkasan Mingguan</TabsTrigger>
             </TabsList>
           </Tabs>
         </div>
@@ -128,12 +128,12 @@ export default function TeamEvaluationSection() {
           <DialogTrigger asChild>
             <Button>
               <PlusCircle className="mr-2 h-4 w-4" />
-              Add Evaluation
+              Tambah Evaluasi
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[500px]">
             <DialogHeader>
-              <DialogTitle>Add Evaluation</DialogTitle>
+              <DialogTitle>Tambah Evaluasi</DialogTitle>
             </DialogHeader>
             <EvaluationForm onSuccess={() => setAddEvalDialogOpen(false)} />
           </DialogContent>
@@ -210,14 +210,14 @@ export default function TeamEvaluationSection() {
             {activeDay ? (
               <>
                 <h3 className="text-lg font-medium mb-4">
-                  Evaluations for {format(parseISO(activeDay), "PPPP")}
+                  Evaluasi untuk {format(parseISO(activeDay), "PPPP")}
                 </h3>
                 <EvaluationList evaluations={getDailyEvaluations(activeDay)} />
               </>
             ) : (
               <Card>
                 <CardContent className="p-6 text-center">
-                  <p className="text-muted-foreground">Select a day to view evaluations</p>
+                  <p className="text-muted-foreground">Pilih tanggal untuk melihat evaluasi</p>
                 </CardContent>
               </Card>
             )}

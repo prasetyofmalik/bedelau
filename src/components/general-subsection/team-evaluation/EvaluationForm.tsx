@@ -123,14 +123,14 @@ export function EvaluationForm({ onSuccess, initialData }: EvaluationFormProps) 
           name="team_id"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Team</FormLabel>
+              <FormLabel>Tim</FormLabel>
               <Select 
                 onValueChange={field.onChange} 
                 defaultValue={field.value}
               >
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select team" />
+                    <SelectValue placeholder="Pilih tim" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
@@ -151,7 +151,7 @@ export function EvaluationForm({ onSuccess, initialData }: EvaluationFormProps) 
           name="evaluation_date"
           render={({ field }) => (
             <FormItem className="flex flex-col">
-              <FormLabel>Date</FormLabel>
+              <FormLabel>Tanggal</FormLabel>
               <Popover>
                 <PopoverTrigger asChild>
                   <FormControl>
@@ -165,7 +165,7 @@ export function EvaluationForm({ onSuccess, initialData }: EvaluationFormProps) 
                       {field.value ? (
                         format(field.value, "PPP")
                       ) : (
-                        <span>Pick a date</span>
+                        <span>Pilih tanggal</span>
                       )}
                       <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                     </Button>
@@ -193,20 +193,20 @@ export function EvaluationForm({ onSuccess, initialData }: EvaluationFormProps) 
           name="category"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Category</FormLabel>
+              <FormLabel>Kategori</FormLabel>
               <Select 
                 onValueChange={field.onChange} 
                 defaultValue={field.value}
               >
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select category" />
+                    <SelectValue placeholder="Pilih kategori" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="achievement">Achievement</SelectItem>
-                  <SelectItem value="challenge">Challenge</SelectItem>
-                  <SelectItem value="improvement">Improvement for Next Time</SelectItem>
+                  <SelectItem value="achievement">Pencapaian</SelectItem>
+                  <SelectItem value="challenge">Tantangan</SelectItem>
+                  <SelectItem value="improvement">Perbaikan untuk Kedepannya</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -219,10 +219,10 @@ export function EvaluationForm({ onSuccess, initialData }: EvaluationFormProps) 
           name="content"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Content</FormLabel>
+              <FormLabel>Konten</FormLabel>
               <FormControl>
                 <Textarea
-                  placeholder="Enter your evaluation notes here..."
+                  placeholder="Masukkan catatan evaluasi anda di sini..."
                   className="min-h-[120px]"
                   {...field}
                 />
@@ -233,7 +233,7 @@ export function EvaluationForm({ onSuccess, initialData }: EvaluationFormProps) 
         />
 
         <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "Submitting..." : initialData ? "Update Evaluation" : "Add Evaluation"}
+          {isSubmitting ? "Mengirim..." : initialData ? "Perbarui Evaluasi" : "Tambah Evaluasi"}
         </Button>
       </form>
     </Form>
