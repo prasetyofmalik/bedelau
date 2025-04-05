@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { format, parseISO, addDays, subDays, subWeeks, startOfWeek, endOfWeek } from "date-fns";
+import { format, parseISO, addDays, subDays, subWeeks, startOfWeek, endOfWeek, isSameDay, isWithinInterval } from "date-fns";
+import { id } from "date-fns/locale";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -41,9 +42,14 @@ export default function TeamEvaluationSection() {
       weekDates: currentRange.weekDates.map(wd => ({
         ...wd,
         date: format(subDays(parseISO(wd.date), 7), "yyyy-MM-dd"),
+        dayName: format(subDays(parseISO(wd.date), 7), "EEE", { locale: id }),
+        dayNumber: format(subDays(parseISO(wd.date), 7), "d"),
         isToday: format(subDays(parseISO(wd.date), 7), "yyyy-MM-dd") === format(new Date(), "yyyy-MM-dd"),
       })),
     });
+    
+    // When changing week, set active day to null to reset selection
+    setActiveDay(null);
   };
 
   const handleNextWeek = () => {
@@ -56,9 +62,14 @@ export default function TeamEvaluationSection() {
       weekDates: currentRange.weekDates.map(wd => ({
         ...wd,
         date: format(addDays(parseISO(wd.date), 7), "yyyy-MM-dd"),
+        dayName: format(addDays(parseISO(wd.date), 7), "EEE", { locale: id }),
+        dayNumber: format(addDays(parseISO(wd.date), 7), "d"),
         isToday: format(addDays(parseISO(wd.date), 7), "yyyy-MM-dd") === format(new Date(), "yyyy-MM-dd"),
       })),
     });
+    
+    // When changing week, set active day to null to reset selection
+    setActiveDay(null);
   };
 
   const handleDateChange = (date: Date | undefined) => {
@@ -71,7 +82,7 @@ export default function TeamEvaluationSection() {
         const currentDate = addDays(newWeekStart, i);
         weekDates.push({
           date: format(currentDate, 'yyyy-MM-dd'),
-          dayName: format(currentDate, 'EEE'),
+          dayName: format(currentDate, 'EEE', { locale: id }),
           dayNumber: format(currentDate, 'd'),
           isToday: format(currentDate, 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd'),
         });
@@ -82,6 +93,9 @@ export default function TeamEvaluationSection() {
         weekEnd: format(newWeekEnd, 'yyyy-MM-dd'),
         weekDates,
       });
+      
+      // Set active day to the selected date
+      setActiveDay(format(date, 'yyyy-MM-dd'));
     }
   };
 
@@ -91,6 +105,12 @@ export default function TeamEvaluationSection() {
 
   const [activeDay, setActiveDay] = useState<string | null>(null);
 
+  // Creating a date range for the selected week to use in Calendar's modifiers
+  const weekRangeDates = activeDay ? {
+    from: parseISO(currentRange.weekStart),
+    to: parseISO(currentRange.weekEnd)
+  } : undefined;
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
@@ -99,11 +119,11 @@ export default function TeamEvaluationSection() {
             value={filterTeamId ? filterTeamId.toString() : "all"}
             onValueChange={(value) => setFilterTeamId(value === "all" ? undefined : parseInt(value))}
           >
-            <SelectTrigger className="w-full md:w-[200px]">
-              <SelectValue placeholder="Select team" />
+            <SelectTrigger className="bg-white w-full md:w-[200px]">
+              <SelectValue placeholder="Pilih tim" />
             </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Teams</SelectItem>
+            <SelectContent className="bg-white">
+              <SelectItem value="all">Semua Tim</SelectItem>
               {teams.map((team) => (
                 <SelectItem key={team.id} value={team.id.toString()}>
                   {team.text}
@@ -118,8 +138,8 @@ export default function TeamEvaluationSection() {
             className="w-full md:w-auto"
           >
             <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="daily">Daily View</TabsTrigger>
-              <TabsTrigger value="weekly">Weekly Summary</TabsTrigger>
+              <TabsTrigger value="daily">Tampilan Harian</TabsTrigger>
+              <TabsTrigger value="weekly">Ringkasan Mingguan</TabsTrigger>
             </TabsList>
           </Tabs>
         </div>
@@ -128,12 +148,12 @@ export default function TeamEvaluationSection() {
           <DialogTrigger asChild>
             <Button>
               <PlusCircle className="mr-2 h-4 w-4" />
-              Add Evaluation
+              Tambah Evaluasi
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[500px]">
             <DialogHeader>
-              <DialogTitle>Add Evaluation</DialogTitle>
+              <DialogTitle>Tambah Evaluasi</DialogTitle>
             </DialogHeader>
             <EvaluationForm onSuccess={() => setAddEvalDialogOpen(false)} />
           </DialogContent>
@@ -146,10 +166,10 @@ export default function TeamEvaluationSection() {
         </Button>
         <div className="flex items-center gap-2">
           <span className="hidden sm:inline font-medium">
-            {format(parseISO(currentRange.weekStart), "MMMM d")} - {format(parseISO(currentRange.weekEnd), "MMMM d, yyyy")}
+            {format(parseISO(currentRange.weekStart), "d MMMM", { locale: id })} - {format(parseISO(currentRange.weekEnd), "d MMMM yyyy", { locale: id })}
           </span>
           <span className="sm:hidden font-medium">
-            {format(parseISO(currentRange.weekStart), "MMM d")} - {format(parseISO(currentRange.weekEnd), "MMM d")}
+            {format(parseISO(currentRange.weekStart), "d MMM", { locale: id })} - {format(parseISO(currentRange.weekEnd), "d MMM", { locale: id })}
           </span>
           <Popover>
             <PopoverTrigger asChild>
@@ -157,12 +177,19 @@ export default function TeamEvaluationSection() {
                 <CalendarIcon className="h-4 w-4" />
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-auto p-0">
+            <PopoverContent className="w-auto p-0 bg-white">
               <Calendar
                 mode="single"
-                selected={parseISO(currentRange.weekStart)}
+                selected={activeDay ? parseISO(activeDay) : undefined}
                 onSelect={handleDateChange}
                 initialFocus
+                locale={id}
+                modifiers={
+                  weekRangeDates ? { range: weekRangeDates } : undefined
+                }
+                modifiersStyles={{
+                  range: { backgroundColor: "rgba(10, 102, 194, 0.75)" }
+                }}
               />
             </PopoverContent>
           </Popover>
@@ -190,17 +217,18 @@ export default function TeamEvaluationSection() {
                 className={cn(
                   "flex-col h-auto py-2",
                   day.isToday && "border-primary",
-                  activeDay === day.date && "bg-muted",
+                  activeDay === day.date ? "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground" : "",
                   day.date === format(new Date(), "yyyy-MM-dd") && "border-primary"
                 )}
                 onClick={() => setActiveDay(day.date)}
               >
                 <span className="text-xs">{day.dayName}</span>
-                <span className={cn("text-lg", day.isToday && "text-primary font-bold")}>
+                <span className={cn("text-lg", day.isToday && "font-bold")}>
                   {day.dayNumber}
                 </span>
                 {getDailyEvaluations(day.date).length > 0 && (
-                  <span className="mt-1 h-1.5 w-1.5 rounded-full bg-primary"></span>
+                  <span className={cn("mt-1 h-1.5 w-1.5 rounded-full", 
+                    activeDay === day.date ? "bg-primary-foreground" : "bg-primary")}></span>
                 )}
               </Button>
             ))}
@@ -210,14 +238,14 @@ export default function TeamEvaluationSection() {
             {activeDay ? (
               <>
                 <h3 className="text-lg font-medium mb-4">
-                  Evaluations for {format(parseISO(activeDay), "PPPP")}
+                  Evaluasi untuk {format(parseISO(activeDay), "PPPP", { locale: id })}
                 </h3>
                 <EvaluationList evaluations={getDailyEvaluations(activeDay)} />
               </>
             ) : (
               <Card>
                 <CardContent className="p-6 text-center">
-                  <p className="text-muted-foreground">Select a day to view evaluations</p>
+                  <p className="text-muted-foreground">Pilih tanggal untuk melihat evaluasi</p>
                 </CardContent>
               </Card>
             )}

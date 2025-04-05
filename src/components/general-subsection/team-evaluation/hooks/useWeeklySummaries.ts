@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { startOfWeek, endOfWeek, format, parseISO, addDays } from "date-fns";
+import { id } from "date-fns/locale";
 import { TeamEvaluation, WeeklySummary } from "../types";
 
 export const useWeeklySummaries = (evaluations: TeamEvaluation[] = []) => {
@@ -29,6 +30,10 @@ export const useWeeklySummaries = (evaluations: TeamEvaluation[] = []) => {
 
       const summary = summariesMap.get(key)!;
       
+      // Since we're temporarily not using categories, place all evaluations in achievements
+      summary.achievements.push(evaluation.content);
+      
+      /* Original category-based code, commented out temporarily
       switch (evaluation.category) {
         case 'achievement':
           summary.achievements.push(evaluation.content);
@@ -40,6 +45,7 @@ export const useWeeklySummaries = (evaluations: TeamEvaluation[] = []) => {
           summary.improvements.push(evaluation.content);
           break;
       }
+      */
     });
 
     return Array.from(summariesMap.values()).sort((a, b) => 
@@ -60,7 +66,7 @@ export const getCurrentWeekDates = () => {
     const date = addDays(weekStart, i);
     weekDates.push({
       date: format(date, 'yyyy-MM-dd'),
-      dayName: format(date, 'EEE'),
+      dayName: format(date, 'EEE', { locale: id }),
       dayNumber: format(date, 'd'),
       isToday: format(date, 'yyyy-MM-dd') === format(today, 'yyyy-MM-dd'),
     });

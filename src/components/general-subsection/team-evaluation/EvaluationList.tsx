@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { format, parseISO } from "date-fns";
+import { id } from "date-fns/locale";
 import {
   Card,
   CardContent,
@@ -71,11 +72,11 @@ export function EvaluationList({ evaluations }: EvaluationListProps) {
   const getCategoryBadge = (category: string) => {
     switch (category) {
       case "achievement":
-        return <Badge className="bg-green-500">Achievement</Badge>;
+        return <Badge className="bg-green-500">Pencapaian</Badge>;
       case "challenge":
-        return <Badge className="bg-amber-500">Challenge</Badge>;
+        return <Badge className="bg-amber-500">Tantangan</Badge>;
       case "improvement":
-        return <Badge className="bg-blue-500">Improvement</Badge>;
+        return <Badge className="bg-blue-500">Perbaikan</Badge>;
       default:
         return <Badge>{category}</Badge>;
     }
@@ -85,7 +86,7 @@ export function EvaluationList({ evaluations }: EvaluationListProps) {
     return (
       <div className="flex items-center justify-center p-8 text-center">
         <div>
-          <p className="text-muted-foreground">No evaluations found for this period.</p>
+          <p className="text-muted-foreground">Tidak ada evaluasi yang ditemukan untuk periode ini.</p>
         </div>
       </div>
     );
@@ -100,7 +101,7 @@ export function EvaluationList({ evaluations }: EvaluationListProps) {
               <div>
                 <CardTitle className="text-lg">{evaluation.team_name}</CardTitle>
                 <CardDescription>
-                  {format(parseISO(evaluation.evaluation_date), "PPP")}
+                  {format(parseISO(evaluation.evaluation_date), "PPPP", { locale: id })}
                 </CardDescription>
               </div>
               {currentUserId === evaluation.created_by && (
@@ -128,7 +129,7 @@ export function EvaluationList({ evaluations }: EvaluationListProps) {
                       }}
                     >
                       <Trash2 className="mr-2 h-4 w-4" />
-                      Delete
+                      Hapus
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -140,7 +141,7 @@ export function EvaluationList({ evaluations }: EvaluationListProps) {
             <p className="text-sm mt-2 whitespace-pre-wrap">{evaluation.content}</p>
           </CardContent>
           <CardFooter className="pt-0 text-xs text-muted-foreground">
-            Added {format(parseISO(evaluation.created_at), "PPP 'at' h:mm a")}
+            Ditambahkan {format(parseISO(evaluation.created_at), "PPPP 'pada' h:mm a", { locale: id })}
           </CardFooter>
         </Card>
       ))}
@@ -148,19 +149,19 @@ export function EvaluationList({ evaluations }: EvaluationListProps) {
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogTitle>Apakah anda yakin?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the
-              evaluation and remove it from the system.
+              Tindakan ini tidak dapat dibatalkan. Ini akan menghapus evaluasi secara permanen
+              dan menghapusnya dari sistem.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>Batal</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDelete}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              Delete
+              Hapus
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -169,7 +170,7 @@ export function EvaluationList({ evaluations }: EvaluationListProps) {
       <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
-            <DialogTitle>Edit Evaluation</DialogTitle>
+            <DialogTitle>Edit Evaluasi</DialogTitle>
           </DialogHeader>
           {selectedEvaluation && (
             <EvaluationForm 
