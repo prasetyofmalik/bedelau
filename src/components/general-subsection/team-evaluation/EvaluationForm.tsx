@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { format } from "date-fns";
+import { id } from "date-fns/locale";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -129,11 +130,11 @@ export function EvaluationForm({ onSuccess, initialData }: EvaluationFormProps) 
                 defaultValue={field.value}
               >
                 <FormControl>
-                  <SelectTrigger>
+                  <SelectTrigger className="bg-white">
                     <SelectValue placeholder="Pilih tim" />
                   </SelectTrigger>
                 </FormControl>
-                <SelectContent>
+                <SelectContent className="bg-white">
                   {teams.map((team) => (
                     <SelectItem key={team.id} value={team.id.toString()}>
                       {team.text}
@@ -163,7 +164,7 @@ export function EvaluationForm({ onSuccess, initialData }: EvaluationFormProps) 
                       )}
                     >
                       {field.value ? (
-                        format(field.value, "PPP")
+                        format(field.value, "PPPP", { locale: id })
                       ) : (
                         <span>Pilih tanggal</span>
                       )}
@@ -180,6 +181,7 @@ export function EvaluationForm({ onSuccess, initialData }: EvaluationFormProps) 
                       date > new Date() || date < new Date("2023-01-01")
                     }
                     initialFocus
+                    locale={id}
                   />
                 </PopoverContent>
               </Popover>

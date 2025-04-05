@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { startOfWeek, endOfWeek, format, parseISO, addDays } from "date-fns";
+import { id } from "date-fns/locale";
 import { TeamEvaluation, WeeklySummary } from "../types";
 
 export const useWeeklySummaries = (evaluations: TeamEvaluation[] = []) => {
@@ -60,7 +61,7 @@ export const getCurrentWeekDates = () => {
     const date = addDays(weekStart, i);
     weekDates.push({
       date: format(date, 'yyyy-MM-dd'),
-      dayName: format(date, 'EEE'),
+      dayName: format(date, 'EEE', { locale: id }),
       dayNumber: format(date, 'd'),
       isToday: format(date, 'yyyy-MM-dd') === format(today, 'yyyy-MM-dd'),
     });

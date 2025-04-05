@@ -1,5 +1,6 @@
 import React from "react";
 import { format, parseISO } from "date-fns";
+import { id } from "date-fns/locale";
 import {
   Accordion,
   AccordionContent,
@@ -41,7 +42,7 @@ export function WeeklySummary({ summaries }: WeeklySummaryProps) {
               <div>
                 <CardTitle>{summary.team_name}</CardTitle>
                 <CardDescription>
-                  Minggu {format(parseISO(summary.week_start), "PPP")} - {format(parseISO(summary.week_end), "PPP")}
+                  Minggu {format(parseISO(summary.week_start), "PPP", { locale: id })} - {format(parseISO(summary.week_end), "PPP", { locale: id })}
                 </CardDescription>
               </div>
             </div>

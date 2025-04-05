@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { format, parseISO, addDays, subDays, subWeeks, startOfWeek, endOfWeek } from "date-fns";
+import { id } from "date-fns/locale";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -41,6 +42,8 @@ export default function TeamEvaluationSection() {
       weekDates: currentRange.weekDates.map(wd => ({
         ...wd,
         date: format(subDays(parseISO(wd.date), 7), "yyyy-MM-dd"),
+        dayName: format(subDays(parseISO(wd.date), 7), "EEE", { locale: id }),
+        dayNumber: format(subDays(parseISO(wd.date), 7), "d"),
         isToday: format(subDays(parseISO(wd.date), 7), "yyyy-MM-dd") === format(new Date(), "yyyy-MM-dd"),
       })),
     });
@@ -56,6 +59,8 @@ export default function TeamEvaluationSection() {
       weekDates: currentRange.weekDates.map(wd => ({
         ...wd,
         date: format(addDays(parseISO(wd.date), 7), "yyyy-MM-dd"),
+        dayName: format(addDays(parseISO(wd.date), 7), "EEE", { locale: id }),
+        dayNumber: format(addDays(parseISO(wd.date), 7), "d"),
         isToday: format(addDays(parseISO(wd.date), 7), "yyyy-MM-dd") === format(new Date(), "yyyy-MM-dd"),
       })),
     });
@@ -71,7 +76,7 @@ export default function TeamEvaluationSection() {
         const currentDate = addDays(newWeekStart, i);
         weekDates.push({
           date: format(currentDate, 'yyyy-MM-dd'),
-          dayName: format(currentDate, 'EEE'),
+          dayName: format(currentDate, 'EEE', { locale: id }),
           dayNumber: format(currentDate, 'd'),
           isToday: format(currentDate, 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd'),
         });
@@ -99,10 +104,10 @@ export default function TeamEvaluationSection() {
             value={filterTeamId ? filterTeamId.toString() : "all"}
             onValueChange={(value) => setFilterTeamId(value === "all" ? undefined : parseInt(value))}
           >
-            <SelectTrigger className="w-full md:w-[200px]">
+            <SelectTrigger className="bg-white w-full md:w-[200px]">
               <SelectValue placeholder="Pilih tim" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="bg-white">
               <SelectItem value="all">Semua Tim</SelectItem>
               {teams.map((team) => (
                 <SelectItem key={team.id} value={team.id.toString()}>
@@ -146,10 +151,10 @@ export default function TeamEvaluationSection() {
         </Button>
         <div className="flex items-center gap-2">
           <span className="hidden sm:inline font-medium">
-            {format(parseISO(currentRange.weekStart), "MMMM d")} - {format(parseISO(currentRange.weekEnd), "MMMM d, yyyy")}
+            {format(parseISO(currentRange.weekStart), "d MMMM", { locale: id })} - {format(parseISO(currentRange.weekEnd), "d MMMM yyyy", { locale: id })}
           </span>
           <span className="sm:hidden font-medium">
-            {format(parseISO(currentRange.weekStart), "MMM d")} - {format(parseISO(currentRange.weekEnd), "MMM d")}
+            {format(parseISO(currentRange.weekStart), "d MMM", { locale: id })} - {format(parseISO(currentRange.weekEnd), "d MMM", { locale: id })}
           </span>
           <Popover>
             <PopoverTrigger asChild>
@@ -163,6 +168,7 @@ export default function TeamEvaluationSection() {
                 selected={parseISO(currentRange.weekStart)}
                 onSelect={handleDateChange}
                 initialFocus
+                locale={id}
               />
             </PopoverContent>
           </Popover>
@@ -210,7 +216,7 @@ export default function TeamEvaluationSection() {
             {activeDay ? (
               <>
                 <h3 className="text-lg font-medium mb-4">
-                  Evaluasi untuk {format(parseISO(activeDay), "PPPP")}
+                  Evaluasi untuk {format(parseISO(activeDay), "PPPP", { locale: id })}
                 </h3>
                 <EvaluationList evaluations={getDailyEvaluations(activeDay)} />
               </>

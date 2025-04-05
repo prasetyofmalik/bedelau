@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { format, parseISO } from "date-fns";
+import { id } from "date-fns/locale";
 import {
   Card,
   CardContent,
@@ -100,7 +101,7 @@ export function EvaluationList({ evaluations }: EvaluationListProps) {
               <div>
                 <CardTitle className="text-lg">{evaluation.team_name}</CardTitle>
                 <CardDescription>
-                  {format(parseISO(evaluation.evaluation_date), "PPP")}
+                  {format(parseISO(evaluation.evaluation_date), "PPPP", { locale: id })}
                 </CardDescription>
               </div>
               {currentUserId === evaluation.created_by && (
@@ -140,7 +141,7 @@ export function EvaluationList({ evaluations }: EvaluationListProps) {
             <p className="text-sm mt-2 whitespace-pre-wrap">{evaluation.content}</p>
           </CardContent>
           <CardFooter className="pt-0 text-xs text-muted-foreground">
-            Ditambahkan {format(parseISO(evaluation.created_at), "PPP 'pada' h:mm a")}
+            Ditambahkan {format(parseISO(evaluation.created_at), "PPPP 'pada' h:mm a", { locale: id })}
           </CardFooter>
         </Card>
       ))}
