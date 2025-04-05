@@ -30,6 +30,10 @@ export const useWeeklySummaries = (evaluations: TeamEvaluation[] = []) => {
 
       const summary = summariesMap.get(key)!;
       
+      // Since we're temporarily not using categories, place all evaluations in achievements
+      summary.achievements.push(evaluation.content);
+      
+      /* Original category-based code, commented out temporarily
       switch (evaluation.category) {
         case 'achievement':
           summary.achievements.push(evaluation.content);
@@ -41,6 +45,7 @@ export const useWeeklySummaries = (evaluations: TeamEvaluation[] = []) => {
           summary.improvements.push(evaluation.content);
           break;
       }
+      */
     });
 
     return Array.from(summariesMap.values()).sort((a, b) => 

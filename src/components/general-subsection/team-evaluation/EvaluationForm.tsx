@@ -31,7 +31,7 @@ import { teams } from "@/components/monitoring/teamsData";
 
 type FormValues = {
   team_id: string;
-  category: TeamEvaluationCategory;
+  // category: TeamEvaluationCategory; // Commented out temporarily
   content: string;
   evaluation_date: Date;
 };
@@ -49,13 +49,13 @@ export function EvaluationForm({ onSuccess, initialData }: EvaluationFormProps) 
     defaultValues: initialData
       ? {
           team_id: initialData.team_id.toString(),
-          category: initialData.category,
+          // category: initialData.category, // Commented out temporarily
           content: initialData.content,
           evaluation_date: new Date(initialData.evaluation_date),
         }
       : {
           team_id: "",
-          category: "achievement",
+          // category: "achievement", // Commented out temporarily
           content: "",
           evaluation_date: new Date(),
         },
@@ -67,7 +67,7 @@ export function EvaluationForm({ onSuccess, initialData }: EvaluationFormProps) 
       
       const { data: sessionData } = await supabase.auth.getSession();
       if (!sessionData.session) {
-        toast.error("You must be logged in to submit evaluations");
+        toast.error("Anda harus login untuk mengirim evaluasi");
         return;
       }
 
@@ -75,14 +75,15 @@ export function EvaluationForm({ onSuccess, initialData }: EvaluationFormProps) 
       const selectedTeam = teams.find(team => team.id === parseInt(values.team_id));
       
       if (!selectedTeam) {
-        toast.error("Selected team not found");
+        toast.error("Tim yang dipilih tidak ditemukan");
         return;
       }
 
       const evaluationData = {
         team_id: parseInt(values.team_id),
         team_name: selectedTeam.text,
-        category: values.category,
+        // Default category to achievement since we're hiding the field temporarily
+        category: "achievement" as TeamEvaluationCategory, 
         content: values.content,
         evaluation_date: format(values.evaluation_date, 'yyyy-MM-dd'),
         created_by: userId,
@@ -93,13 +94,13 @@ export function EvaluationForm({ onSuccess, initialData }: EvaluationFormProps) 
           id: initialData.id,
           ...evaluationData,
         });
-        toast.success("Evaluation updated successfully");
+        toast.success("Evaluasi berhasil diperbarui");
       } else {
         await addEvaluation.mutateAsync(evaluationData);
-        toast.success("Evaluation added successfully");
+        toast.success("Evaluasi berhasil ditambahkan");
         form.reset({
           team_id: values.team_id,
-          category: "achievement",
+          // category: "achievement", // Commented out temporarily
           content: "",
           evaluation_date: values.evaluation_date,
         });
@@ -110,7 +111,7 @@ export function EvaluationForm({ onSuccess, initialData }: EvaluationFormProps) 
       }
     } catch (error) {
       console.error("Error submitting evaluation:", error);
-      toast.error("Failed to submit evaluation. Please try again.");
+      toast.error("Gagal mengirim evaluasi. Silakan coba lagi.");
     } finally {
       setIsSubmitting(false);
     }
@@ -172,7 +173,7 @@ export function EvaluationForm({ onSuccess, initialData }: EvaluationFormProps) 
                     </Button>
                   </FormControl>
                 </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
+                <PopoverContent className="w-auto p-0 bg-white" align="start">
                   <Calendar
                     mode="single"
                     selected={field.value}
@@ -190,6 +191,7 @@ export function EvaluationForm({ onSuccess, initialData }: EvaluationFormProps) 
           )}
         />
 
+        {/* Category field commented out temporarily
         <FormField
           control={form.control}
           name="category"
@@ -215,6 +217,7 @@ export function EvaluationForm({ onSuccess, initialData }: EvaluationFormProps) 
             </FormItem>
           )}
         />
+        */}
 
         <FormField
           control={form.control}

@@ -162,7 +162,7 @@ export default function TeamEvaluationSection() {
                 <CalendarIcon className="h-4 w-4" />
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-auto p-0">
+            <PopoverContent className="w-auto p-0 bg-white">
               <Calendar
                 mode="single"
                 selected={parseISO(currentRange.weekStart)}
