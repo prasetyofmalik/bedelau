@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { format, parseISO, addDays, subDays, subWeeks, startOfWeek, endOfWeek } from "date-fns";
+import { format, parseISO, addDays, subDays, subWeeks, startOfWeek, endOfWeek, isSameDay, isWithinInterval } from "date-fns";
 import { id } from "date-fns/locale";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -47,6 +47,9 @@ export default function TeamEvaluationSection() {
         isToday: format(subDays(parseISO(wd.date), 7), "yyyy-MM-dd") === format(new Date(), "yyyy-MM-dd"),
       })),
     });
+    
+    // When changing week, set active day to null to reset selection
+    setActiveDay(null);
   };
 
   const handleNextWeek = () => {
@@ -64,6 +67,9 @@ export default function TeamEvaluationSection() {
         isToday: format(addDays(parseISO(wd.date), 7), "yyyy-MM-dd") === format(new Date(), "yyyy-MM-dd"),
       })),
     });
+    
+    // When changing week, set active day to null to reset selection
+    setActiveDay(null);
   };
 
   const handleDateChange = (date: Date | undefined) => {
@@ -87,6 +93,9 @@ export default function TeamEvaluationSection() {
         weekEnd: format(newWeekEnd, 'yyyy-MM-dd'),
         weekDates,
       });
+      
+      // Set active day to the selected date
+      setActiveDay(format(date, 'yyyy-MM-dd'));
     }
   };
 
@@ -95,6 +104,12 @@ export default function TeamEvaluationSection() {
   };
 
   const [activeDay, setActiveDay] = useState<string | null>(null);
+
+  // Creating a date range for the selected week to use in Calendar's modifiers
+  const weekRangeDates = activeDay ? {
+    from: parseISO(currentRange.weekStart),
+    to: parseISO(currentRange.weekEnd)
+  } : undefined;
 
   return (
     <div className="space-y-6">
@@ -165,10 +180,16 @@ export default function TeamEvaluationSection() {
             <PopoverContent className="w-auto p-0 bg-white">
               <Calendar
                 mode="single"
-                selected={parseISO(currentRange.weekStart)}
+                selected={activeDay ? parseISO(activeDay) : undefined}
                 onSelect={handleDateChange}
                 initialFocus
                 locale={id}
+                modifiers={
+                  weekRangeDates ? { range: weekRangeDates } : undefined
+                }
+                modifiersStyles={{
+                  range: { backgroundColor: "rgba(10, 102, 194, 0.75)" }
+                }}
               />
             </PopoverContent>
           </Popover>
@@ -196,17 +217,18 @@ export default function TeamEvaluationSection() {
                 className={cn(
                   "flex-col h-auto py-2",
                   day.isToday && "border-primary",
-                  activeDay === day.date && "bg-muted",
+                  activeDay === day.date ? "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground" : "",
                   day.date === format(new Date(), "yyyy-MM-dd") && "border-primary"
                 )}
                 onClick={() => setActiveDay(day.date)}
               >
                 <span className="text-xs">{day.dayName}</span>
-                <span className={cn("text-lg", day.isToday && "text-primary font-bold")}>
+                <span className={cn("text-lg", day.isToday && "font-bold")}>
                   {day.dayNumber}
                 </span>
                 {getDailyEvaluations(day.date).length > 0 && (
-                  <span className="mt-1 h-1.5 w-1.5 rounded-full bg-primary"></span>
+                  <span className={cn("mt-1 h-1.5 w-1.5 rounded-full", 
+                    activeDay === day.date ? "bg-primary-foreground" : "bg-primary")}></span>
                 )}
               </Button>
             ))}
