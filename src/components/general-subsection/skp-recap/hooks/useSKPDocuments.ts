@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
-import { YearlySKP, MonthlySKP } from "../skp-types";
+import { YearlySKP, MonthlySKP } from "../types";
 
 export function useSKPDocuments(type: "yearly" | "monthly", period?: string) {
   return useQuery({

@@ -72,3 +72,11 @@ export const useOutgoingMails = (searchQuery: string = "") => {
     searchFields: ["number", "origin", "description"],
   });
 };
+
+export const useSKDocuments = (searchQuery: string = "") => {
+  return useMails<SK>({
+    table: "sk_documents",
+    searchQuery,
+    searchFields: ["number", "description", "month_year"],
+  });
+};
