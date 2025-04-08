@@ -1,5 +1,5 @@
 import React from "react";
-import SKPSection from "../../components/general-subsection/SKPSection";
+import SKPSection from "./SKPSection";
 
 const SKPRecap: React.FC = () => {
   return (

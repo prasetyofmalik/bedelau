@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ExternalLink, Pencil } from "lucide-react";
-import { SKPTableProps, MonthlySKP } from "./skp-types";
+import { SKPTableProps, MonthlySKP } from "./types";
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';

@@ -14,7 +14,7 @@ import { toast } from "sonner";
 import { useSKPDocuments } from "./hooks/useSKPDocuments";
 import { SKPForm } from "./SKPForm";
 import { SKPTable } from "./SKPTable";
-import { YearlySKP, MonthlySKP } from "./skp-types";
+import { YearlySKP, MonthlySKP } from "./types";
 import { exportToExcel } from "@/utils/excelExport";
 import { SKPDashboard } from "./SKPDashboard";
 

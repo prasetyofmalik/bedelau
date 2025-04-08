@@ -21,7 +21,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
-import { SKPFormProps, YearlySKP, MonthlySKP } from "./skp-types";
+import { SKPFormProps, YearlySKP, MonthlySKP } from "./types";
 import { useEmployees } from "./hooks/useEmployees";
 import { ExternalLink, Folder } from "lucide-react";
 

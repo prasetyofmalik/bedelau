@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
-import { EmployeeProfile } from "../skp-types";
+import { EmployeeProfile } from "../types";
 
 export function useEmployees() {
   return useQuery({
