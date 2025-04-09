@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { format } from "date-fns";
 import { id } from "date-fns/locale";
@@ -28,10 +28,11 @@ import { useTeamEvaluations } from "./hooks/useTeamEvaluations";
 import { CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { teams } from "@/components/monitoring/teamsData";
+import { useTeamCategories } from "./hooks/useTeamCategories";
 
 type FormValues = {
   team_id: string;
-  // category: TeamEvaluationCategory; // Commented out temporarily
+  category: TeamEvaluationCategory;
   content: string;
   evaluation_date: Date;
 };
@@ -43,23 +44,37 @@ interface EvaluationFormProps {
 
 export function EvaluationForm({ onSuccess, initialData }: EvaluationFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [selectedTeamId, setSelectedTeamId] = useState<string>(initialData?.team_id.toString() || "");
   const { addEvaluation, updateEvaluation } = useTeamEvaluations();
+  const { data: teamCategories } = useTeamCategories(selectedTeamId ? parseInt(selectedTeamId) : undefined);
   
   const form = useForm<FormValues>({
     defaultValues: initialData
       ? {
           team_id: initialData.team_id.toString(),
-          // category: initialData.category, // Commented out temporarily
+          category: initialData.category,
           content: initialData.content,
           evaluation_date: new Date(initialData.evaluation_date),
         }
       : {
           team_id: "",
-          // category: "achievement", // Commented out temporarily
+          category: "achievement",
           content: "",
           evaluation_date: new Date(),
         },
   });
+
+  useEffect(() => {
+    const teamIdValue = form.watch("team_id");
+    if (teamIdValue !== selectedTeamId) {
+      setSelectedTeamId(teamIdValue);
+      
+      // Reset category when team changes
+      if (teamIdValue && teamCategories && teamCategories.length > 0) {
+        form.setValue("category", teamCategories[0]);
+      }
+    }
+  }, [form.watch("team_id")]);
 
   async function onSubmit(values: FormValues) {
     try {
@@ -82,8 +97,7 @@ export function EvaluationForm({ onSuccess, initialData }: EvaluationFormProps) 
       const evaluationData = {
         team_id: parseInt(values.team_id),
         team_name: selectedTeam.name,
-        // Default category to achievement since we're hiding the field temporarily
-        category: "achievement" as TeamEvaluationCategory, 
+        category: values.category,
         content: values.content,
         evaluation_date: format(values.evaluation_date, 'yyyy-MM-dd'),
         created_by: userId,
@@ -100,7 +114,7 @@ export function EvaluationForm({ onSuccess, initialData }: EvaluationFormProps) 
         toast.success("Evaluasi berhasil ditambahkan");
         form.reset({
           team_id: values.team_id,
-          // category: "achievement", // Commented out temporarily
+          category: values.category,
           content: "",
           evaluation_date: values.evaluation_date,
         });
@@ -191,7 +205,6 @@ export function EvaluationForm({ onSuccess, initialData }: EvaluationFormProps) 
           )}
         />
 
-        {/* Category field commented out temporarily
         <FormField
           control={form.control}
           name="category"
@@ -203,21 +216,32 @@ export function EvaluationForm({ onSuccess, initialData }: EvaluationFormProps) 
                 defaultValue={field.value}
               >
                 <FormControl>
-                  <SelectTrigger>
+                  <SelectTrigger className="bg-white">
                     <SelectValue placeholder="Pilih kategori" />
                   </SelectTrigger>
                 </FormControl>
-                <SelectContent>
-                  <SelectItem value="achievement">Pencapaian</SelectItem>
-                  <SelectItem value="challenge">Tantangan</SelectItem>
-                  <SelectItem value="improvement">Perbaikan untuk Kedepannya</SelectItem>
+                <SelectContent className="bg-white">
+                  {teamCategories && teamCategories.length > 0 ? (
+                    teamCategories.map((category) => (
+                      <SelectItem key={category} value={category}>
+                        {category === "achievement" ? "Pencapaian" : 
+                         category === "challenge" ? "Tantangan" : 
+                         category === "improvement" ? "Perbaikan untuk Kedepannya" : category}
+                      </SelectItem>
+                    ))
+                  ) : (
+                    <>
+                      <SelectItem value="achievement">Pencapaian</SelectItem>
+                      <SelectItem value="challenge">Tantangan</SelectItem>
+                      <SelectItem value="improvement">Perbaikan untuk Kedepannya</SelectItem>
+                    </>
+                  )}
                 </SelectContent>
               </Select>
               <FormMessage />
             </FormItem>
           )}
         />
-        */}
 
         <FormField
           control={form.control}

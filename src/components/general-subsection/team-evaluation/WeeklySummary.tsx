@@ -7,111 +7,126 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { WeeklySummary as WeeklySummaryType } from "./types";
-import { AwardIcon, AlertTriangleIcon, ArrowUpIcon } from "lucide-react";
+
+const getCategoryDisplayName = (category: string) => {
+  const baseCategories: Record<string, string> = {
+    "achievements": "Pencapaian",
+    "challenges": "Tantangan",
+    "improvements": "Perbaikan",
+  };
+  
+  if (baseCategories[category]) {
+    return baseCategories[category];
+  }
+  
+  // Format custom category names
+  return category
+    .split('-')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+};
+
+const getCategoryBadgeColor = (category: string) => {
+  const baseCategories: Record<string, string> = {
+    "achievements": "bg-green-500",
+    "challenges": "bg-amber-500", 
+    "improvements": "bg-blue-500",
+  };
+  
+  if (baseCategories[category]) {
+    return baseCategories[category];
+  }
+  
+  // Map for custom categories (same as in EvaluationList)
+  const colorMap: Record<string, string> = {
+    'a': 'bg-purple-500', 'b': 'bg-indigo-500', 'c': 'bg-blue-500',
+    'd': 'bg-sky-500', 'e': 'bg-cyan-500', 'f': 'bg-teal-500',
+    'g': 'bg-emerald-500', 'h': 'bg-green-500', 'i': 'bg-lime-500',
+    'j': 'bg-yellow-500', 'k': 'bg-amber-500', 'l': 'bg-orange-500',
+    'm': 'bg-red-500', 'n': 'bg-rose-500', 'o': 'bg-pink-500',
+    'p': 'bg-fuchsia-500', 'q': 'bg-violet-500', 'r': 'bg-purple-500',
+    's': 'bg-indigo-500', 't': 'bg-blue-500', 'u': 'bg-sky-500',
+    'v': 'bg-cyan-500', 'w': 'bg-teal-500', 'x': 'bg-emerald-500',
+    'y': 'bg-green-500', 'z': 'bg-lime-500',
+  };
+  
+  const firstChar = category.charAt(0).toLowerCase();
+  return colorMap[firstChar] || 'bg-gray-500';
+};
 
 interface WeeklySummaryProps {
   summaries: WeeklySummaryType[];
 }
 
-export function WeeklySummary({ summaries }: WeeklySummaryProps) {
+export default function WeeklySummary({ summaries }: WeeklySummaryProps) {
   if (summaries.length === 0) {
     return (
-      <div className="flex items-center justify-center p-8 text-center">
-        <div>
-          <p className="text-muted-foreground">Tidak ada ringkasan yang ditemukan untuk periode ini.</p>
-        </div>
+      <div className="text-center p-6">
+        <p className="text-muted-foreground">Tidak ada ringkasan mingguan yang tersedia.</p>
       </div>
     );
   }
 
+  const renderCategorySections = (summary: WeeklySummaryType) => {
+    const sections = [];
+    
+    // Get all keys from the summary object
+    const allKeys = Object.keys(summary);
+    
+    // Filter only the categories with content (arrays with items)
+    const categoryKeys = allKeys.filter(key => 
+      Array.isArray(summary[key]) && 
+      summary[key].length > 0 && 
+      !['team_id', 'team_name', 'week_start', 'week_end'].includes(key)
+    );
+    
+    for (const category of categoryKeys) {
+      const items = summary[category];
+      if (items && items.length > 0) {
+        sections.push(
+          <div key={category} className="mb-4">
+            <h4 className="flex items-center text-sm font-medium mb-2">
+              <Badge className={getCategoryBadgeColor(category)}>
+                {getCategoryDisplayName(category)}
+              </Badge>
+            </h4>
+            <ul className="list-disc pl-5 space-y-1">
+              {items.map((item: string, index: number) => (
+                <li key={index} className="text-sm">{item}</li>
+              ))}
+            </ul>
+          </div>
+        );
+      }
+    }
+    
+    return sections;
+  };
+
   return (
-    <div className="space-y-6">
+    <Accordion type="single" collapsible className="space-y-4">
       {summaries.map((summary, index) => (
-        <Card key={`${summary.team_id}_${summary.week_start}_${index}`}>
-          <CardHeader>
-            <div className="flex justify-between items-center flex-wrap gap-2">
-              <div>
-                <CardTitle>{summary.team_name}</CardTitle>
-                <CardDescription>
-                  Minggu {format(parseISO(summary.week_start), "PPP", { locale: id })} - {format(parseISO(summary.week_end), "PPP", { locale: id })}
-                </CardDescription>
+        <AccordionItem 
+          key={`${summary.team_id}_${summary.week_start}_${index}`} 
+          value={`${summary.team_id}_${summary.week_start}_${index}`}
+          className="border rounded-lg overflow-hidden"
+        >
+          <AccordionTrigger className="px-6 py-4 bg-white hover:bg-gray-50 transition-colors">
+            <div className="flex flex-col sm:flex-row sm:items-center w-full text-left">
+              <div className="font-medium">{summary.team_name}</div>
+              <div className="text-sm text-muted-foreground sm:ml-auto">
+                {format(parseISO(summary.week_start), "d MMMM", { locale: id })} - {format(parseISO(summary.week_end), "d MMMM yyyy", { locale: id })}
               </div>
             </div>
-          </CardHeader>
-          <CardContent>
-            <Accordion type="single" collapsible className="w-full">
-              {summary.achievements.length > 0 && (
-                <AccordionItem value="achievements">
-                  <AccordionTrigger className="py-2">
-                    <div className="flex items-center gap-2">
-                      <AwardIcon className="h-5 w-5 text-green-500" />
-                      <span>Pencapaian ({summary.achievements.length})</span>
-                    </div>
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <ul className="space-y-2 pl-2">
-                      {summary.achievements.map((achievement, i) => (
-                        <li key={i} className="text-sm border-l-2 border-green-500 pl-3 py-1">
-                          {achievement}
-                        </li>
-                      ))}
-                    </ul>
-                  </AccordionContent>
-                </AccordionItem>
-              )}
-
-              {summary.challenges.length > 0 && (
-                <AccordionItem value="challenges">
-                  <AccordionTrigger className="py-2">
-                    <div className="flex items-center gap-2">
-                      <AlertTriangleIcon className="h-5 w-5 text-amber-500" />
-                      <span>Tantangan ({summary.challenges.length})</span>
-                    </div>
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <ul className="space-y-2 pl-2">
-                      {summary.challenges.map((challenge, i) => (
-                        <li key={i} className="text-sm border-l-2 border-amber-500 pl-3 py-1">
-                          {challenge}
-                        </li>
-                      ))}
-                    </ul>
-                  </AccordionContent>
-                </AccordionItem>
-              )}
-
-              {summary.improvements.length > 0 && (
-                <AccordionItem value="improvements">
-                  <AccordionTrigger className="py-2">
-                    <div className="flex items-center gap-2">
-                      <ArrowUpIcon className="h-5 w-5 text-blue-500" />
-                      <span>Perbaikan ({summary.improvements.length})</span>
-                    </div>
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <ul className="space-y-2 pl-2">
-                      {summary.improvements.map((improvement, i) => (
-                        <li key={i} className="text-sm border-l-2 border-blue-500 pl-3 py-1">
-                          {improvement}
-                        </li>
-                      ))}
-                    </ul>
-                  </AccordionContent>
-                </AccordionItem>
-              )}
-            </Accordion>
-          </CardContent>
-        </Card>
+          </AccordionTrigger>
+          <AccordionContent className="px-6 pb-4">
+            {renderCategorySections(summary)}
+          </AccordionContent>
+        </AccordionItem>
       ))}
-    </div>
+    </Accordion>
   );
 }

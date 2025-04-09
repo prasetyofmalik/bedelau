@@ -14,7 +14,7 @@ import { useTeamEvaluations } from "./hooks/useTeamEvaluations";
 import { useWeeklySummaries, getCurrentWeekDates } from "./hooks/useWeeklySummaries";
 import { EvaluationForm } from "./EvaluationForm";
 import { EvaluationList } from "./EvaluationList";
-import { WeeklySummary } from "./WeeklySummary";
+import WeeklySummary from "./WeeklySummary";
 import { teams } from "@/components/monitoring/teamsData";
 import { cn } from "@/lib/utils";
 

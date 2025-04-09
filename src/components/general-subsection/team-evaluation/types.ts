@@ -1,4 +1,4 @@
-export type TeamEvaluationCategory = 'achievement' | 'challenge' | 'improvement';
+export type TeamEvaluationCategory = 'achievement' | 'challenge' | 'improvement' | 'administration' | 'finance' | 'survey' | 'data-analysis' | 'production' | 'agriculture' | 'distribution' | 'retail' | 'analysis' | 'reporting' | 'processing' | 'network' | 'sectoral' | 'coordination' | 'accountability' | 'monitoring' | 'evaluation' | 'reform' | 'bureaucracy' | 'publication' | 'outreach';
 
 export interface TeamEvaluation {
   id: string;
@@ -19,4 +19,5 @@ export interface WeeklySummary {
   achievements: string[];
   challenges: string[];
   improvements: string[];
+  [key: string]: any; // Allow for dynamic category fields
 }

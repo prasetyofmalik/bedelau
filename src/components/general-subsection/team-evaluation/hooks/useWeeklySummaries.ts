@@ -17,7 +17,7 @@ export const useWeeklySummaries = (evaluations: TeamEvaluation[] = []) => {
       const key = `${evaluation.team_id}_${weekStartStr}`;
 
       if (!summariesMap.has(key)) {
-        summariesMap.set(key, {
+        const baseSummary: WeeklySummary = {
           team_id: evaluation.team_id,
           team_name: evaluation.team_name,
           week_start: weekStartStr,
@@ -25,27 +25,29 @@ export const useWeeklySummaries = (evaluations: TeamEvaluation[] = []) => {
           achievements: [],
           challenges: [],
           improvements: [],
-        });
+        };
+        summariesMap.set(key, baseSummary);
       }
 
       const summary = summariesMap.get(key)!;
       
-      // Since we're temporarily not using categories, place all evaluations in achievements
-      summary.achievements.push(evaluation.content);
+      // Handle the evaluation based on its category
+      const { category, content } = evaluation;
       
-      /* Original category-based code, commented out temporarily
-      switch (evaluation.category) {
-        case 'achievement':
-          summary.achievements.push(evaluation.content);
-          break;
-        case 'challenge':
-          summary.challenges.push(evaluation.content);
-          break;
-        case 'improvement':
-          summary.improvements.push(evaluation.content);
-          break;
+      // Handle base categories directly
+      if (category === 'achievement') {
+        summary.achievements.push(content);
+      } else if (category === 'challenge') {
+        summary.challenges.push(content);
+      } else if (category === 'improvement') {
+        summary.improvements.push(content);
+      } else {
+        // For custom categories, dynamically add them to the summary
+        if (!summary[category]) {
+          summary[category] = [];
+        }
+        summary[category].push(content);
       }
-      */
     });
 
     return Array.from(summariesMap.values()).sort((a, b) => 
