@@ -1,4 +1,4 @@
-import { Notebook, Coffee, Tablet, IdCard, Calculator, Laptop, Mails, ChevronsUp, ClipboardList, BarChart3, FileSpreadsheet } from "lucide-react";
+import { Notebook, Coffee, Tablet, IdCard, Calculator, Laptop, Mails, ChevronsUp, ClipboardList, BarChart3, FileSpreadsheet, BarChart, Camera, Workflow, FileCheck, MonitorCheck } from "lucide-react";
 
 export const teams = [
   {
@@ -15,6 +15,7 @@ export const teams = [
     icon: Coffee,
     color: "text-red-500",
     text: "Fungsi Statistik Sosial",
+    items: [] as Array<{ title: string; url: string; icon: any }>,
   },
   {
     id: 3,
@@ -43,6 +44,41 @@ export const teams = [
     icon: Laptop,
     color: "text-yellow-600",
     text: "Fungsi Pengolahan, Jaringan, dan Diseminasi",
+  },
+  {
+    id: 7,
+    name: "SS",
+    icon: BarChart,
+    color: "text-red-500",
+    text: "Statistik Sektoral",
+  },
+  {
+    id: 8,
+    name: "SAKIP",
+    icon: FileCheck,
+    color: "text-amber-600",
+    text: "Sistem Akuntabilitas Kinerja Instansi Pemerintahan",
+  },
+  {
+    id: 9,
+    name: "PEKPPP",
+    icon: MonitorCheck,
+    color: "text-lime-600",
+    text: "Pemantauan dan Evaluasi Penyelenggaran Pelayanan Publik",
+  },
+  {
+    id: 10,
+    name: "RB",
+    icon: Workflow,
+    color: "text-emerald-600",
+    text: "Reformasi Birokrasi",
+  },
+  {
+    id: 11,
+    name: "HUMAS",
+    icon: Camera,
+    color: "text-yellow-600",
+    text: "Hubungan Masyarakat",
   },
 ];
 

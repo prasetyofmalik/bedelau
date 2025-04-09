@@ -81,7 +81,7 @@ export function EvaluationForm({ onSuccess, initialData }: EvaluationFormProps) 
 
       const evaluationData = {
         team_id: parseInt(values.team_id),
-        team_name: selectedTeam.text,
+        team_name: selectedTeam.name,
         // Default category to achievement since we're hiding the field temporarily
         category: "achievement" as TeamEvaluationCategory, 
         content: values.content,
@@ -138,7 +138,7 @@ export function EvaluationForm({ onSuccess, initialData }: EvaluationFormProps) 
                 <SelectContent className="bg-white">
                   {teams.map((team) => (
                     <SelectItem key={team.id} value={team.id.toString()}>
-                      {team.text}
+                      {team.name}
                     </SelectItem>
                   ))}
                 </SelectContent>

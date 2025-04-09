@@ -126,7 +126,7 @@ export default function TeamEvaluationSection() {
               <SelectItem value="all">Semua Tim</SelectItem>
               {teams.map((team) => (
                 <SelectItem key={team.id} value={team.id.toString()}>
-                  {team.text}
+                  {team.name}
                 </SelectItem>
               ))}
             </SelectContent>
