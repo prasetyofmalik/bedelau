@@ -70,57 +70,23 @@ export function EvaluationList({ evaluations }: EvaluationListProps) {
   };
 
   const getCategoryBadge = (category: string) => {
-    const baseCategories: Record<string, { bg: string, label: string }> = {
-      "achievement": { bg: "bg-green-500", label: "Pencapaian" },
-      "challenge": { bg: "bg-amber-500", label: "Tantangan" },
-      "improvement": { bg: "bg-blue-500", label: "Perbaikan" },
-    };
-    
-    // If it's one of the base categories, use the predefined styles
-    if (baseCategories[category]) {
-      return <Badge className={baseCategories[category].bg}>{baseCategories[category].label}</Badge>;
-    }
-    
-    // For custom categories, determine color based on first character to make it consistent
+    // Generate a consistent color based on the first character of the category
     const colorMap: Record<string, string> = {
-      'a': 'bg-purple-500',
-      'b': 'bg-indigo-500',
-      'c': 'bg-blue-500',
-      'd': 'bg-sky-500',
-      'e': 'bg-cyan-500',
-      'f': 'bg-teal-500',
-      'g': 'bg-emerald-500',
-      'h': 'bg-green-500',
-      'i': 'bg-lime-500',
-      'j': 'bg-yellow-500',
-      'k': 'bg-amber-500',
-      'l': 'bg-orange-500',
-      'm': 'bg-red-500',
-      'n': 'bg-rose-500',
-      'o': 'bg-pink-500',
-      'p': 'bg-fuchsia-500',
-      'q': 'bg-violet-500',
-      'r': 'bg-purple-500',
-      's': 'bg-indigo-500',
-      't': 'bg-blue-500',
-      'u': 'bg-sky-500',
-      'v': 'bg-cyan-500',
-      'w': 'bg-teal-500',
-      'x': 'bg-emerald-500',
-      'y': 'bg-green-500',
-      'z': 'bg-lime-500',
+      'a': 'bg-purple-500', 'b': 'bg-indigo-500', 'c': 'bg-blue-500',
+      'd': 'bg-sky-500', 'e': 'bg-cyan-500', 'f': 'bg-teal-500',
+      'g': 'bg-emerald-500', 'h': 'bg-green-500', 'i': 'bg-lime-500',
+      'j': 'bg-yellow-500', 'k': 'bg-amber-500', 'l': 'bg-orange-500',
+      'm': 'bg-red-500', 'n': 'bg-rose-500', 'o': 'bg-pink-500',
+      'p': 'bg-fuchsia-500', 'q': 'bg-violet-500', 'r': 'bg-purple-500',
+      's': 'bg-indigo-500', 't': 'bg-blue-500', 'u': 'bg-sky-500',
+      'v': 'bg-cyan-500', 'w': 'bg-teal-500', 'x': 'bg-emerald-500',
+      'y': 'bg-green-500', 'z': 'bg-lime-500',
     };
     
     const firstChar = category.charAt(0).toLowerCase();
     const bgColor = colorMap[firstChar] || 'bg-gray-500';
     
-    // Format the category label: replace hyphens with spaces and capitalize words
-    const label = category
-      .split('-')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ');
-    
-    return <Badge className={bgColor}>{label}</Badge>;
+    return <Badge className={bgColor}>{category}</Badge>;
   };
 
   if (evaluations.length === 0) {

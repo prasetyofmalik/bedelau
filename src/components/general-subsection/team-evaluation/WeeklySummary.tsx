@@ -7,40 +7,17 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+// import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { WeeklySummary as WeeklySummaryType } from "./types";
 
 const getCategoryDisplayName = (category: string) => {
-  const baseCategories: Record<string, string> = {
-    "achievements": "Pencapaian",
-    "challenges": "Tantangan",
-    "improvements": "Perbaikan",
-  };
-  
-  if (baseCategories[category]) {
-    return baseCategories[category];
-  }
-  
-  // Format custom category names
-  return category
-    .split('-')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
+  // Simply return the category name with first letter capitalized
+  return category.charAt(0).toUpperCase() + category.slice(1);
 };
 
 const getCategoryBadgeColor = (category: string) => {
-  const baseCategories: Record<string, string> = {
-    "achievements": "bg-green-500",
-    "challenges": "bg-amber-500", 
-    "improvements": "bg-blue-500",
-  };
-  
-  if (baseCategories[category]) {
-    return baseCategories[category];
-  }
-  
-  // Map for custom categories (same as in EvaluationList)
+  // Generate a consistent color based on the first character of the category
   const colorMap: Record<string, string> = {
     'a': 'bg-purple-500', 'b': 'bg-indigo-500', 'c': 'bg-blue-500',
     'd': 'bg-sky-500', 'e': 'bg-cyan-500', 'f': 'bg-teal-500',
