@@ -1,4 +1,5 @@
-import { Notebook, Coffee, Tablet, IdCard, Calculator, Laptop, Mails, ChevronsUp, ClipboardList, BarChart3, FileSpreadsheet } from "lucide-react";
+import { Notebook, Coffee, Tablet, IdCard, Calculator, Laptop, Mails, ChevronsUp, ClipboardList, BarChart3, FileSpreadsheet, BarChart, Camera, Workflow, FileCheck, MonitorCheck } from "lucide-react";
+import { TeamEvaluationCategory } from "@/components/general-subsection/team-evaluation/types";
 
 export const teams = [
   {
@@ -8,6 +9,7 @@ export const teams = [
     color: "text-blue-600",
     text: "Subbagian Umum",
     items: [] as Array<{ title: string; url: string; icon: any }>,
+    categories: [] as TeamEvaluationCategory[],
   },
   {
     id: 2,
@@ -15,6 +17,8 @@ export const teams = [
     icon: Coffee,
     color: "text-red-500",
     text: "Fungsi Statistik Sosial",
+    items: [] as Array<{ title: string; url: string; icon: any }>,
+    categories: [] as TeamEvaluationCategory[],
   },
   {
     id: 3,
@@ -22,6 +26,7 @@ export const teams = [
     icon: Tablet,
     color: "text-amber-600",
     text: "Fungsi Statistik Produksi",
+    categories: [] as TeamEvaluationCategory[],
   },
   {
     id: 4,
@@ -29,6 +34,7 @@ export const teams = [
     icon: IdCard,
     color: "text-lime-600",
     text: "Fungsi Statistik Distribusi",
+    categories: [] as TeamEvaluationCategory[],
   },
   {
     id: 5,
@@ -36,6 +42,7 @@ export const teams = [
     icon: Calculator,
     color: "text-emerald-600",
     text: "Fungsi Neraca dan Analisis Statistik",
+    categories: [] as TeamEvaluationCategory[],
   },
   {
     id: 6,
@@ -43,6 +50,47 @@ export const teams = [
     icon: Laptop,
     color: "text-yellow-600",
     text: "Fungsi Pengolahan, Jaringan, dan Diseminasi",
+    categories: [] as TeamEvaluationCategory[],
+  },
+  {
+    id: 7,
+    name: "SS",
+    icon: BarChart,
+    color: "text-red-500",
+    text: "Statistik Sektoral",
+    categories: [] as TeamEvaluationCategory[],
+  },
+  {
+    id: 8,
+    name: "SAKIP",
+    icon: FileCheck,
+    color: "text-amber-600",
+    text: "Sistem Akuntabilitas Kinerja Instansi Pemerintahan",
+    categories: [] as TeamEvaluationCategory[],
+  },
+  {
+    id: 9,
+    name: "PEKPPP",
+    icon: MonitorCheck,
+    color: "text-lime-600",
+    text: "Pemantauan dan Evaluasi Penyelenggaran Pelayanan Publik",
+    categories: [] as TeamEvaluationCategory[],
+  },
+  {
+    id: 10,
+    name: "RB",
+    icon: Workflow,
+    color: "text-emerald-600",
+    text: "Reformasi Birokrasi",
+    categories: [] as TeamEvaluationCategory[],
+  },
+  {
+    id: 11,
+    name: "HUMAS",
+    icon: Camera,
+    color: "text-yellow-600",
+    text: "Hubungan Masyarakat",
+    categories: [] as TeamEvaluationCategory[],
   },
 ];
 

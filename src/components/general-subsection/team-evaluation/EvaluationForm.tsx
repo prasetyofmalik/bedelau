@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { format } from "date-fns";
 import { id } from "date-fns/locale";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -21,19 +22,20 @@ import {
 } from "@/components/ui/form";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { TeamEvaluation, TeamEvaluationCategory } from "./types";
+import { TeamEvaluation } from "./types";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 import { useTeamEvaluations } from "./hooks/useTeamEvaluations";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, PlusCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { teams } from "@/components/monitoring/teamsData";
 
 type FormValues = {
   team_id: string;
-  // category: TeamEvaluationCategory; // Commented out temporarily
+  category: string;
   content: string;
   evaluation_date: Date;
+  new_category?: string;
 };
 
 interface EvaluationFormProps {
@@ -43,23 +45,96 @@ interface EvaluationFormProps {
 
 export function EvaluationForm({ onSuccess, initialData }: EvaluationFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [selectedTeamId, setSelectedTeamId] = useState<string>(initialData?.team_id.toString() || "");
+  const [showNewCategoryInput, setShowNewCategoryInput] = useState(false);
+  const [teamCategories, setTeamCategories] = useState<string[]>([]);
   const { addEvaluation, updateEvaluation } = useTeamEvaluations();
   
   const form = useForm<FormValues>({
     defaultValues: initialData
       ? {
           team_id: initialData.team_id.toString(),
-          // category: initialData.category, // Commented out temporarily
+          category: initialData.category,
           content: initialData.content,
           evaluation_date: new Date(initialData.evaluation_date),
+          new_category: "",
         }
       : {
           team_id: "",
-          // category: "achievement", // Commented out temporarily
+          category: "",
           content: "",
           evaluation_date: new Date(),
+          new_category: "",
         },
   });
+
+  // Load team categories whenever the team changes
+  useEffect(() => {
+    const loadTeamCategories = async () => {
+      const teamIdValue = form.watch("team_id");
+      if (!teamIdValue) return;
+      
+      setSelectedTeamId(teamIdValue);
+      const teamId = parseInt(teamIdValue);
+      
+      // Find the selected team
+      const team = teams.find(t => t.id === teamId);
+      if (!team) return;
+      
+      // If the team has no categories yet, fetch them from the database
+      if (team.categories.length === 0) {
+        try {
+          const { data } = await supabase
+            .from('team_evaluations')
+            .select('category')
+            .eq('team_id', teamId)
+            .order('created_at', { ascending: false });
+          
+          if (data && data.length > 0) {
+            const uniqueCategories = Array.from(new Set(data.map(item => item.category)));
+            team.categories = uniqueCategories;
+            setTeamCategories(uniqueCategories);
+          } else {
+            setTeamCategories([]);
+          }
+        } catch (error) {
+          console.error("Error fetching team categories:", error);
+          setTeamCategories([]);
+        }
+      } else {
+        setTeamCategories(team.categories);
+      }
+      
+      // Reset category when team changes
+      form.setValue("category", "");
+      setShowNewCategoryInput(false);
+    };
+    
+    loadTeamCategories();
+  }, [form.watch("team_id")]);
+
+  // Handle adding a new category
+  const handleAddNewCategory = () => {
+    const newCategory = form.watch("new_category");
+    if (!newCategory) return;
+    
+    const teamIdValue = form.watch("team_id");
+    if (!teamIdValue) return;
+    
+    const teamId = parseInt(teamIdValue);
+    const team = teams.find(t => t.id === teamId);
+    
+    if (team) {
+      if (!team.categories.includes(newCategory)) {
+        team.categories.push(newCategory);
+        setTeamCategories([...team.categories]);
+      }
+      
+      form.setValue("category", newCategory);
+      form.setValue("new_category", "");
+      setShowNewCategoryInput(false);
+    }
+  };
 
   async function onSubmit(values: FormValues) {
     try {
@@ -78,12 +153,22 @@ export function EvaluationForm({ onSuccess, initialData }: EvaluationFormProps) 
         toast.error("Tim yang dipilih tidak ditemukan");
         return;
       }
+      
+      // Handle new category if provided
+      let categoryToUse = values.category;
+      if (showNewCategoryInput && values.new_category) {
+        categoryToUse = values.new_category;
+        
+        // Add to team categories if not exists
+        if (!selectedTeam.categories.includes(categoryToUse)) {
+          selectedTeam.categories.push(categoryToUse);
+        }
+      }
 
       const evaluationData = {
         team_id: parseInt(values.team_id),
-        team_name: selectedTeam.text,
-        // Default category to achievement since we're hiding the field temporarily
-        category: "achievement" as TeamEvaluationCategory, 
+        team_name: selectedTeam.name,
+        category: categoryToUse,
         content: values.content,
         evaluation_date: format(values.evaluation_date, 'yyyy-MM-dd'),
         created_by: userId,
@@ -100,10 +185,12 @@ export function EvaluationForm({ onSuccess, initialData }: EvaluationFormProps) 
         toast.success("Evaluasi berhasil ditambahkan");
         form.reset({
           team_id: values.team_id,
-          // category: "achievement", // Commented out temporarily
+          category: "",
           content: "",
           evaluation_date: values.evaluation_date,
+          new_category: "",
         });
+        setShowNewCategoryInput(false);
       }
 
       if (onSuccess) {
@@ -138,7 +225,7 @@ export function EvaluationForm({ onSuccess, initialData }: EvaluationFormProps) 
                 <SelectContent className="bg-white">
                   {teams.map((team) => (
                     <SelectItem key={team.id} value={team.id.toString()}>
-                      {team.text}
+                      {team.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -191,33 +278,84 @@ export function EvaluationForm({ onSuccess, initialData }: EvaluationFormProps) 
           )}
         />
 
-        {/* Category field commented out temporarily
-        <FormField
-          control={form.control}
-          name="category"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Kategori</FormLabel>
-              <Select 
-                onValueChange={field.onChange} 
-                defaultValue={field.value}
-              >
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Pilih kategori" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="achievement">Pencapaian</SelectItem>
-                  <SelectItem value="challenge">Tantangan</SelectItem>
-                  <SelectItem value="improvement">Perbaikan untuk Kedepannya</SelectItem>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        */}
+        {!showNewCategoryInput ? (
+          <>
+            <FormField
+              control={form.control}
+              name="category"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Kategori</FormLabel>
+                  <div className="flex gap-2">
+                    <Select 
+                      onValueChange={field.onChange} 
+                      value={field.value}
+                      disabled={selectedTeamId === ""}
+                    >
+                      <FormControl>
+                        <SelectTrigger className="bg-white flex-1">
+                          <SelectValue placeholder="Pilih kategori" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent className="bg-white">
+                        {teamCategories.map((category) => (
+                          <SelectItem key={category} value={category}>
+                            {category}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <Button 
+                      type="button" 
+                      variant="outline" 
+                      onClick={() => setShowNewCategoryInput(true)}
+                      disabled={selectedTeamId === ""}
+                    >
+                      <PlusCircle className="h-4 w-4 mr-1" /> Kategori Baru
+                    </Button>
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </>
+        ) : (
+          <>
+            <FormField
+              control={form.control}
+              name="new_category"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Kategori Baru</FormLabel>
+                  <div className="flex gap-2">
+                    <FormControl>
+                      <Input
+                        placeholder="Masukkan nama kategori baru"
+                        className="bg-white flex-1"
+                        {...field}
+                      />
+                    </FormControl>
+                    <Button 
+                      type="button" 
+                      onClick={handleAddNewCategory}
+                      disabled={!field.value}
+                    >
+                      Tambah
+                    </Button>
+                    <Button 
+                      type="button" 
+                      variant="outline" 
+                      onClick={() => setShowNewCategoryInput(false)}
+                    >
+                      Batal
+                    </Button>
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </>
+        )}
 
         <FormField
           control={form.control}
@@ -237,7 +375,7 @@ export function EvaluationForm({ onSuccess, initialData }: EvaluationFormProps) 
           )}
         />
 
-        <Button type="submit" disabled={isSubmitting}>
+        <Button type="submit" disabled={isSubmitting || (!form.watch("category") && !form.watch("new_category") && !showNewCategoryInput)}>
           {isSubmitting ? "Mengirim..." : initialData ? "Perbarui Evaluasi" : "Tambah Evaluasi"}
         </Button>
       </form>

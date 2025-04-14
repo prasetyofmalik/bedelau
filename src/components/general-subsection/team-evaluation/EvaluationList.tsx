@@ -70,16 +70,23 @@ export function EvaluationList({ evaluations }: EvaluationListProps) {
   };
 
   const getCategoryBadge = (category: string) => {
-    switch (category) {
-      case "achievement":
-        return <Badge className="bg-green-500">Pencapaian</Badge>;
-      case "challenge":
-        return <Badge className="bg-amber-500">Tantangan</Badge>;
-      case "improvement":
-        return <Badge className="bg-blue-500">Perbaikan</Badge>;
-      default:
-        return <Badge>{category}</Badge>;
-    }
+    // Generate a consistent color based on the first character of the category
+    const colorMap: Record<string, string> = {
+      'a': 'bg-purple-500', 'b': 'bg-indigo-500', 'c': 'bg-blue-500',
+      'd': 'bg-sky-500', 'e': 'bg-cyan-500', 'f': 'bg-teal-500',
+      'g': 'bg-emerald-500', 'h': 'bg-green-500', 'i': 'bg-lime-500',
+      'j': 'bg-yellow-500', 'k': 'bg-amber-500', 'l': 'bg-orange-500',
+      'm': 'bg-red-500', 'n': 'bg-rose-500', 'o': 'bg-pink-500',
+      'p': 'bg-fuchsia-500', 'q': 'bg-violet-500', 'r': 'bg-purple-500',
+      's': 'bg-indigo-500', 't': 'bg-blue-500', 'u': 'bg-sky-500',
+      'v': 'bg-cyan-500', 'w': 'bg-teal-500', 'x': 'bg-emerald-500',
+      'y': 'bg-green-500', 'z': 'bg-lime-500',
+    };
+    
+    const firstChar = category.charAt(0).toLowerCase();
+    const bgColor = colorMap[firstChar] || 'bg-gray-500';
+    
+    return <Badge className={bgColor}>{category}</Badge>;
   };
 
   if (evaluations.length === 0) {

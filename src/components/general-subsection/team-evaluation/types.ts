@@ -1,4 +1,4 @@
-export type TeamEvaluationCategory = 'achievement' | 'challenge' | 'improvement';
+export type TeamEvaluationCategory = string;
 
 export interface TeamEvaluation {
   id: string;
@@ -16,7 +16,5 @@ export interface WeeklySummary {
   team_name: string;
   week_start: string;
   week_end: string;
-  achievements: string[];
-  challenges: string[];
-  improvements: string[];
+  [key: string]: any; // Allow for dynamic category fields
 }

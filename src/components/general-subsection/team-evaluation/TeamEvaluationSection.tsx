@@ -14,7 +14,7 @@ import { useTeamEvaluations } from "./hooks/useTeamEvaluations";
 import { useWeeklySummaries, getCurrentWeekDates } from "./hooks/useWeeklySummaries";
 import { EvaluationForm } from "./EvaluationForm";
 import { EvaluationList } from "./EvaluationList";
-import { WeeklySummary } from "./WeeklySummary";
+import WeeklySummary from "./WeeklySummary";
 import { teams } from "@/components/monitoring/teamsData";
 import { cn } from "@/lib/utils";
 
@@ -126,7 +126,7 @@ export default function TeamEvaluationSection() {
               <SelectItem value="all">Semua Tim</SelectItem>
               {teams.map((team) => (
                 <SelectItem key={team.id} value={team.id.toString()}>
-                  {team.text}
+                  {team.name}
                 </SelectItem>
               ))}
             </SelectContent>
