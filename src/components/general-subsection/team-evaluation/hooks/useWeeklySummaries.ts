@@ -21,10 +21,7 @@ export const useWeeklySummaries = (evaluations: TeamEvaluation[] = []) => {
           team_id: evaluation.team_id,
           team_name: evaluation.team_name,
           week_start: weekStartStr,
-          week_end: weekEndStr,
-          achievements: [],
-          challenges: [],
-          improvements: [],
+          week_end: weekEndStr
         };
         summariesMap.set(key, baseSummary);
       }
@@ -34,20 +31,13 @@ export const useWeeklySummaries = (evaluations: TeamEvaluation[] = []) => {
       // Handle the evaluation based on its category
       const { category, content } = evaluation;
       
-      // Handle base categories directly
-      if (category === 'achievement') {
-        summary.achievements.push(content);
-      } else if (category === 'challenge') {
-        summary.challenges.push(content);
-      } else if (category === 'improvement') {
-        summary.improvements.push(content);
-      } else {
-        // For custom categories, dynamically add them to the summary
-        if (!summary[category]) {
-          summary[category] = [];
-        }
-        summary[category].push(content);
+      // Create array for category if it doesn't exist yet
+      if (!summary[category]) {
+        summary[category] = [];
       }
+      
+      // Add content to the category array
+      summary[category].push(content);
     });
 
     return Array.from(summariesMap.values()).sort((a, b) => 
