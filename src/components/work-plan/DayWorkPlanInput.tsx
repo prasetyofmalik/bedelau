@@ -25,13 +25,27 @@ export function DayWorkPlanInput({
   onChange,
 }: DayWorkPlanInputProps) {
   const handleCategoryChange = (i: number, cat: string) => {
-    const newArr = [...values];
+    // Create a deep copy of the values array
+    const newArr = values.map((item) => ({ ...item }));
+
+    // Ensure the index exists in the array
+    if (!newArr[i]) {
+      newArr[i] = { category: "", content: "" };
+    }
+
     newArr[i].category = cat;
     onChange(newArr);
   };
 
   const handleContentChange = (i: number, content: string) => {
-    const newArr = [...values];
+    // Create a deep copy of the values array
+    const newArr = values.map((item) => ({ ...item }));
+
+    // Ensure the index exists in the array
+    if (!newArr[i]) {
+      newArr[i] = { category: "", content: "" };
+    }
+
     newArr[i].content = content;
     onChange(newArr);
   };
@@ -46,7 +60,7 @@ export function DayWorkPlanInput({
 
   // Display at least one row even if no values
   const displayValues =
-    values.length > 0 ? values : [{ category: "", content: "" }];
+    values && values.length > 0 ? values : [{ category: "", content: "" }];
 
   return (
     <div className="space-y-2">
@@ -54,7 +68,7 @@ export function DayWorkPlanInput({
         <div key={idx} className="flex flex-col md:flex-row gap-2 items-start">
           <div className="flex-1">
             <CategorySelect
-              value={row.category}
+              value={row.category || ""}
               onChange={(cat) => handleCategoryChange(idx, cat)}
               teamId={teamId}
             />
@@ -62,7 +76,7 @@ export function DayWorkPlanInput({
           <div className="flex-1">
             <Input
               placeholder="Rencana kerja"
-              value={row.content}
+              value={row.content || ""}
               onChange={(e) => handleContentChange(idx, e.target.value)}
             />
           </div>

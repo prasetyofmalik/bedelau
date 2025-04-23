@@ -69,7 +69,7 @@ export function CategorySelect({
         <SelectTrigger>
           <SelectValue placeholder="Pilih kategori" />
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent className="bg-white">
           {categories?.map((cat) => (
             <SelectItem key={cat.id} value={cat.name}>
               {cat.name}

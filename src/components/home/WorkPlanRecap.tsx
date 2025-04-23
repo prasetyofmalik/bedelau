@@ -28,15 +28,28 @@ export const WorkPlanRecap = () => {
   };
 
   // Group work plan items by category for better display
-  const getGroupedWorkPlanItems = (dayDate: Date, workPlan: any) => {
+  interface WorkPlanItem {
+    day_of_week: number;
+    category: string;
+    content: string;
+  }
+
+  interface WorkPlan {
+    id: string;
+    week_start: string;
+    team_name: string;
+    work_plan_items: WorkPlanItem[];
+  }
+
+  const getGroupedWorkPlanItems = (dayDate: Date, workPlan: WorkPlan) => {
     // Filter items for this day
     const dayItems = workPlan.work_plan_items.filter(
-      (item: any) => item.day_of_week === dayDate.getDay()
+      (item: WorkPlanItem) => item.day_of_week === dayDate.getDay()
     );
 
     // Group by category
     const groupedItems: Record<string, string[]> = {};
-    dayItems.forEach((item: any) => {
+    dayItems.forEach((item: WorkPlanItem) => {
       if (!groupedItems[item.category]) {
         groupedItems[item.category] = [];
       }
@@ -48,7 +61,7 @@ export const WorkPlanRecap = () => {
 
   // Filter work plans for EXACTLY the current week only
   const currentWeekPlans =
-    workPlans?.filter((plan: any) => {
+    workPlans?.filter((plan: WorkPlan) => {
       if (!plan.week_start) return false;
 
       // Parse the ISO date string to a Date object
@@ -107,14 +120,14 @@ export const WorkPlanRecap = () => {
                   {format(day, "d MMM", { locale: id })}
                 </p>
                 <div className="space-y-3">
-                  {currentWeekPlans.map((plan: any) => {
+                  {currentWeekPlans.map((plan: WorkPlan) => {
                     const groupedItems = getGroupedWorkPlanItems(day, plan);
                     if (Object.keys(groupedItems).length === 0) return null;
 
                     return (
                       <div
                         key={plan.id}
-                        className="text-sm bg-gray-50 p-2 rounded"
+                        className="text-sm bg-gray-150 p-2 rounded"
                       >
                         <p className="font-medium">{plan.team_name}</p>
                         {Object.entries(groupedItems).map(
