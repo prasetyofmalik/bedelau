@@ -1,5 +1,12 @@
 import { useState } from "react";
-import { addDays, format, startOfWeek, subWeeks, addWeeks } from "date-fns";
+import {
+  addDays,
+  format,
+  startOfWeek,
+  subWeeks,
+  addWeeks,
+  isSameWeek,
+} from "date-fns";
 import { id } from "date-fns/locale";
 import { useWorkPlans } from "./hooks/useWorkPlans";
 import { Button } from "@/components/ui/button";
@@ -18,6 +25,25 @@ export const WorkPlanCalendar = () => {
     );
   };
 
+  // Group work plan items by category for better display
+  const getGroupedWorkPlanItems = (dayDate: Date, workPlan: any) => {
+    // Filter items for this day
+    const dayItems = workPlan.work_plan_items.filter(
+      (item: any) => item.day_of_week === dayDate.getDay()
+    );
+
+    // Group by category
+    const groupedItems: Record<string, string[]> = {};
+    dayItems.forEach((item: any) => {
+      if (!groupedItems[item.category]) {
+        groupedItems[item.category] = [];
+      }
+      groupedItems[item.category].push(item.content);
+    });
+
+    return groupedItems;
+  };
+
   if (isLoading) {
     return (
       <div className="flex justify-center py-12">
@@ -25,6 +51,12 @@ export const WorkPlanCalendar = () => {
       </div>
     );
   }
+
+  // Filter work plans for the current week only
+  const currentWeekPlans = workPlans.filter((plan: any) => {
+    const planWeekStart = new Date(plan.week_start);
+    return isSameWeek(planWeekStart, weekStart, { weekStartsOn: 1 });
+  });
 
   return (
     <div className="space-y-4">
@@ -40,7 +72,7 @@ export const WorkPlanCalendar = () => {
         </Button>
       </div>
 
-      {workPlans.length === 0 ? (
+      {currentWeekPlans.length === 0 ? (
         <div className="text-center py-12 text-gray-500">
           Tidak ada rencana kerja untuk minggu ini
         </div>
@@ -57,22 +89,34 @@ export const WorkPlanCalendar = () => {
               <p className="text-sm text-gray-500">
                 {format(day, "d MMM", { locale: id })}
               </p>
-              <div className="space-y-2">
-                {workPlans.map((plan) => (
-                  <div key={plan.id} className="text-sm bg-gray-50 p-2 rounded">
-                    <p className="font-medium">{plan.team_name}</p>
-                    {plan.work_plan_items
-                      .filter((item) => item.day_of_week === day.getDay())
-                      .map((item) => (
-                        <div key={item.id} className="mt-1">
-                          <span className="text-xs text-gray-500">
-                            {item.category}:
-                          </span>
-                          <p className="text-xs">{item.content}</p>
-                        </div>
-                      ))}
-                  </div>
-                ))}
+              <div className="space-y-3">
+                {currentWeekPlans.map((plan: any) => {
+                  const groupedItems = getGroupedWorkPlanItems(day, plan);
+                  if (Object.keys(groupedItems).length === 0) return null;
+
+                  return (
+                    <div
+                      key={plan.id}
+                      className="text-sm bg-gray-50 p-2 rounded"
+                    >
+                      <p className="font-medium">{plan.team_name}</p>
+                      {Object.entries(groupedItems).map(
+                        ([category, contents]) => (
+                          <div key={category} className="mt-2">
+                            <span className="text-xs font-medium text-gray-700">
+                              {category}:
+                            </span>
+                            <ul className="mt-1 list-disc pl-4 text-xs space-y-1">
+                              {contents.map((content, idx) => (
+                                <li key={idx}>{content}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        )
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             </div>
           ))}

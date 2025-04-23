@@ -1,7 +1,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Trash, Plus } from "lucide-react";
-import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
 import { CategorySelect } from "./CategorySelect";
 
 interface DayPlan {
@@ -58,11 +58,10 @@ export function DayWorkPlanInput({
               />
             </div>
             <div className="flex-1">
-              <Textarea
+              <Input
                 placeholder="Rencana kerja"
                 value={row.content}
                 onChange={(e) => handleContentChange(idx, e.target.value)}
-                rows={2}
               />
             </div>
             <div className="flex-none flex items-center gap-1">
@@ -71,7 +70,7 @@ export function DayWorkPlanInput({
                 variant="outline"
                 type="button"
                 onClick={handleAdd}
-                title="Tambah kategori"
+                title="Tambah rencana"
                 className="shrink-0"
               >
                 <Plus className="h-4 w-4" />
