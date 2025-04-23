@@ -8,7 +8,7 @@ export function useEmployeeStats() {
       const { data: employees } = await supabase
         .from("profiles")
         .select("*")
-        .eq("role", "employee");
+        .in('role', ['head_office', 'employee'])
       const totalEmployees = employees?.length || 0;
       const maleEmployees =
         employees?.filter((emp) => emp.gender === "l").length || 0;

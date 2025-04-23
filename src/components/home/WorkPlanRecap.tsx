@@ -11,13 +11,39 @@ import {
 import { id } from "date-fns/locale";
 import { useWorkPlans } from "@/components/work-plan/hooks/useWorkPlans";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ArrowRight, Loader2 } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  ChevronDown,
+  ChevronUp,
+  Loader2,
+} from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+
+interface WorkPlanItem {
+  day_of_week: number;
+  category: string;
+  content: string;
+}
+
+interface WorkPlan {
+  id: string;
+  week_start: string;
+  team_name: string;
+  work_plan_items: WorkPlanItem[];
+}
 
 export const WorkPlanRecap = () => {
   const [currentWeek, setCurrentWeek] = useState(new Date());
   const weekStart = startOfWeek(currentWeek, { weekStartsOn: 1 });
   const { data: workPlans, isLoading } = useWorkPlans(undefined, weekStart);
+  const [openTeams, setOpenTeams] = useState<Record<string, boolean>>({});
 
   const days = Array.from({ length: 5 }, (_, i) => addDays(weekStart, i));
 
@@ -27,20 +53,15 @@ export const WorkPlanRecap = () => {
     );
   };
 
+  // Toggle team collapsible state
+  const toggleTeam = (teamId: string) => {
+    setOpenTeams((prev) => ({
+      ...prev,
+      [teamId]: !prev[teamId],
+    }));
+  };
+
   // Group work plan items by category for better display
-  interface WorkPlanItem {
-    day_of_week: number;
-    category: string;
-    content: string;
-  }
-
-  interface WorkPlan {
-    id: string;
-    week_start: string;
-    team_name: string;
-    work_plan_items: WorkPlanItem[];
-  }
-
   const getGroupedWorkPlanItems = (dayDate: Date, workPlan: WorkPlan) => {
     // Filter items for this day
     const dayItems = workPlan.work_plan_items.filter(
@@ -61,15 +82,17 @@ export const WorkPlanRecap = () => {
 
   // Filter work plans for EXACTLY the current week only
   const currentWeekPlans =
-    workPlans?.filter((plan: WorkPlan) => {
-      if (!plan.week_start) return false;
+    workPlans && Array.isArray(workPlans)
+      ? workPlans.filter((plan: WorkPlan) => {
+          if (!plan.week_start) return false;
 
-      // Parse the ISO date string to a Date object
-      const planWeekStart = parseISO(plan.week_start);
+          // Parse the ISO date string to a Date object
+          const planWeekStart = parseISO(plan.week_start);
 
-      // Use isSameDay to compare only the week start dates
-      return isSameDay(planWeekStart, weekStart);
-    }) || [];
+          // Use isSameDay to compare only the week start dates
+          return isSameDay(planWeekStart, weekStart);
+        })
+      : [];
 
   return (
     <Card className="mb-8">
@@ -125,26 +148,43 @@ export const WorkPlanRecap = () => {
                     if (Object.keys(groupedItems).length === 0) return null;
 
                     return (
-                      <div
+                      <Collapsible
                         key={plan.id}
-                        className="text-sm bg-gray-150 p-2 rounded"
+                        className="text-sm bg-gray-100 p-2 rounded shadow-sm"
+                        open={openTeams[plan.id] || false}
+                        onOpenChange={() => {}}
                       >
-                        <p className="font-medium">{plan.team_name}</p>
-                        {Object.entries(groupedItems).map(
-                          ([category, contents]) => (
-                            <div key={category} className="mt-2">
-                              <span className="text-xs font-medium text-gray-700">
-                                {category}:
-                              </span>
-                              <ul className="mt-1 list-disc pl-4 text-xs space-y-1">
-                                {contents.map((content, idx) => (
-                                  <li key={idx}>{content}</li>
-                                ))}
-                              </ul>
-                            </div>
-                          )
-                        )}
-                      </div>
+                        <CollapsibleTrigger
+                          onClick={() => toggleTeam(plan.id)}
+                          className="flex justify-between items-center w-full cursor-pointer font-medium text-left"
+                        >
+                          <span className="font-medium">{plan.team_name}</span>
+                          {openTeams[plan.id] ? (
+                            <ChevronUp className="h-4 w-4" />
+                          ) : (
+                            <ChevronDown className="h-4 w-4" />
+                          )}
+                        </CollapsibleTrigger>
+                        <CollapsibleContent className="mt-2 space-y-2">
+                          {Object.entries(groupedItems).map(
+                            ([category, contents]) => (
+                              <div key={category} className="mt-2">
+                                <Badge
+                                  variant="outline"
+                                  className="mb-1 bg-gray-50"
+                                >
+                                  {category}
+                                </Badge>
+                                <ul className="list-disc pl-4 text-xs space-y-1">
+                                  {contents.map((content, idx) => (
+                                    <li key={idx}>{content}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                            )
+                          )}
+                        </CollapsibleContent>
+                      </Collapsible>
                     );
                   })}
                 </div>

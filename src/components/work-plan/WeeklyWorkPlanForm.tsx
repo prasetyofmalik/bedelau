@@ -6,8 +6,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { useWorkPlans } from "./hooks/useWorkPlans";
 import { useWorkPlanCategories } from "./hooks/useWorkPlanCategories";
-import { Textarea } from "@/components/ui/textarea";
-import { startOfWeek, format } from "date-fns";
+import { startOfWeek, format, addDays } from "date-fns";
 import { Loader2, Calendar as CalendarIcon } from "lucide-react";
 import {
   Popover,
@@ -60,6 +59,11 @@ export const WeeklyWorkPlanForm = () => {
     4: [], // Thursday
     5: [], // Friday
   });
+
+  const getWeekDays = (date: Date) => {
+    const weekStart = startOfWeek(date, { weekStartsOn: 1 });
+    return Array.from({ length: 5 }, (_, i) => addDays(weekStart, i));
+  };
 
   const handleDayPlanChange = (
     dayIndex: number,
@@ -182,7 +186,19 @@ export const WeeklyWorkPlanForm = () => {
                 setSelectedDate(date);
                 setIsCalendarOpen(false);
               }}
-              className="rounded-md border pointer-events-auto"
+              modifiers={{
+                selected: selectedDate
+                  ? getWeekDays(selectedDate).map((date) => date)
+                  : [],
+              }}
+              modifiersStyles={{
+                selected: {
+                  backgroundColor: "rgb(59 130 246)",
+                  color: "white",
+                },
+              }}
+              initialFocus
+              className="rounded-md border p-3 pointer-events-auto"
             />
           </PopoverContent>
         </Popover>
