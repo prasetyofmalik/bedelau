@@ -5,7 +5,8 @@ import {
   startOfWeek,
   subWeeks,
   addWeeks,
-  isSameWeek,
+  isSameDay,
+  parseISO,
 } from "date-fns";
 import { id } from "date-fns/locale";
 import { useWorkPlans } from "./hooks/useWorkPlans";
@@ -52,10 +53,15 @@ export const WorkPlanCalendar = () => {
     );
   }
 
-  // Filter work plans for the current week only
+  // Filter work plans for EXACTLY the current week only
   const currentWeekPlans = workPlans.filter((plan: any) => {
-    const planWeekStart = new Date(plan.week_start);
-    return isSameWeek(planWeekStart, weekStart, { weekStartsOn: 1 });
+    if (!plan.week_start) return false;
+
+    // Parse the ISO date string to a Date object
+    const planWeekStart = parseISO(plan.week_start);
+
+    // Use isSameDay to compare only the week start dates
+    return isSameDay(planWeekStart, weekStart);
   });
 
   return (

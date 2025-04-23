@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { useWorkPlans } from "./hooks/useWorkPlans";
@@ -16,59 +15,63 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from "@/components/ui/form";
 import { id } from "date-fns/locale";
+import { DayWorkPlanInput } from "./DayWorkPlanInput";
 
 interface WorkPlanFormData {
-  items: {
-    day_of_week: number;
-    category: string;
-    content: string;
-  }[];
+  dayPlans: {
+    [key: number]: Array<{
+      category: string;
+      content: string;
+    }>;
+  };
 }
 
 export const WeeklyWorkPlanForm = () => {
   const [selectedDate, setSelectedDate] = useState<Date>();
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const { toast } = useToast();
   const { createWorkPlan } = useWorkPlans();
   const { data: categories } = useWorkPlanCategories(1); // Default to UMUM team
-  const [newCategory, setNewCategory] = useState("");
 
   const {
-    register,
     handleSubmit,
     reset,
-    setValue,
-    watch,
     formState: { isSubmitting },
   } = useForm<WorkPlanFormData>({
     defaultValues: {
-      items: Array(5)
-        .fill({})
-        .map((_, i) => ({
-          day_of_week: i + 1,
-          category: "",
-          content: "",
-        })),
+      dayPlans: {
+        1: [], // Monday
+        2: [], // Tuesday
+        3: [], // Wednesday
+        4: [], // Thursday
+        5: [], // Friday
+      },
     },
   });
 
-  const formValues = watch();
+  // State to track work plans for each day
+  const [dayPlans, setDayPlans] = useState<{
+    [key: number]: Array<{ category: string; content: string }>;
+  }>({
+    1: [], // Monday
+    2: [], // Tuesday
+    3: [], // Wednesday
+    4: [], // Thursday
+    5: [], // Friday
+  });
 
-  const onSubmit = async (data: WorkPlanFormData) => {
+  const handleDayPlanChange = (
+    dayIndex: number,
+    plans: Array<{ category: string; content: string }>
+  ) => {
+    setDayPlans((prev) => ({
+      ...prev,
+      [dayIndex]: plans,
+    }));
+  };
+
+  const onSubmit = async () => {
     if (!selectedDate) {
       toast({
         title: "Error",
@@ -80,11 +83,28 @@ export const WeeklyWorkPlanForm = () => {
 
     try {
       const weekStart = startOfWeek(selectedDate, { weekStartsOn: 1 });
-      const filteredItems = data.items.filter(
-        (item) => item.content.trim() !== ""
-      );
 
-      if (filteredItems.length === 0) {
+      // Convert day plans to work plan items
+      const workPlanItems: Array<{
+        day_of_week: number;
+        category: string;
+        content: string;
+      }> = [];
+
+      Object.entries(dayPlans).forEach(([dayOfWeek, plans]) => {
+        plans.forEach((plan) => {
+          // Only add plans that have both category and content
+          if (plan.category.trim() && plan.content.trim()) {
+            workPlanItems.push({
+              day_of_week: parseInt(dayOfWeek),
+              category: plan.category,
+              content: plan.content,
+            });
+          }
+        });
+      });
+
+      if (workPlanItems.length === 0) {
         toast({
           title: "Error",
           description: "Isi minimal satu rencana kerja",
@@ -97,7 +117,7 @@ export const WeeklyWorkPlanForm = () => {
         teamId: 1, // Default to UMUM team
         teamName: "UMUM",
         weekStart: weekStart.toISOString(),
-        items: filteredItems,
+        items: workPlanItems,
       });
 
       toast({
@@ -105,8 +125,16 @@ export const WeeklyWorkPlanForm = () => {
         description: "Rencana kerja berhasil disimpan",
       });
 
+      // Reset form and state
       reset();
       setSelectedDate(undefined);
+      setDayPlans({
+        1: [], // Monday
+        2: [], // Tuesday
+        3: [], // Wednesday
+        4: [], // Thursday
+        5: [], // Friday
+      });
     } catch (error) {
       console.error("Error submitting work plan:", error);
       toast({
@@ -117,23 +145,19 @@ export const WeeklyWorkPlanForm = () => {
     }
   };
 
-  const days = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat"];
-
-  const handleAddCategory = () => {
-    if (newCategory.trim() === "") return;
-    // Logic to add a new category would go here
-    toast({
-      title: "Kategori baru",
-      description: `Kategori "${newCategory}" ditambahkan`,
-    });
-    setNewCategory("");
-  };
+  const days = [
+    { name: "Senin", index: 1 },
+    { name: "Selasa", index: 2 },
+    { name: "Rabu", index: 3 },
+    { name: "Kamis", index: 4 },
+    { name: "Jumat", index: 5 },
+  ];
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <div className="space-y-4">
         <Label>Pilih Minggu</Label>
-        <Popover>
+        <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
           <PopoverTrigger asChild>
             <Button
               variant="outline"
@@ -154,7 +178,10 @@ export const WeeklyWorkPlanForm = () => {
             <Calendar
               mode="single"
               selected={selectedDate}
-              onSelect={setSelectedDate}
+              onSelect={(date) => {
+                setSelectedDate(date);
+                setIsCalendarOpen(false);
+              }}
               className="rounded-md border pointer-events-auto"
             />
           </PopoverContent>
@@ -162,50 +189,16 @@ export const WeeklyWorkPlanForm = () => {
       </div>
 
       <div className="space-y-6">
-        {days.map((day, index) => (
-          <div key={day} className="space-y-4">
-            <h3 className="font-medium">{day}</h3>
-            <div className="grid gap-4">
-              <Select
-                onValueChange={(value) =>
-                  setValue(`items.${index}.category`, value)
-                }
-                value={formValues.items?.[index]?.category || ""}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Pilih kategori" />
-                </SelectTrigger>
-                <SelectContent>
-                  {categories?.map((category) => (
-                    <SelectItem key={category.id} value={category.name}>
-                      {category.name}
-                    </SelectItem>
-                  ))}
-                  <div className="flex items-center p-2 border-t">
-                    <Input
-                      value={newCategory}
-                      onChange={(e) => setNewCategory(e.target.value)}
-                      placeholder="Kategori baru"
-                      className="flex-1"
-                    />
-                    <Button
-                      type="button"
-                      size="sm"
-                      variant="outline"
-                      onClick={handleAddCategory}
-                      className="ml-2"
-                    >
-                      Tambah
-                    </Button>
-                  </div>
-                </SelectContent>
-              </Select>
-              <Textarea
-                {...register(`items.${index}.content`)}
-                placeholder="Rencana kerja"
-                rows={3}
-              />
-            </div>
+        {days.map((day) => (
+          <div key={day.name} className="space-y-4">
+            <h3 className="font-medium">{day.name}</h3>
+            <DayWorkPlanInput
+              label={day.name}
+              dayIndex={day.index}
+              teamId={1}
+              values={dayPlans[day.index]}
+              onChange={(plans) => handleDayPlanChange(day.index, plans)}
+            />
           </div>
         ))}
       </div>

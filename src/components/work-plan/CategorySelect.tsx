@@ -7,7 +7,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { useWorkPlanCategories } from "./hooks/useWorkPlanCategories";
@@ -38,23 +37,35 @@ export function CategorySelect({
 
   const handleAddCategory = async () => {
     if (!newCategory.trim()) return;
+
     try {
       const cat = await createCategory.mutateAsync({
         teamId,
         name: newCategory.trim(),
       });
+
       toast({ title: "Kategori ditambahkan" });
       setOpen(false);
       setNewCategory("");
       onChange(cat.name);
     } catch (e) {
+      console.error("Error adding category:", e);
       toast({ title: "Gagal menambah kategori", variant: "destructive" });
     }
   };
 
   return (
     <div>
-      <Select value={value} onValueChange={onChange}>
+      <Select
+        value={value}
+        onValueChange={(newValue) => {
+          if (newValue === "__add__") {
+            setOpen(true);
+          } else {
+            onChange(newValue);
+          }
+        }}
+      >
         <SelectTrigger>
           <SelectValue placeholder="Pilih kategori" />
         </SelectTrigger>
@@ -71,25 +82,24 @@ export function CategorySelect({
           </SelectItem>
         </SelectContent>
       </Select>
-      {value === "__add__" && (
-        <Dialog open={open || value === "__add__"} onOpenChange={setOpen}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Tambah Kategori</DialogTitle>
-            </DialogHeader>
-            <Input
-              autoFocus
-              placeholder="Nama kategori baru"
-              value={newCategory}
-              onChange={(e) => setNewCategory(e.target.value)}
-              onKeyUp={(e) => e.key === "Enter" && handleAddCategory()}
-            />
-            <DialogFooter>
-              <Button onClick={handleAddCategory}>Tambah</Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-      )}
+
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Tambah Kategori</DialogTitle>
+          </DialogHeader>
+          <Input
+            autoFocus
+            placeholder="Nama kategori baru"
+            value={newCategory}
+            onChange={(e) => setNewCategory(e.target.value)}
+            onKeyUp={(e) => e.key === "Enter" && handleAddCategory()}
+          />
+          <DialogFooter>
+            <Button onClick={handleAddCategory}>Tambah</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

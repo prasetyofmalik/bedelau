@@ -1,5 +1,13 @@
 import { useState } from "react";
-import { addDays, format, startOfWeek, subWeeks, addWeeks, isSameWeek } from "date-fns";
+import {
+  addDays,
+  format,
+  startOfWeek,
+  subWeeks,
+  addWeeks,
+  parseISO,
+  isSameDay,
+} from "date-fns";
 import { id } from "date-fns/locale";
 import { useWorkPlans } from "@/components/work-plan/hooks/useWorkPlans";
 import { Button } from "@/components/ui/button";
@@ -38,11 +46,17 @@ export const WorkPlanRecap = () => {
     return groupedItems;
   };
 
-  // Filter work plans for the current week only
-  const currentWeekPlans = workPlans.filter((plan: any) => {
-    const planWeekStart = new Date(plan.week_start);
-    return isSameWeek(planWeekStart, weekStart, { weekStartsOn: 1 });
-  });
+  // Filter work plans for EXACTLY the current week only
+  const currentWeekPlans =
+    workPlans?.filter((plan: any) => {
+      if (!plan.week_start) return false;
+
+      // Parse the ISO date string to a Date object
+      const planWeekStart = parseISO(plan.week_start);
+
+      // Use isSameDay to compare only the week start dates
+      return isSameDay(planWeekStart, weekStart);
+    }) || [];
 
   return (
     <Card className="mb-8">
@@ -103,18 +117,20 @@ export const WorkPlanRecap = () => {
                         className="text-sm bg-gray-50 p-2 rounded"
                       >
                         <p className="font-medium">{plan.team_name}</p>
-                        {Object.entries(groupedItems).map(([category, contents]) => (
-                          <div key={category} className="mt-2">
-                            <span className="text-xs font-medium text-gray-700">
-                              {category}:
-                            </span>
-                            <ul className="mt-1 list-disc pl-4 text-xs space-y-1">
-                              {contents.map((content, idx) => (
-                                <li key={idx}>{content}</li>
-                              ))}
-                            </ul>
-                          </div>
-                        ))}
+                        {Object.entries(groupedItems).map(
+                          ([category, contents]) => (
+                            <div key={category} className="mt-2">
+                              <span className="text-xs font-medium text-gray-700">
+                                {category}:
+                              </span>
+                              <ul className="mt-1 list-disc pl-4 text-xs space-y-1">
+                                {contents.map((content, idx) => (
+                                  <li key={idx}>{content}</li>
+                                ))}
+                              </ul>
+                            </div>
+                          )
+                        )}
                       </div>
                     );
                   })}

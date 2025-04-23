@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { WorkPlan, WorkPlanItem } from "../types";
-import { startOfWeek, endOfWeek } from "date-fns";
+import { startOfWeek, endOfWeek, format } from "date-fns";
 
 export const useWorkPlans = (teamId?: number, startDate?: Date) => {
   const queryClient = useQueryClient();
@@ -19,9 +19,14 @@ export const useWorkPlans = (teamId?: number, startDate?: Date) => {
     if (startDate) {
       const weekStart = startOfWeek(startDate, { weekStartsOn: 1 });
       const weekEnd = endOfWeek(startDate, { weekStartsOn: 1 });
+
+      // Format dates to ISO strings for consistent comparison
+      const formattedWeekStart = format(weekStart, "yyyy-MM-dd");
+      const formattedWeekEnd = format(weekEnd, "yyyy-MM-dd");
+
       query = query
-        .gte("week_start", weekStart.toISOString())
-        .lte("week_start", weekEnd.toISOString());
+        .gte("week_start", formattedWeekStart)
+        .lte("week_start", formattedWeekEnd);
     }
 
     const { data, error } = await query.order("week_start", {
@@ -62,12 +67,15 @@ export const useWorkPlans = (teamId?: number, startDate?: Date) => {
         throw new Error("User not authenticated");
       }
 
+      // Format the weekStart to ensure consistency with date format in database
+      const formattedWeekStart = new Date(weekStart);
+
       const { data: workPlan, error: workPlanError } = await supabase
         .from("work_plans")
         .insert({
           team_id: teamId,
           team_name: teamName,
-          week_start: weekStart,
+          week_start: format(formattedWeekStart, "yyyy-MM-dd"),
           created_by: session.session.user.id,
         })
         .select()
