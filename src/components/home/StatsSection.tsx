@@ -66,7 +66,7 @@ export const StatsSection = () => {
             value={teams.length}
             redirectTo="/monitoring"
           />
-          <StatsCard
+          {/* <StatsCard
             title="Jumlah Surat"
             value={stats?.totalCount || 0}
             subStats={[
@@ -75,7 +75,7 @@ export const StatsSection = () => {
               { label: "Surat Keputusan", value: stats?.skCount || 0 },
             ]}
             redirectTo="/monitoring/general-subsection"
-          />
+          /> */}
         </div>
       </div>
     </section>

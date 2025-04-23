@@ -14,6 +14,7 @@ import Monitoring from "./pages/Monitoring";
 import MailsRecap from "./pages/general-subsection/MailsRecap";
 import SKPRecap from "./pages/general-subsection/SKPRecap";
 import TeamEvaluation from "./pages/general-subsection/TeamEvaluation";
+import WorkPlan from "./pages/general-subsection/WorkPlan";
 import SsnM25 from "./pages/social-statistics/SsnM25";
 import SakF25 from "./pages/social-statistics/SakF25";
 import { MonitoringLayout } from "@/components/monitoring/MonitoringLayout";
@@ -56,6 +57,7 @@ const App = () => (
             <Route path="general-subsection/mails-recap" element={<ProtectedRoute><MailsRecap /></ProtectedRoute>} />
             <Route path="general-subsection/skp-recap" element={<ProtectedRoute><SKPRecap /></ProtectedRoute>} />
             <Route path="general-subsection/team-evaluation" element={<ProtectedRoute><TeamEvaluation /></ProtectedRoute>} />
+            <Route path="/monitoring/general-subsection/work-plan" element={<ProtectedRoute><WorkPlan /></ProtectedRoute>} />
             <Route
               path="social-statistics"
               element={
