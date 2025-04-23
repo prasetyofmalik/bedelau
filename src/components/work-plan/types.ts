@@ -3,6 +3,7 @@ export interface WorkPlanFormData {
     [key: number]: Array<{ category: string; content: string }>;
   };
 }
+
 export interface WorkPlan {
   id: string;
   team_id: number;
@@ -11,6 +12,7 @@ export interface WorkPlan {
   created_by: string;
   created_at: string;
   updated_at: string;
+  work_plan_items?: WorkPlanItem[];
 }
 
 export interface WorkPlanItem {

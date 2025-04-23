@@ -57,13 +57,22 @@ export const useWorkPlans = (teamId?: number, startDate?: Date) => {
         throw new Error("User must be logged in to create a work plan");
       }
 
+      // Ensure the weekStart is saved as a Monday date
+      // The input.weekStart is already an ISO string, so we parse it first
+      const selectedDate = new Date(input.weekStart);
+      // Then get the Monday of the week (weekStartsOn: 1 means Monday is the start of the week)
+      const mondayOfWeek = format(
+        startOfWeek(selectedDate, { weekStartsOn: 1 }),
+        "yyyy-MM-dd"
+      );
+
       const { data: workPlan, error: workPlanError } = await supabase
         .from("work_plans")
         .insert({
           team_id: input.teamId,
           team_name: input.teamName,
-          week_start: input.weekStart,
-          created_by: userId, // Add the user ID here
+          week_start: mondayOfWeek, // Use Monday as the week start date
+          created_by: userId, // Include the user ID
         })
         .select()
         .single();
