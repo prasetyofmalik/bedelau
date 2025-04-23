@@ -49,12 +49,21 @@ export const useWorkPlans = (teamId?: number, startDate?: Date) => {
 
   const createWorkPlanMutation = useMutation({
     mutationFn: async (input: CreateWorkPlanInput) => {
+      // Get the current user's session
+      const { data: sessionData } = await supabase.auth.getSession();
+      const userId = sessionData.session?.user?.id;
+
+      if (!userId) {
+        throw new Error("User must be logged in to create a work plan");
+      }
+
       const { data: workPlan, error: workPlanError } = await supabase
         .from("work_plans")
         .insert({
           team_id: input.teamId,
           team_name: input.teamName,
           week_start: input.weekStart,
+          created_by: userId, // Add the user ID here
         })
         .select()
         .single();
