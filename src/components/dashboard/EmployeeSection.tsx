@@ -18,7 +18,7 @@ export function EmployeeSection() {
       const { data } = await supabase
         .from("profiles")
         .select("*")
-        .eq("role", "employee")
+        .in('role', ['head_office', 'employee'])
         .order("created_at");
       return data;
     },
