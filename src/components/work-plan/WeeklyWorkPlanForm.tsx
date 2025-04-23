@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
@@ -16,15 +16,9 @@ import {
 import { cn } from "@/lib/utils";
 import { id } from "date-fns/locale";
 import { DayWorkPlanInput } from "./DayWorkPlanInput";
+import { DayPicker } from "react-day-picker";
 
-interface WorkPlanFormData {
-  dayPlans: {
-    [key: number]: Array<{
-      category: string;
-      content: string;
-    }>;
-  };
-}
+type DayProps = React.ComponentProps<typeof DayPicker>["modifiers"];
 
 export const WeeklyWorkPlanForm = () => {
   const [selectedDate, setSelectedDate] = useState<Date>();
