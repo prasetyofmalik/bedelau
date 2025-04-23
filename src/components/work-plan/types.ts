@@ -1,3 +1,8 @@
+export interface WorkPlanFormData {
+  dayPlans: {
+    [key: number]: Array<{ category: string; content: string }>;
+  };
+}
 export interface WorkPlan {
   id: string;
   team_id: number;

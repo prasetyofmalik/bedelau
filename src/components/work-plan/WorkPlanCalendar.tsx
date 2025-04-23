@@ -11,10 +11,13 @@ import {
 import { id } from "date-fns/locale";
 import { useWorkPlans } from "./hooks/useWorkPlans";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft, ArrowRight, Loader2 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export const WorkPlanCalendar = () => {
   const [currentWeek, setCurrentWeek] = useState(new Date());
+  const [activeDay, setActiveDay] = useState<string | null>(null);
   const weekStart = startOfWeek(currentWeek, { weekStartsOn: 1 });
   const { data: workPlans, isLoading } = useWorkPlans(undefined, weekStart);
 
@@ -24,38 +27,16 @@ export const WorkPlanCalendar = () => {
     setCurrentWeek((prev) =>
       direction === "prev" ? subWeeks(prev, 1) : addWeeks(prev, 1)
     );
+    setActiveDay(null);
   };
 
-  // Group work plan items by category for better display
-  interface WorkPlanItem {
-    day_of_week: number;
-    category: string;
-    content: string;
-  }
-
-  interface WorkPlan {
-    id: string;
-    week_start: string;
-    team_name: string;
-    work_plan_items: WorkPlanItem[];
-  }
-
-  const getGroupedWorkPlanItems = (dayDate: Date, workPlan: WorkPlan) => {
-    // Filter items for this day
-    const dayItems = workPlan.work_plan_items.filter(
-      (item: WorkPlanItem) => item.day_of_week === dayDate.getDay()
+  const getDailyWorkPlans = (date: string) => {
+    return (
+      workPlans?.filter((plan) => {
+        const planWeekStart = parseISO(plan.week_start);
+        return isSameDay(planWeekStart, parseISO(weekStart.toISOString()));
+      }) || []
     );
-
-    // Group by category
-    const groupedItems: Record<string, string[]> = {};
-    dayItems.forEach((item: WorkPlanItem) => {
-      if (!groupedItems[item.category]) {
-        groupedItems[item.category] = [];
-      }
-      groupedItems[item.category].push(item.content);
-    });
-
-    return groupedItems;
   };
 
   if (isLoading) {
@@ -66,81 +47,120 @@ export const WorkPlanCalendar = () => {
     );
   }
 
-  // Filter work plans for EXACTLY the current week only
-  const currentWeekPlans = workPlans.filter((plan: WorkPlan) => {
-    if (!plan.week_start) return false;
-
-    // Parse the ISO date string to a Date object
-    const planWeekStart = parseISO(plan.week_start);
-
-    // Use isSameDay to compare only the week start dates
-    return isSameDay(planWeekStart, weekStart);
-  });
-
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <Button variant="outline" onClick={() => navigateWeek("prev")}>
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={() => navigateWeek("prev")}
+        >
           <ArrowLeft className="h-4 w-4" />
         </Button>
         <h3 className="text-lg font-medium">
           {format(weekStart, "d MMMM yyyy", { locale: id })}
         </h3>
-        <Button variant="outline" onClick={() => navigateWeek("next")}>
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={() => navigateWeek("next")}
+        >
           <ArrowRight className="h-4 w-4" />
         </Button>
       </div>
 
-      {currentWeekPlans.length === 0 ? (
-        <div className="text-center py-12 text-gray-500">
-          Tidak ada rencana kerja untuk minggu ini
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+      <div className="space-y-6">
+        <div className="grid grid-cols-7 gap-2">
           {days.map((day) => (
-            <div
+            <Button
               key={day.toISOString()}
-              className="border rounded-lg p-4 space-y-2"
+              variant="outline"
+              className={cn(
+                "flex-col h-auto py-2",
+                format(day, "yyyy-MM-dd") ===
+                  format(new Date(), "yyyy-MM-dd") && "border-primary",
+                activeDay === format(day, "yyyy-MM-dd")
+                  ? "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground"
+                  : "",
+                format(day, "yyyy-MM-dd") ===
+                  format(new Date(), "yyyy-MM-dd") && "border-primary"
+              )}
+              onClick={() => setActiveDay(format(day, "yyyy-MM-dd"))}
             >
-              <h4 className="font-medium">
-                {format(day, "EEEE", { locale: id })}
-              </h4>
-              <p className="text-sm text-gray-500">
-                {format(day, "d MMM", { locale: id })}
-              </p>
-              <div className="space-y-3">
-                {currentWeekPlans.map((plan: WorkPlan) => {
-                  const groupedItems = getGroupedWorkPlanItems(day, plan);
-                  if (Object.keys(groupedItems).length === 0) return null;
-
-                  return (
-                    <div
-                      key={plan.id}
-                      className="text-sm bg-gray-50 p-2 rounded"
-                    >
-                      <p className="font-medium">{plan.team_name}</p>
-                      {Object.entries(groupedItems).map(
-                        ([category, contents]) => (
-                          <div key={category} className="mt-2">
-                            <span className="text-xs font-medium text-gray-700">
-                              {category}:
-                            </span>
-                            <ul className="mt-1 list-disc pl-4 text-xs space-y-1">
-                              {contents.map((content, idx) => (
-                                <li key={idx}>{content}</li>
-                              ))}
-                            </ul>
-                          </div>
-                        )
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
+              <span className="text-xs">
+                {format(day, "EEE", { locale: id })}
+              </span>
+              <span
+                className={cn(
+                  "text-lg",
+                  format(day, "yyyy-MM-dd") ===
+                    format(new Date(), "yyyy-MM-dd") && "font-bold"
+                )}
+              >
+                {format(day, "d")}
+              </span>
+              {getDailyWorkPlans(format(day, "yyyy-MM-dd")).length > 0 && (
+                <span
+                  className={cn(
+                    "mt-1 h-1.5 w-1.5 rounded-full",
+                    activeDay === format(day, "yyyy-MM-dd")
+                      ? "bg-primary-foreground"
+                      : "bg-primary"
+                  )}
+                ></span>
+              )}
+            </Button>
           ))}
         </div>
-      )}
+
+        <div>
+          {activeDay ? (
+            <>
+              <h3 className="text-lg font-medium mb-4">
+                Rencana Kerja untuk{" "}
+                {format(parseISO(activeDay), "PPPP", { locale: id })}
+              </h3>
+              {getDailyWorkPlans(activeDay).map((workPlan) => (
+                <div key={workPlan.id} className="space-y-4">
+                  {workPlan.work_plan_items
+                    .filter(
+                      (item) =>
+                        item.day_of_week === parseISO(activeDay).getDay()
+                    )
+                    .reduce((acc, item) => {
+                      const category = item.category;
+                      if (!acc[category]) {
+                        acc[category] = [];
+                      }
+                      acc[category].push(item);
+                      return acc;
+                    }, {} as Record<string, typeof workPlan.work_plan_items>)
+                    .map((items, category) => (
+                      <div key={category} className="bg-gray-50 p-4 rounded-lg">
+                        <h4 className="font-medium text-sm mb-2">{category}</h4>
+                        <ul className="space-y-2">
+                          {items.map((item) => (
+                            <li key={item.id} className="text-sm">
+                              {item.content}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                </div>
+              ))}
+            </>
+          ) : (
+            <Card>
+              <CardContent className="p-6 text-center">
+                <p className="text-muted-foreground">
+                  Pilih tanggal untuk melihat rencana kerja
+                </p>
+              </CardContent>
+            </Card>
+          )}
+        </div>
+      </div>
     </div>
   );
 };
