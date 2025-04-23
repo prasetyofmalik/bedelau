@@ -29,3 +29,12 @@ export interface WorkPlanCategory {
   name: string;
   created_at: string;
 }
+
+export interface WorkPlanRealization {
+  id: string;
+  work_plan_id: string;
+  work_plan_item_id: string;
+  realization_content: string;
+  created_at: string;
+  updated_at: string;
+}

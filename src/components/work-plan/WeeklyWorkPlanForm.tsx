@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { useWorkPlans } from "./hooks/useWorkPlans";
 import { useWorkPlanCategories } from "./hooks/useWorkPlanCategories";
+import { WorkPlanFormData } from "./types";
 import { startOfWeek, format, addDays } from "date-fns";
 import { Loader2, Calendar as CalendarIcon } from "lucide-react";
 import {

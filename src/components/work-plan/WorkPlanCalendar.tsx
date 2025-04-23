@@ -70,7 +70,7 @@ export const WorkPlanCalendar = () => {
       </div>
 
       <div className="space-y-6">
-        <div className="grid grid-cols-7 gap-2">
+        <div className="grid grid-cols-5 gap-2">
           {days.map((day) => (
             <Button
               key={day.toISOString()}
@@ -120,35 +120,45 @@ export const WorkPlanCalendar = () => {
                 Rencana Kerja untuk{" "}
                 {format(parseISO(activeDay), "PPPP", { locale: id })}
               </h3>
-              {getDailyWorkPlans(activeDay).map((workPlan) => (
-                <div key={workPlan.id} className="space-y-4">
-                  {workPlan.work_plan_items
-                    .filter(
-                      (item) =>
-                        item.day_of_week === parseISO(activeDay).getDay()
-                    )
-                    .reduce((acc, item) => {
-                      const category = item.category;
-                      if (!acc[category]) {
-                        acc[category] = [];
-                      }
-                      acc[category].push(item);
-                      return acc;
-                    }, {} as Record<string, typeof workPlan.work_plan_items>)
-                    .map((items, category) => (
-                      <div key={category} className="bg-gray-50 p-4 rounded-lg">
-                        <h4 className="font-medium text-sm mb-2">{category}</h4>
-                        <ul className="space-y-2">
-                          {items.map((item) => (
-                            <li key={item.id} className="text-sm">
-                              {item.content}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    ))}
-                </div>
-              ))}
+              {getDailyWorkPlans(activeDay).map((workPlan) => {
+                const dayOfWeek = parseISO(activeDay).getDay() || 7; // Convert Sunday (0) to 7
+                const filteredItems = workPlan.work_plan_items.filter(
+                  (item) => item.day_of_week === dayOfWeek
+                );
+
+                // Group the items by category
+                const groupedByCategory: Record<string, { id: string; content: string; day_of_week: number; category: string }[]> = {};
+                filteredItems.forEach((item) => {
+                  if (!groupedByCategory[item.category]) {
+                    groupedByCategory[item.category] = [];
+                  }
+                  groupedByCategory[item.category].push(item);
+                });
+
+                return (
+                  <div key={workPlan.id} className="space-y-4">
+                    {Object.entries(groupedByCategory).map(
+                      ([category, items]) => (
+                        <div
+                          key={category}
+                          className="bg-gray-50 p-4 rounded-lg"
+                        >
+                          <h4 className="font-medium text-sm mb-2">
+                            {category}
+                          </h4>
+                          <ul className="space-y-2">
+                            {items.map((item) => (
+                              <li key={item.id} className="text-sm">
+                                {item.content}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )
+                    )}
+                  </div>
+                );
+              })}
             </>
           ) : (
             <Card>
