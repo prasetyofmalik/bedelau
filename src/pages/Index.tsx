@@ -2,6 +2,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { StatsSection } from "@/components/home/StatsSection";
 import { AnnouncementsSection } from "@/components/home/AnnouncementsSection";
+import { WorkPlanRecap } from "@/components/home/WorkPlanRecap"; 
 import { PostCard } from "@/components/PostCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -100,13 +101,22 @@ const Index = () => {
           />
           <div className="absolute inset-0 bg-gradient-to-b from-yellow-300 to-yellow-500 opacity-85" />
           <div className="container mx-auto px-4 text-center relative z-10">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4" style={{ textShadow: "2px 2px 4px rgba(98, 98, 99, 0.4)" }}>
+            <h1
+              className="text-4xl md:text-5xl font-bold mb-4"
+              style={{ textShadow: "2px 2px 4px rgba(98, 98, 99, 0.4)" }}
+            >
               Beranda Elektronik dan Administrasi Umum
             </h1>
-            <h1 className="text-3xl md:text-4xl font-bold mb-6" style={{ textShadow: "2px 2px 4px rgba(98, 98, 99, 0.4)" }}>
+            <h1
+              className="text-3xl md:text-4xl font-bold mb-6"
+              style={{ textShadow: "2px 2px 4px rgba(98, 98, 99, 0.4)" }}
+            >
               BPS Kabupaten Siak
             </h1>
-            <p className="text-xl mb-8" style={{ textShadow: "2px 2px 4px rgba(98, 98, 99, 0.5)" }}>
+            <p
+              className="text-xl mb-8"
+              style={{ textShadow: "2px 2px 4px rgba(98, 98, 99, 0.5)" }}
+            >
               Bantu efisiensi, notifikasi dan administrasi terintegrasi.
             </p>
             <Button
@@ -122,7 +132,9 @@ const Index = () => {
 
         <StatsSection />
 
-        {/* <AnnouncementsSection /> */}
+        <div className="container mx-auto px-4">
+          <WorkPlanRecap />
+        </div>
 
         <section className="py-12 container mx-auto px-4">
           <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-8">

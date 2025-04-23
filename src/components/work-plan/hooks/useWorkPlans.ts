@@ -52,17 +52,35 @@ export const useWorkPlans = (teamId?: number, startDate?: Date) => {
         "id" | "work_plan_id" | "created_at" | "updated_at"
       >[];
     }) => {
+      // Ensure items array has at least one valid entry
+      if (!items.length) {
+        throw new Error("No work plan items to save");
+      }
+
+      const { data: session } = await supabase.auth.getSession();
+      if (!session.session) {
+        throw new Error("User not authenticated");
+      }
+
       const { data: workPlan, error: workPlanError } = await supabase
         .from("work_plans")
         .insert({
           team_id: teamId,
           team_name: teamName,
           week_start: weekStart,
+          created_by: session.session.user.id,
         })
         .select()
         .single();
 
-      if (workPlanError) throw workPlanError;
+      if (workPlanError) {
+        console.error("Error creating work plan:", workPlanError);
+        throw workPlanError;
+      }
+
+      if (!workPlan?.id) {
+        throw new Error("Failed to create work plan");
+      }
 
       const { error: itemsError } = await supabase
         .from("work_plan_items")
@@ -73,7 +91,10 @@ export const useWorkPlans = (teamId?: number, startDate?: Date) => {
           }))
         );
 
-      if (itemsError) throw itemsError;
+      if (itemsError) {
+        console.error("Error creating work plan items:", itemsError);
+        throw itemsError;
+      }
 
       return workPlan;
     },

@@ -9,6 +9,7 @@ import { useWorkPlans } from "./hooks/useWorkPlans";
 import { useWorkPlanCategories } from "./hooks/useWorkPlanCategories";
 import { Textarea } from "@/components/ui/textarea";
 import { startOfWeek } from "date-fns";
+import { Loader2 } from "lucide-react";
 
 interface WorkPlanFormData {
   items: {
@@ -24,7 +25,12 @@ export const WeeklyWorkPlanForm = () => {
   const { createWorkPlan } = useWorkPlans();
   const { data: categories } = useWorkPlanCategories(1); // Default to UMUM team
 
-  const { register, handleSubmit, reset } = useForm<WorkPlanFormData>({
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { isSubmitting },
+  } = useForm<WorkPlanFormData>({
     defaultValues: {
       items: Array(5)
         .fill({})
@@ -48,11 +54,24 @@ export const WeeklyWorkPlanForm = () => {
 
     try {
       const weekStart = startOfWeek(selectedDate, { weekStartsOn: 1 });
+      const filteredItems = data.items.filter(
+        (item) => item.content.trim() !== ""
+      );
+
+      if (filteredItems.length === 0) {
+        toast({
+          title: "Error",
+          description: "Isi minimal satu rencana kerja",
+          variant: "destructive",
+        });
+        return;
+      }
+
       await createWorkPlan.mutateAsync({
         teamId: 1, // Default to UMUM team
         teamName: "UMUM",
         weekStart: weekStart.toISOString(),
-        items: data.items.filter((item) => item.content.trim() !== ""),
+        items: filteredItems,
       });
 
       toast({
@@ -63,6 +82,7 @@ export const WeeklyWorkPlanForm = () => {
       reset();
       setSelectedDate(undefined);
     } catch (error) {
+      console.error("Error submitting work plan:", error);
       toast({
         title: "Error",
         description: "Gagal menyimpan rencana kerja",
@@ -110,7 +130,16 @@ export const WeeklyWorkPlanForm = () => {
         ))}
       </div>
 
-      <Button type="submit">Simpan Rencana Kerja</Button>
+      <Button type="submit" disabled={isSubmitting}>
+        {isSubmitting ? (
+          <>
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            Menyimpan...
+          </>
+        ) : (
+          "Simpan Rencana Kerja"
+        )}
+      </Button>
     </form>
   );
 };
