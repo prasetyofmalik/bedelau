@@ -9,17 +9,21 @@ import {
   parseISO,
 } from "date-fns";
 import { id } from "date-fns/locale";
-import { useWorkPlans } from "./hooks/useWorkPlans";
+import { useWorkPlansWithRealizations } from "./hooks/useWorkPlansWithRealizations";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft, ArrowRight, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
 
 export const WorkPlanCalendar = () => {
   const [currentWeek, setCurrentWeek] = useState(new Date());
   const [activeDay, setActiveDay] = useState<string | null>(null);
   const weekStart = startOfWeek(currentWeek, { weekStartsOn: 1 });
-  const { data: workPlans, isLoading } = useWorkPlans(undefined, weekStart);
+  const { data: workPlans, isLoading } = useWorkPlansWithRealizations(
+    undefined,
+    weekStart
+  );
 
   const days = Array.from({ length: 5 }, (_, i) => addDays(weekStart, i));
 
@@ -46,6 +50,18 @@ export const WorkPlanCalendar = () => {
       </div>
     );
   }
+
+  // Group work plan items and realizations by category
+  const groupByCategory = (items: any[]) => {
+    const grouped: Record<string, any[]> = {};
+    items.forEach((item) => {
+      if (!grouped[item.category]) {
+        grouped[item.category] = [];
+      }
+      grouped[item.category].push(item);
+    });
+    return grouped;
+  };
 
   return (
     <div className="space-y-6">
@@ -81,9 +97,7 @@ export const WorkPlanCalendar = () => {
                   format(new Date(), "yyyy-MM-dd") && "border-primary",
                 activeDay === format(day, "yyyy-MM-dd")
                   ? "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground"
-                  : "",
-                format(day, "yyyy-MM-dd") ===
-                  format(new Date(), "yyyy-MM-dd") && "border-primary"
+                  : ""
               )}
               onClick={() => setActiveDay(format(day, "yyyy-MM-dd"))}
             >
@@ -117,45 +131,56 @@ export const WorkPlanCalendar = () => {
           {activeDay ? (
             <>
               <h3 className="text-lg font-medium mb-4">
-                Rencana Kerja untuk{" "}
+                Rencana & Realisasi Kerja{" "}
                 {format(parseISO(activeDay), "PPPP", { locale: id })}
               </h3>
               {getDailyWorkPlans(activeDay).map((workPlan) => {
-                const dayOfWeek = parseISO(activeDay).getDay() || 7; // Convert Sunday (0) to 7
-                const filteredItems = workPlan.work_plan_items.filter(
+                const dayOfWeek = parseISO(activeDay).getDay() || 7;
+
+                const plans = workPlan.work_plan_items.filter(
                   (item) => item.day_of_week === dayOfWeek
                 );
+                const realizations = workPlan.work_plan_realizations.filter(
+                  (item) =>
+                    item.work_plan_item_id &&
+                    plans.some((plan) => plan.id === item.work_plan_item_id)
+                );
 
-                // Group the items by category
-                const groupedByCategory: Record<string, { id: string; content: string; day_of_week: number; category: string }[]> = {};
-                filteredItems.forEach((item) => {
-                  if (!groupedByCategory[item.category]) {
-                    groupedByCategory[item.category] = [];
-                  }
-                  groupedByCategory[item.category].push(item);
-                });
+                const groupedPlans = groupByCategory(plans);
 
                 return (
                   <div key={workPlan.id} className="space-y-4">
-                    {Object.entries(groupedByCategory).map(
-                      ([category, items]) => (
-                        <div
-                          key={category}
-                          className="bg-gray-50 p-4 rounded-lg"
-                        >
-                          <h4 className="font-medium text-sm mb-2">
-                            {category}
-                          </h4>
-                          <ul className="space-y-2">
-                            {items.map((item) => (
-                              <li key={item.id} className="text-sm">
-                                {item.content}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      )
-                    )}
+                    {Object.entries(groupedPlans).map(([category, items]) => (
+                      <div
+                        key={category}
+                        className="bg-gray-50 p-4 rounded-lg space-y-3"
+                      >
+                        <h4 className="font-medium text-sm">{category}</h4>
+                        {items.map((item) => (
+                          <div key={item.id} className="space-y-2">
+                            <div className="text-sm">
+                              <Badge variant="secondary" className="mb-1">
+                                Rencana
+                              </Badge>
+                              <p>{item.content}</p>
+                            </div>
+                            {realizations
+                              .filter((r) => r.work_plan_item_id === item.id)
+                              .map((realization) => (
+                                <div
+                                  key={realization.id}
+                                  className="text-sm pl-4 border-l-2 border-primary"
+                                >
+                                  <Badge variant="outline" className="mb-1">
+                                    Realisasi
+                                  </Badge>
+                                  <p>{realization.realization_content}</p>
+                                </div>
+                              ))}
+                          </div>
+                        ))}
+                      </div>
+                    ))}
                   </div>
                 );
               })}
