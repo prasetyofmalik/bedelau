@@ -43,6 +43,35 @@ export const WorkPlanCalendar = () => {
     );
   };
 
+  const getWorkItemsForDay = (workPlan: any, dayOfWeek: number) => {
+    const groupedByCategory: Record<
+      string,
+      { plan?: string; realization?: string }
+    > = {};
+
+    // Group plans by category
+    workPlan.work_plan_items
+      ?.filter((item: any) => item.day_of_week === dayOfWeek)
+      .forEach((item: any) => {
+        if (!groupedByCategory[item.category]) {
+          groupedByCategory[item.category] = {};
+        }
+        groupedByCategory[item.category].plan = item.content;
+      });
+
+    // Add realizations to the same categories
+    workPlan.work_plan_realizations
+      ?.filter((item: any) => item.day_of_week === dayOfWeek)
+      .forEach((item: any) => {
+        if (!groupedByCategory[item.category]) {
+          groupedByCategory[item.category] = {};
+        }
+        groupedByCategory[item.category].realization = item.realization_content;
+      });
+
+    return groupedByCategory;
+  };
+
   if (isLoading) {
     return (
       <div className="flex justify-center py-12">
@@ -136,49 +165,32 @@ export const WorkPlanCalendar = () => {
               </h3>
               {getDailyWorkPlans(activeDay).map((workPlan) => {
                 const dayOfWeek = parseISO(activeDay).getDay() || 7;
-
-                const plans = workPlan.work_plan_items.filter(
-                  (item) => item.day_of_week === dayOfWeek
-                );
-                const realizations = workPlan.work_plan_realizations.filter(
-                  (item) =>
-                    item.work_plan_item_id &&
-                    plans.some((plan) => plan.id === item.work_plan_item_id)
-                );
-
-                const groupedPlans = groupByCategory(plans);
+                const items = getWorkItemsForDay(workPlan, dayOfWeek);
 
                 return (
                   <div key={workPlan.id} className="space-y-4">
-                    {Object.entries(groupedPlans).map(([category, items]) => (
+                    {Object.entries(items).map(([category, content]) => (
                       <div
                         key={category}
                         className="bg-gray-50 p-4 rounded-lg space-y-3"
                       >
                         <h4 className="font-medium text-sm">{category}</h4>
-                        {items.map((item) => (
-                          <div key={item.id} className="space-y-2">
-                            <div className="text-sm">
-                              <Badge variant="secondary" className="mb-1">
-                                Rencana
-                              </Badge>
-                              <p>{item.content}</p>
-                            </div>
-                            {realizations
-                              .filter((r) => r.work_plan_item_id === item.id)
-                              .map((realization) => (
-                                <div
-                                  key={realization.id}
-                                  className="text-sm pl-4 border-l-2 border-primary"
-                                >
-                                  <Badge variant="outline" className="mb-1">
-                                    Realisasi
-                                  </Badge>
-                                  <p>{realization.realization_content}</p>
-                                </div>
-                              ))}
+                        {content.plan && (
+                          <div className="text-sm">
+                            <Badge variant="secondary" className="mb-1">
+                              Rencana
+                            </Badge>
+                            <p>{content.plan}</p>
                           </div>
-                        ))}
+                        )}
+                        {content.realization && (
+                          <div className="text-sm pl-4 border-l-2 border-primary">
+                            <Badge variant="outline" className="mb-1">
+                              Realisasi
+                            </Badge>
+                            <p>{content.realization}</p>
+                          </div>
+                        )}
                       </div>
                     ))}
                   </div>

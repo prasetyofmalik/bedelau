@@ -15,8 +15,18 @@ export const useWorkPlansWithRealizations = (
     queryFn: async () => {
       let query = supabase.from("work_plans").select(`
         *,
-        work_plan_items (*),
-        work_plan_realizations (*)
+        work_plan_items (
+          id,
+          day_of_week,
+          category,
+          content
+        ),
+        work_plan_realizations (
+          id,
+          day_of_week,
+          category,
+          realization_content
+        )
       `);
 
       if (teamId) {

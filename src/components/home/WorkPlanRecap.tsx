@@ -26,6 +26,19 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 
+interface WorkPlanItem {
+  day_of_week: number;
+  category: string;
+  content: string;
+}
+
+interface WorkPlan {
+  id: string;
+  week_start: string;
+  team_name: string;
+  work_plan_items: WorkPlanItem[];
+}
+
 export const WorkPlanRecap = () => {
   const [currentWeek, setCurrentWeek] = useState(new Date());
   const weekStart = startOfWeek(currentWeek, { weekStartsOn: 1 });
@@ -43,6 +56,7 @@ export const WorkPlanRecap = () => {
     );
   };
 
+  // Toggle team collapsible state
   const toggleTeam = (teamId: string) => {
     setOpenTeams((prev) => ({
       ...prev,
@@ -50,47 +64,67 @@ export const WorkPlanRecap = () => {
     }));
   };
 
-  const getWorkItemsForDay = (dayDate: Date, workPlan: any) => {
-    const dayOfWeek = dayDate.getDay() || 7;
-    const planItems = workPlan.work_plan_items.filter(
-      (item: any) => item.day_of_week === dayOfWeek
-    );
-
-    const planItemIds = planItems.map((item: any) => item.id);
-    const realizationItems = workPlan.work_plan_realizations.filter(
-      (item: any) => planItemIds.includes(item.work_plan_item_id)
+  // Group work plan items by category for better display
+  const getGroupedWorkPlanItems = (dayDate: Date, workPlan: WorkPlan) => {
+    // Filter items for this day
+    const dayItems = workPlan.work_plan_items.filter(
+      (item: WorkPlanItem) => item.day_of_week === dayDate.getDay()
     );
 
     // Group by category
-    const groupedItems: Record<
-      string,
-      { plan: string; realization?: string }[]
-    > = {};
-
-    planItems.forEach((item: any) => {
+    const groupedItems: Record<string, string[]> = {};
+    dayItems.forEach((item: WorkPlanItem) => {
       if (!groupedItems[item.category]) {
         groupedItems[item.category] = [];
       }
-
-      const realization = realizationItems.find(
-        (r: any) => r.work_plan_item_id === item.id
-      );
-
-      groupedItems[item.category].push({
-        plan: item.content,
-        realization: realization?.realization_content,
-      });
+      groupedItems[item.category].push(item.content);
     });
 
     return groupedItems;
   };
 
+  // Filter work plans for EXACTLY the current week only
   const currentWeekPlans =
-    workPlans?.filter((plan: any) => {
-      if (!plan.week_start) return false;
-      const planWeekStart = parseISO(plan.week_start);
-      return isSameDay(planWeekStart, weekStart);
-    }) || [];
+    workPlans && Array.isArray(workPlans)
+      ? workPlans.filter((plan: WorkPlan) => {
+          if (!plan.week_start) return false;
+
+          // Parse the ISO date string to a Date object
+          const planWeekStart = parseISO(plan.week_start);
+
+          // Use isSameDay to compare only the week start dates
+          return isSameDay(planWeekStart, weekStart);
+        })
+      : [];
+
+  const getWorkItemsForDay = (workPlan: any, day: Date) => {
+    const dayOfWeek = day.getDay() || 7;
+    const groupedByCategory: Record<string, { plan?: string; realization?: string }> = {};
+
+    // First check for realizations
+    workPlan.work_plan_realizations
+      ?.filter((item: any) => item.day_of_week === dayOfWeek)
+      .forEach((item: any) => {
+        if (!groupedByCategory[item.category]) {
+          groupedByCategory[item.category] = {};
+        }
+        groupedByCategory[item.category].realization = item.realization_content;
+      });
+
+    // Then add plans only for categories that don't have realizations
+    workPlan.work_plan_items
+      ?.filter((item: any) => item.day_of_week === dayOfWeek)
+      .forEach((item: any) => {
+        if (!groupedByCategory[item.category]?.realization) {
+          if (!groupedByCategory[item.category]) {
+            groupedByCategory[item.category] = {};
+          }
+          groupedByCategory[item.category].plan = item.content;
+        }
+      });
+
+    return groupedByCategory;
+  };
 
   return (
     <Card className="mb-8">
@@ -142,7 +176,7 @@ export const WorkPlanRecap = () => {
                 </p>
                 <div className="space-y-3">
                   {currentWeekPlans.map((plan: any) => {
-                    const items = getWorkItemsForDay(day, plan);
+                    const items = getWorkItemsForDay(plan, day);
                     if (Object.keys(items).length === 0) return null;
 
                     return (
@@ -164,28 +198,23 @@ export const WorkPlanRecap = () => {
                           )}
                         </CollapsibleTrigger>
                         <CollapsibleContent className="mt-2 space-y-2">
-                          {Object.entries(items).map(([category, contents]) => (
+                          {Object.entries(items).map(([category, content]) => (
                             <div key={category} className="mt-2">
-                              <Badge
-                                variant="outline"
-                                className="mb-1 bg-gray-50"
-                              >
+                              <Badge variant="outline" className="mb-1 bg-gray-50">
                                 {category}
                               </Badge>
                               <ul className="list-none space-y-2">
-                                {contents.map((content, idx) => (
-                                  <li key={idx} className="text-xs">
-                                    {content.realization ? (
-                                      <div className="text-primary">
-                                        {content.realization}
-                                      </div>
-                                    ) : (
-                                      <div className="text-gray-600">
-                                        {content.plan}
-                                      </div>
-                                    )}
-                                  </li>
-                                ))}
+                                <li className="text-xs">
+                                  {content.realization ? (
+                                    <div className="text-primary">
+                                      {content.realization}
+                                    </div>
+                                  ) : content.plan ? (
+                                    <div className="text-gray-600">
+                                      {content.plan}
+                                    </div>
+                                  ) : null}
+                                </li>
                               </ul>
                             </div>
                           ))}
