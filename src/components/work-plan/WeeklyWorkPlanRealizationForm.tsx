@@ -61,32 +61,47 @@ export const WeeklyWorkPlanRealizationForm = () => {
     }
 
     try {
+      // Validate that there are plans to submit
+      const hasPlans = Object.values(dayPlans).some(
+        (plans) => plans.length > 0
+      );
+
+      if (!hasPlans) {
+        toast({
+          title: "Error",
+          description: "Harap tambahkan setidaknya satu realisasi",
+          variant: "destructive",
+        });
+        return;
+      }
+
       // Insert realizations for all days
       const realizationPromises = Object.entries(dayPlans).flatMap(
         ([dayOfWeek, plans]) =>
           plans.map(async (plan) => {
             if (!plan.category || !plan.content) return null;
 
-            // Important: Change to insert with day_of_week and category
-            return supabase.from("work_plan_realizations").insert({
-              work_plan_id: existingWorkPlan.id,
-              day_of_week: parseInt(dayOfWeek),
-              category: plan.category,
-              realization_content: plan.content,
-            });
+            // Insert with day_of_week, category, and work_plan_id
+            const { data, error } = await supabase
+              .from("work_plan_realizations")
+              .insert({
+                work_plan_id: existingWorkPlan.id,
+                day_of_week: parseInt(dayOfWeek),
+                category: plan.category,
+                realization_content: plan.content,
+              });
+
+            if (error) {
+              console.error("Error inserting realization:", error);
+              throw error;
+            }
+
+            return data;
           })
       );
 
       // Filter null promises and await all
       const results = await Promise.all(realizationPromises.filter(Boolean));
-
-      // Check for errors
-      const hasErrors = results.some((res) => res.error);
-
-      if (hasErrors) {
-        console.error("Error in one or more realization inserts:", results);
-        throw new Error("Failed to save some realizations");
-      }
 
       toast({
         title: "Berhasil",
@@ -178,8 +193,7 @@ export const WeeklyWorkPlanRealizationForm = () => {
                 teamId={1}
                 workPlanItems={
                   existingWorkPlan?.work_plan_items?.filter(
-                    (item: { day_of_week: number; category: string }) =>
-                      item.day_of_week === day.index
+                    (item) => item.day_of_week === day.index
                   ) || []
                 }
                 values={dayPlans[day.index]}

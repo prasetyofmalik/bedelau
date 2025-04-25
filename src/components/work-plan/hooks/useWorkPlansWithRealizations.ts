@@ -1,6 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { startOfWeek, format } from "date-fns";
+import { WorkPlan, WorkPlanItem, WorkPlanRealization } from "../types";
+
+export interface WorkPlanWithRealizations extends WorkPlan {
+  work_plan_items: WorkPlanItem[];
+  work_plan_realizations: WorkPlanRealization[];
+}
 
 export const useWorkPlansWithRealizations = (
   teamId?: number,
@@ -44,7 +50,7 @@ export const useWorkPlansWithRealizations = (
       });
 
       if (error) throw error;
-      return data || [];
+      return (data as WorkPlanWithRealizations[]) || [];
     },
   });
 };

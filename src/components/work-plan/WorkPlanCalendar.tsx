@@ -15,6 +15,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft, ArrowRight, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
+import { WorkPlanItem, WorkPlanRealization } from "./types";
 
 export const WorkPlanCalendar = () => {
   const [currentWeek, setCurrentWeek] = useState(new Date());
@@ -43,7 +44,9 @@ export const WorkPlanCalendar = () => {
     );
   };
 
+  // Reorganized to properly group by category while keeping all items
   const getWorkItemsForDay = (workPlan: any, dayOfWeek: number) => {
+    // Create structure with categories as keys
     const groupedByCategory: Record<
       string,
       { plans: Array<string>; realizations: Array<string> }
@@ -51,8 +54,8 @@ export const WorkPlanCalendar = () => {
 
     // Group plans by category
     workPlan.work_plan_items
-      ?.filter((item: any) => item.day_of_week === dayOfWeek)
-      .forEach((item: any) => {
+      ?.filter((item: WorkPlanItem) => item.day_of_week === dayOfWeek)
+      .forEach((item: WorkPlanItem) => {
         if (!groupedByCategory[item.category]) {
           groupedByCategory[item.category] = {
             plans: [],
@@ -64,8 +67,8 @@ export const WorkPlanCalendar = () => {
 
     // Add realizations to the same categories
     workPlan.work_plan_realizations
-      ?.filter((item: any) => item.day_of_week === dayOfWeek)
-      .forEach((item: any) => {
+      ?.filter((item: WorkPlanRealization) => item.day_of_week === dayOfWeek)
+      .forEach((item: WorkPlanRealization) => {
         if (!groupedByCategory[item.category]) {
           groupedByCategory[item.category] = {
             plans: [],

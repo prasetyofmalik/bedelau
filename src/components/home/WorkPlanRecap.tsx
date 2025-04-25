@@ -25,6 +25,10 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import {
+  WorkPlanItem,
+  WorkPlanRealization,
+} from "@/components/work-plan/types";
 
 export const WorkPlanRecap = () => {
   const [currentWeek, setCurrentWeek] = useState(new Date());
@@ -54,7 +58,7 @@ export const WorkPlanRecap = () => {
   // Filter work plans for EXACTLY the current week only
   const currentWeekPlans =
     workPlans && Array.isArray(workPlans)
-      ? workPlans.filter((plan: any) => {
+      ? workPlans.filter((plan) => {
           if (!plan.week_start) return false;
 
           // Parse the ISO date string to a Date object
@@ -77,8 +81,8 @@ export const WorkPlanRecap = () => {
 
     // First process work plan items
     workPlan.work_plan_items
-      ?.filter((item: any) => item.day_of_week === dayOfWeek)
-      .forEach((item: any) => {
+      ?.filter((item: WorkPlanItem) => item.day_of_week === dayOfWeek)
+      .forEach((item: WorkPlanItem) => {
         if (!groupedByCategory[item.category]) {
           groupedByCategory[item.category] = {
             plans: [],
@@ -90,8 +94,8 @@ export const WorkPlanRecap = () => {
 
     // Then process realizations
     workPlan.work_plan_realizations
-      ?.filter((item: any) => item.day_of_week === dayOfWeek)
-      .forEach((item: any) => {
+      ?.filter((item: WorkPlanRealization) => item.day_of_week === dayOfWeek)
+      .forEach((item: WorkPlanRealization) => {
         if (!groupedByCategory[item.category]) {
           groupedByCategory[item.category] = {
             plans: [],
@@ -187,8 +191,8 @@ export const WorkPlanRecap = () => {
                                 {category}
                               </Badge>
 
-                              {/* Show realizations if they exist, otherwise show plans */}
-                              {content.realizations.length > 0 ? (
+                              {/* Show realizations if they exist */}
+                              {content.realizations.length > 0 && (
                                 <ul className="list-disc pl-5 space-y-1">
                                   {content.realizations.map(
                                     (realization, idx) => (
@@ -201,18 +205,21 @@ export const WorkPlanRecap = () => {
                                     )
                                   )}
                                 </ul>
-                              ) : content.plans.length > 0 ? (
-                                <ul className="list-disc pl-5 space-y-1">
-                                  {content.plans.map((plan, idx) => (
-                                    <li
-                                      key={`plan-${idx}`}
-                                      className="text-xs text-gray-600"
-                                    >
-                                      {plan}
-                                    </li>
-                                  ))}
-                                </ul>
-                              ) : null}
+                              )}
+
+                              {content.plans.length > 0 &&
+                                content.realizations.length === 0 && (
+                                  <ul className="list-disc pl-5 space-y-1">
+                                    {content.plans.map((plan, idx) => (
+                                      <li
+                                        key={`plan-${idx}`}
+                                        className="text-xs text-gray-600"
+                                      >
+                                        {plan}
+                                      </li>
+                                    ))}
+                                  </ul>
+                                )}
                             </div>
                           ))}
                         </CollapsibleContent>
