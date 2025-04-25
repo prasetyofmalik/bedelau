@@ -17,12 +17,16 @@ import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { WorkPlanItem, WorkPlanRealization } from "./types";
 
-export const WorkPlanCalendar = () => {
+interface WorkPlanCalendarProps {
+  teamId: number;
+}
+
+export const WorkPlanCalendar = ({ teamId }: WorkPlanCalendarProps) => {
   const [currentWeek, setCurrentWeek] = useState(new Date());
   const [activeDay, setActiveDay] = useState<string | null>(null);
   const weekStart = startOfWeek(currentWeek, { weekStartsOn: 1 });
   const { data: workPlans, isLoading } = useWorkPlansWithRealizations(
-    undefined,
+    teamId,
     weekStart
   );
 

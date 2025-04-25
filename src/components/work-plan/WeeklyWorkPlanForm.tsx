@@ -21,12 +21,20 @@ import { DayPicker } from "react-day-picker";
 
 type DayProps = React.ComponentProps<typeof DayPicker>["modifiers"];
 
-export const WeeklyWorkPlanForm = () => {
+interface WeeklyWorkPlanFormProps {
+  teamId: number;
+  teamName: string;
+}
+
+export const WeeklyWorkPlanForm = ({
+  teamId,
+  teamName,
+}: WeeklyWorkPlanFormProps) => {
   const [selectedDate, setSelectedDate] = useState<Date>();
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const { toast } = useToast();
   const { createWorkPlan } = useWorkPlans();
-  const { data: categories } = useWorkPlanCategories(1); // Default to UMUM team
+  const { data: categories } = useWorkPlanCategories(teamId);
 
   const {
     handleSubmit,
@@ -113,8 +121,8 @@ export const WeeklyWorkPlanForm = () => {
       }
 
       await createWorkPlan.mutateAsync({
-        teamId: 1, // Default to UMUM team
-        teamName: "UMUM",
+        teamId: teamId,
+        teamName: teamName,
         weekStart: weekStart.toISOString(),
         items: workPlanItems,
       });
@@ -206,7 +214,7 @@ export const WeeklyWorkPlanForm = () => {
             <DayWorkPlanInput
               label={day.name}
               dayIndex={day.index}
-              teamId={1}
+              teamId={teamId}
               values={dayPlans[day.index]}
               onChange={(plans) => handleDayPlanChange(day.index, plans)}
             />

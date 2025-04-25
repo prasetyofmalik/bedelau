@@ -17,12 +17,18 @@ import { id } from "date-fns/locale";
 import { DayWorkPlanRealizationInput } from "./DayWorkPlanRealizationInput";
 import { supabase } from "@/lib/supabase";
 
-export const WeeklyWorkPlanRealizationForm = () => {
+interface WeeklyWorkPlanRealizationFormProps {
+  teamId: number;
+}
+
+export const WeeklyWorkPlanRealizationForm = ({
+  teamId,
+}: WeeklyWorkPlanRealizationFormProps) => {
   const [selectedDate, setSelectedDate] = useState<Date>();
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [existingWorkPlan, setExistingWorkPlan] = useState(null);
   const { toast } = useToast();
-  const { data: workPlans } = useWorkPlans(undefined, selectedDate);
+  const { data: workPlans } = useWorkPlans(teamId, selectedDate);
 
   const [dayPlans, setDayPlans] = useState<{
     [key: number]: Array<{ category: string; content: string }>;
@@ -190,7 +196,7 @@ export const WeeklyWorkPlanRealizationForm = () => {
               <DayWorkPlanRealizationInput
                 label={day.name}
                 dayIndex={day.index}
-                teamId={1}
+                teamId={teamId}
                 workPlanItems={
                   existingWorkPlan?.work_plan_items?.filter(
                     (item) => item.day_of_week === day.index
