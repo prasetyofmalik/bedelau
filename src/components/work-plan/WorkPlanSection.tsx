@@ -1,9 +1,18 @@
+import React from "react";
 import { WeeklyWorkPlanForm } from "./WeeklyWorkPlanForm";
 import { WeeklyWorkPlanRealizationForm } from "./WeeklyWorkPlanRealizationForm";
 import { WorkPlanCalendar } from "./WorkPlanCalendar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-const WorkPlanSection = () => {
+interface WorkPlanSectionProps {
+  teamId: number;
+  teamName: string;
+}
+
+const WorkPlanSection: React.FC<WorkPlanSectionProps> = ({
+  teamId,
+  teamName,
+}) => {
   return (
     <Tabs defaultValue="calendar" className="space-y-6">
       <TabsList>
@@ -13,15 +22,15 @@ const WorkPlanSection = () => {
       </TabsList>
 
       <TabsContent value="calendar">
-        <WorkPlanCalendar />
+        <WorkPlanCalendar teamId={teamId} />
       </TabsContent>
 
       <TabsContent value="input">
-        <WeeklyWorkPlanForm />
+        <WeeklyWorkPlanForm teamId={teamId} teamName={teamName} />
       </TabsContent>
 
       <TabsContent value="realization">
-        <WeeklyWorkPlanRealizationForm />
+        <WeeklyWorkPlanRealizationForm teamId={teamId} />
       </TabsContent>
     </Tabs>
   );
