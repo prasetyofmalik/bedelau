@@ -180,7 +180,7 @@ export function DashboardSsnM25Section() {
               <PplMonitoringTable type="pencacahan" surveyType="ssn_m25" />
             </TabsContent>
             <TabsContent value="pemeriksaan">
-              <PmlMonitoringTable surveyType="ssn_m25" />
+              <PmlMonitoringTable type="ssn" />
             </TabsContent>
           </div>
         </Tabs>

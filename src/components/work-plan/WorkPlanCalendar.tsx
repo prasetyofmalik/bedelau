@@ -46,7 +46,7 @@ export const WorkPlanCalendar = () => {
   const getWorkItemsForDay = (workPlan: any, dayOfWeek: number) => {
     const groupedByCategory: Record<
       string,
-      { plan?: string; realization?: string }
+      { plans: Array<string>; realizations: Array<string> }
     > = {};
 
     // Group plans by category
@@ -54,9 +54,12 @@ export const WorkPlanCalendar = () => {
       ?.filter((item: any) => item.day_of_week === dayOfWeek)
       .forEach((item: any) => {
         if (!groupedByCategory[item.category]) {
-          groupedByCategory[item.category] = {};
+          groupedByCategory[item.category] = {
+            plans: [],
+            realizations: [],
+          };
         }
-        groupedByCategory[item.category].plan = item.content;
+        groupedByCategory[item.category].plans.push(item.content);
       });
 
     // Add realizations to the same categories
@@ -64,9 +67,14 @@ export const WorkPlanCalendar = () => {
       ?.filter((item: any) => item.day_of_week === dayOfWeek)
       .forEach((item: any) => {
         if (!groupedByCategory[item.category]) {
-          groupedByCategory[item.category] = {};
+          groupedByCategory[item.category] = {
+            plans: [],
+            realizations: [],
+          };
         }
-        groupedByCategory[item.category].realization = item.realization_content;
+        groupedByCategory[item.category].realizations.push(
+          item.realization_content
+        );
       });
 
     return groupedByCategory;
@@ -79,18 +87,6 @@ export const WorkPlanCalendar = () => {
       </div>
     );
   }
-
-  // Group work plan items and realizations by category
-  const groupByCategory = (items: any[]) => {
-    const grouped: Record<string, any[]> = {};
-    items.forEach((item) => {
-      if (!grouped[item.category]) {
-        grouped[item.category] = [];
-      }
-      grouped[item.category].push(item);
-    });
-    return grouped;
-  };
 
   return (
     <div className="space-y-6">
@@ -175,20 +171,32 @@ export const WorkPlanCalendar = () => {
                         className="bg-gray-50 p-4 rounded-lg space-y-3"
                       >
                         <h4 className="font-medium text-sm">{category}</h4>
-                        {content.plan && (
+
+                        {content.plans.length > 0 && (
                           <div className="text-sm">
                             <Badge variant="secondary" className="mb-1">
                               Rencana
                             </Badge>
-                            <p>{content.plan}</p>
+                            <ul className="list-disc pl-5 space-y-1">
+                              {content.plans.map((plan, idx) => (
+                                <li key={`plan-${idx}`}>{plan}</li>
+                              ))}
+                            </ul>
                           </div>
                         )}
-                        {content.realization && (
+
+                        {content.realizations.length > 0 && (
                           <div className="text-sm pl-4 border-l-2 border-primary">
                             <Badge variant="outline" className="mb-1">
                               Realisasi
                             </Badge>
-                            <p>{content.realization}</p>
+                            <ul className="list-disc pl-5 space-y-1">
+                              {content.realizations.map((realization, idx) => (
+                                <li key={`realization-${idx}`}>
+                                  {realization}
+                                </li>
+                              ))}
+                            </ul>
                           </div>
                         )}
                       </div>
