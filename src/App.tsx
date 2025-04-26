@@ -15,9 +15,10 @@ import Monitoring from "./pages/Monitoring";
 import MailsRecap from "./pages/umum/MailsRecap";
 import SKPRecap from "./pages/umum/SKPRecap";
 import TeamEvaluation from "./pages/umum/TeamEvaluation";
-import WorkPlan from "./pages/umum/WorkPlan";
+import WorkPlan from "./pages/WorkPlan";
 import SsnM25 from "./pages/ansos/SsnM25";
 import SakF25 from "./pages/ansos/SakF25";
+import { teams } from "@/components/monitoring/teamsData";
 import { MonitoringLayout } from "@/components/monitoring/MonitoringLayout";
 import { useTeamAccess } from "@/hooks/useTeamAccess";
 
@@ -29,10 +30,7 @@ interface TeamWorkPlanRouteProps {
   teamName: string;
 }
 
-const TeamWorkPlanRoute: React.FC<TeamWorkPlanRouteProps> = ({
-  teamId,
-  teamName,
-}) => {
+const TeamWorkPlanRoute: React.FC<TeamWorkPlanRouteProps> = ({ teamId, teamName }) => {
   const { hasAccess, isLoading } = useTeamAccess(teamId);
 
   if (isLoading) {
@@ -79,6 +77,12 @@ const App = () => {
             {/* Monitoring routes */}
             <Route path="/monitoring" element={<MonitoringLayout />}>
               <Route index element={<Monitoring />} />
+              {teams.map((team) => (
+                <Route
+                  path={team.name.toLowerCase()}
+                  element={<Navigate to={"work-plan"} replace />}
+                />
+              ))}
               <Route
                 path="umum/work-plan"
                 element={
