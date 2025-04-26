@@ -1,5 +1,5 @@
 import React from "react";
-import TeamEvaluationSection from "../../components/general-subsection/team-evaluation/TeamEvaluationSection";
+import TeamEvaluationSection from "../../components/umum/team-evaluation/TeamEvaluationSection";
 
 const TeamEvaluation: React.FC = () => {
   return (

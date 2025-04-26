@@ -17,7 +17,7 @@ import { teams } from "./teamsData";
 
 export function MonitoringLayout() {
   const location = useLocation();
-  const monitoringSubpages = ["/general-subsection", "/social-statistics"];
+  const monitoringSubpages = teams.map((team) => `/${team.name.toLowerCase()}`);
   const isSubpage = monitoringSubpages.some((path) =>
     location.pathname.includes(path)
   );
@@ -61,58 +61,34 @@ export function MonitoringLayout() {
                     </SidebarMenu>
                   </SidebarGroupContent>
                 </SidebarGroup>
-                {location.pathname.includes("/general-subsection") && (
-                  <SidebarGroup className="py-1">
-                    <SidebarGroupLabel>Subbagian Umum</SidebarGroupLabel>
+                {teams.map((team) => (
+                  location.pathname.includes(`/${team.name.toLowerCase()}`) && (
+                  <SidebarGroup key={team.id} className="py-1">
+                    <SidebarGroupLabel>{team.text}</SidebarGroupLabel>
                     <SidebarGroupContent>
-                      <SidebarMenu>
-                        {teams[0].items.map((item) => (
-                          <SidebarMenuItem key={item.title}>
-                            <SidebarMenuButton asChild>
-                              <Link
-                                to={item.url}
-                                className={`flex items-center gap-2 px-3 py-2 rounded-md transition-colors ${
-                                  location.pathname === item.url
-                                    ? "text-primary bg-primary-light"
-                                    : "hover:bg-gray-100"
-                                }`}
-                              >
-                                <item.icon className="h-4 w-4" />
-                                <span>{item.title}</span>
-                              </Link>
-                            </SidebarMenuButton>
-                          </SidebarMenuItem>
-                        ))}
-                      </SidebarMenu>
+                    <SidebarMenu>
+                      {team.items.map((item) => (
+                      <SidebarMenuItem key={item.title}>
+                        <SidebarMenuButton asChild>
+                        <Link
+                          to={item.url}
+                          className={`flex items-center gap-2 px-3 py-2 rounded-md transition-colors ${
+                          location.pathname === item.url
+                            ? "text-primary bg-primary-light"
+                            : "hover:bg-gray-100"
+                          }`}
+                        >
+                          <item.icon className="h-4 w-4" />
+                          <span>{item.title}</span>
+                        </Link>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                      ))}
+                    </SidebarMenu>
                     </SidebarGroupContent>
                   </SidebarGroup>
-                )}
-                {location.pathname.includes("/social-statistics") && (
-                  <SidebarGroup className="py-1">
-                    <SidebarGroupLabel>Statistik Sosial</SidebarGroupLabel>
-                    <SidebarGroupContent>
-                      <SidebarMenu>
-                        {teams[1].items.map((item) => (
-                          <SidebarMenuItem key={item.title}>
-                            <SidebarMenuButton asChild>
-                              <Link
-                                to={item.url}
-                                className={`flex items-center gap-2 px-3 py-2 rounded-md transition-colors ${
-                                  location.pathname === item.url
-                                    ? "text-primary bg-primary-light"
-                                    : "hover:bg-gray-100"
-                                }`}
-                              >
-                                <item.icon className="h-4 w-4" />
-                                <span>{item.title}</span>
-                              </Link>
-                            </SidebarMenuButton>
-                          </SidebarMenuItem>
-                        ))}
-                      </SidebarMenu>
-                    </SidebarGroupContent>
-                  </SidebarGroup>
-                )}
+                  )
+                ))}
               </SidebarContent>
             </Sidebar>
           )}

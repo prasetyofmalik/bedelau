@@ -9,17 +9,26 @@ import {
   parseISO,
 } from "date-fns";
 import { id } from "date-fns/locale";
-import { useWorkPlans } from "./hooks/useWorkPlans";
+import { useWorkPlansWithRealizations } from "./hooks/useWorkPlansWithRealizations";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft, ArrowRight, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
+import { WorkPlanItem, WorkPlanRealization } from "./types";
 
-export const WorkPlanCalendar = () => {
+interface WorkPlanCalendarProps {
+  teamId: number;
+}
+
+export const WorkPlanCalendar = ({ teamId }: WorkPlanCalendarProps) => {
   const [currentWeek, setCurrentWeek] = useState(new Date());
   const [activeDay, setActiveDay] = useState<string | null>(null);
   const weekStart = startOfWeek(currentWeek, { weekStartsOn: 1 });
-  const { data: workPlans, isLoading } = useWorkPlans(undefined, weekStart);
+  const { data: workPlans, isLoading } = useWorkPlansWithRealizations(
+    teamId,
+    weekStart
+  );
 
   const days = Array.from({ length: 5 }, (_, i) => addDays(weekStart, i));
 
@@ -37,6 +46,57 @@ export const WorkPlanCalendar = () => {
         return isSameDay(planWeekStart, parseISO(weekStart.toISOString()));
       }) || []
     );
+  };
+
+  // Reorganized to properly group by category while keeping all items
+  const getWorkItemsForDay = (workPlan: any, dayOfWeek: number) => {
+    // Create structure with categories as keys
+    const groupedByCategory: Record<
+      string,
+      { plans: Array<string>; realizations: Array<string> }
+    > = {};
+
+    // Group plans by category
+    workPlan.work_plan_items
+      ?.filter((item: WorkPlanItem) => item.day_of_week === dayOfWeek)
+      .forEach((item: WorkPlanItem) => {
+        if (!groupedByCategory[item.category]) {
+          groupedByCategory[item.category] = {
+            plans: [],
+            realizations: [],
+          };
+        }
+        groupedByCategory[item.category].plans.push(item.content);
+      });
+
+    // Add realizations to the same categories
+    workPlan.work_plan_realizations
+      ?.filter((item: WorkPlanRealization) => item.day_of_week === dayOfWeek)
+      .forEach((item: WorkPlanRealization) => {
+        if (!groupedByCategory[item.category]) {
+          groupedByCategory[item.category] = {
+            plans: [],
+            realizations: [],
+          };
+        }
+        groupedByCategory[item.category].realizations.push(
+          item.realization_content
+        );
+      });
+
+    return groupedByCategory;
+  };
+
+  // Helper function to check if a day has any work plan items
+  const dayHasWorkPlanItems = (day: Date) => {
+    const dayOfWeek = day.getDay() || 7; // Convert 0 (Sunday) to 7 to match our day_of_week values
+    const dailyWorkPlans = getDailyWorkPlans(format(day, "yyyy-MM-dd"));
+
+    // Check if any work plan has items for this day
+    return dailyWorkPlans.some((workPlan) => {
+      const items = getWorkItemsForDay(workPlan, dayOfWeek);
+      return Object.keys(items).length > 0;
+    });
   };
 
   if (isLoading) {
@@ -81,9 +141,7 @@ export const WorkPlanCalendar = () => {
                   format(new Date(), "yyyy-MM-dd") && "border-primary",
                 activeDay === format(day, "yyyy-MM-dd")
                   ? "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground"
-                  : "",
-                format(day, "yyyy-MM-dd") ===
-                  format(new Date(), "yyyy-MM-dd") && "border-primary"
+                  : ""
               )}
               onClick={() => setActiveDay(format(day, "yyyy-MM-dd"))}
             >
@@ -99,7 +157,7 @@ export const WorkPlanCalendar = () => {
               >
                 {format(day, "d")}
               </span>
-              {getDailyWorkPlans(format(day, "yyyy-MM-dd")).length > 0 && (
+              {dayHasWorkPlanItems(day) && (
                 <span
                   className={cn(
                     "mt-1 h-1.5 w-1.5 rounded-full",
@@ -117,45 +175,51 @@ export const WorkPlanCalendar = () => {
           {activeDay ? (
             <>
               <h3 className="text-lg font-medium mb-4">
-                Rencana Kerja untuk{" "}
+                Rencana & Realisasi Kerja{" "}
                 {format(parseISO(activeDay), "PPPP", { locale: id })}
               </h3>
               {getDailyWorkPlans(activeDay).map((workPlan) => {
-                const dayOfWeek = parseISO(activeDay).getDay() || 7; // Convert Sunday (0) to 7
-                const filteredItems = workPlan.work_plan_items.filter(
-                  (item) => item.day_of_week === dayOfWeek
-                );
-
-                // Group the items by category
-                const groupedByCategory: Record<string, { id: string; content: string; day_of_week: number; category: string }[]> = {};
-                filteredItems.forEach((item) => {
-                  if (!groupedByCategory[item.category]) {
-                    groupedByCategory[item.category] = [];
-                  }
-                  groupedByCategory[item.category].push(item);
-                });
+                const dayOfWeek = parseISO(activeDay).getDay() || 7;
+                const items = getWorkItemsForDay(workPlan, dayOfWeek);
 
                 return (
                   <div key={workPlan.id} className="space-y-4">
-                    {Object.entries(groupedByCategory).map(
-                      ([category, items]) => (
-                        <div
-                          key={category}
-                          className="bg-gray-50 p-4 rounded-lg"
-                        >
-                          <h4 className="font-medium text-sm mb-2">
-                            {category}
-                          </h4>
-                          <ul className="space-y-2">
-                            {items.map((item) => (
-                              <li key={item.id} className="text-sm">
-                                {item.content}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      )
-                    )}
+                    {Object.entries(items).map(([category, content]) => (
+                      <div
+                        key={category}
+                        className="bg-gray-50 p-4 rounded-lg space-y-3"
+                      >
+                        <h4 className="font-medium text-sm">{category}</h4>
+
+                        {content.plans.length > 0 && (
+                          <div className="text-sm">
+                            <Badge variant="secondary" className="mb-1">
+                              Rencana
+                            </Badge>
+                            <ul className="list-disc pl-5 space-y-1">
+                              {content.plans.map((plan, idx) => (
+                                <li key={`plan-${idx}`}>{plan}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+
+                        {content.realizations.length > 0 && (
+                          <div className="text-sm pl-4 border-l-2 border-primary">
+                            <Badge variant="outline" className="mb-1">
+                              Realisasi
+                            </Badge>
+                            <ul className="list-disc pl-5 space-y-1">
+                              {content.realizations.map((realization, idx) => (
+                                <li key={`realization-${idx}`}>
+                                  {realization}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                      </div>
+                    ))}
                   </div>
                 );
               })}

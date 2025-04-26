@@ -35,7 +35,8 @@ export interface WorkPlanCategory {
 export interface WorkPlanRealization {
   id: string;
   work_plan_id: string;
-  work_plan_item_id: string;
+  day_of_week: number;
+  category: string;
   realization_content: string;
   created_at: string;
   updated_at: string;

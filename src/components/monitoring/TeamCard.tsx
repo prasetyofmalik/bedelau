@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { LucideIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { teams } from "./teamsData";
 
 interface TeamCardProps {
   name: string;
@@ -13,11 +14,9 @@ export function TeamCard({ name, icon: Icon, color, text }: TeamCardProps) {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    if (name === "UMUM") {
-      navigate("/monitoring/general-subsection");
-    }
-    else if (name === "ANSOS") {
-      navigate("/monitoring/social-statistics");
+    const team = teams.find((team) => team.name.toLowerCase() === name.toLowerCase());
+    if (team) {
+      navigate(`/monitoring/${team.name.toLowerCase()}`);
     }
   };
 
