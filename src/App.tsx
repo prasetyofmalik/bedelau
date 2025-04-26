@@ -12,12 +12,12 @@ import Login from "./pages/Login";
 import AdminDashboard from "./pages/AdminDashboard";
 import UserDashboard from "./pages/UserDashboard";
 import Monitoring from "./pages/Monitoring";
-import MailsRecap from "./pages/general-subsection/MailsRecap";
-import SKPRecap from "./pages/general-subsection/SKPRecap";
-import TeamEvaluation from "./pages/general-subsection/TeamEvaluation";
-import WorkPlan from "./pages/general-subsection/WorkPlan";
-import SsnM25 from "./pages/social-statistics/SsnM25";
-import SakF25 from "./pages/social-statistics/SakF25";
+import MailsRecap from "./pages/umum/MailsRecap";
+import SKPRecap from "./pages/umum/SKPRecap";
+import TeamEvaluation from "./pages/umum/TeamEvaluation";
+import WorkPlan from "./pages/umum/WorkPlan";
+import SsnM25 from "./pages/ansos/SsnM25";
+import SakF25 from "./pages/ansos/SakF25";
 import { MonitoringLayout } from "@/components/monitoring/MonitoringLayout";
 import { useTeamAccess } from "@/hooks/useTeamAccess";
 
@@ -51,31 +51,113 @@ const App = () => {
         <Sonner />
         <BrowserRouter>
           <Routes>
-            {/* Existing routes */}
+            {/* Public routes */}
+            <Route path="/" element={<Index />} />
+            <Route path="/login" element={<Login />} />
+
+            {/* Protected routes */}
+            <Route
+              path="/admin"
+              element={
+                <ProtectedRoute>
+                  <AdminDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/user"
+              element={
+                <ProtectedRoute>
+                  <UserDashboard />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Monitoring routes */}
             <Route path="/monitoring" element={<MonitoringLayout />}>
               <Route index element={<Monitoring />} />
-
-              {/* General Subsection Work Plan */}
               <Route
-                path="general-subsection/work-plan"
+                path="umum"
+                element={
+                  <Navigate to="/monitoring/umum/work-plan" replace />
+                }
+              />
+              <Route
+                path="ansos"
+                element={
+                  <Navigate to="/monitoring/ansos/work-plan" replace />
+                }
+              />
+              <Route
+                path="kape"
+                element={
+                  <Navigate to="/monitoring/kape/work-plan" replace />
+                }
+              />
+              <Route
+                path="umum"
+                element={
+                  <Navigate to="/monitoring/umum/work-plan" replace />
+                }
+              />
+              <Route
+                path="umum"
+                element={
+                  <Navigate to="/monitoring/umum/work-plan" replace />
+                }
+              />
+              <Route
+                path="umum"
+                element={
+                  <Navigate to="/monitoring/umum/work-plan" replace />
+                }
+              />
+              <Route
+                path="umum"
+                element={
+                  <Navigate to="/monitoring/umum/work-plan" replace />
+                }
+              />
+              <Route
+                path="umum"
+                element={
+                  <Navigate to="/monitoring/umum/work-plan" replace />
+                }
+              />
+              <Route
+                path="umum"
+                element={
+                  <Navigate to="/monitoring/umum/work-plan" replace />
+                }
+              />
+              <Route
+                path="umum"
+                element={
+                  <Navigate to="/monitoring/umum/work-plan" replace />
+                }
+              />
+              <Route
+                path="umum"
+                element={
+                  <Navigate to="/monitoring/umum/work-plan" replace />
+                }
+              />
+              <Route
+                path="umum/work-plan"
                 element={
                   <ProtectedRoute>
                     <TeamWorkPlanRoute teamId={1} teamName="UMUM" />
                   </ProtectedRoute>
                 }
               />
-
-              {/* Social Statistics Work Plan */}
               <Route
-                path="social-statistics/work-plan"
+                path="ansos/work-plan"
                 element={
                   <ProtectedRoute>
                     <TeamWorkPlanRoute teamId={2} teamName="ANSOS" />
                   </ProtectedRoute>
                 }
               />
-
-              {/* Add routes for other teams */}
               <Route
                 path="kape/work-plan"
                 element={
@@ -151,7 +233,7 @@ const App = () => {
 
               {/* Existing routes */}
               <Route
-                path="general-subsection/mails-recap"
+                path="umum/mails-recap"
                 element={
                   <ProtectedRoute>
                     <MailsRecap />
@@ -159,7 +241,7 @@ const App = () => {
                 }
               />
               <Route
-                path="general-subsection/skp-recap"
+                path="umum/skp-recap"
                 element={
                   <ProtectedRoute>
                     <SKPRecap />
@@ -167,15 +249,15 @@ const App = () => {
                 }
               />
               <Route
-                path="general-subsection/team-evaluation"
+                path="umum/team-evaluation"
                 element={
                   <ProtectedRoute>
                     <TeamEvaluation />
                   </ProtectedRoute>
                 }
               />
-              <Route path="social-statistics/ssn-m25" element={<SsnM25 />} />
-              <Route path="social-statistics/sak-f25" element={<SakF25 />} />
+              <Route path="ansos/ssn-m25" element={<SsnM25 />} />
+              <Route path="ansos/sak-f25" element={<SakF25 />} />
             </Route>
           </Routes>
         </BrowserRouter>

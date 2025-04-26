@@ -17,7 +17,7 @@ import { teams } from "./teamsData";
 
 export function MonitoringLayout() {
   const location = useLocation();
-  const monitoringSubpages = ["/general-subsection", "/social-statistics"];
+  const monitoringSubpages = ["/umum", "/ansos", "/kape"];
   const isSubpage = monitoringSubpages.some((path) =>
     location.pathname.includes(path)
   );
@@ -61,7 +61,7 @@ export function MonitoringLayout() {
                     </SidebarMenu>
                   </SidebarGroupContent>
                 </SidebarGroup>
-                {location.pathname.includes("/general-subsection") && (
+                {location.pathname.includes("/umum") && (
                   <SidebarGroup className="py-1">
                     <SidebarGroupLabel>Subbagian Umum</SidebarGroupLabel>
                     <SidebarGroupContent>
@@ -87,7 +87,7 @@ export function MonitoringLayout() {
                     </SidebarGroupContent>
                   </SidebarGroup>
                 )}
-                {location.pathname.includes("/social-statistics") && (
+                {location.pathname.includes("/ansos") && (
                   <SidebarGroup className="py-1">
                     <SidebarGroupLabel>Statistik Sosial</SidebarGroupLabel>
                     <SidebarGroupContent>

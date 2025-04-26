@@ -1,5 +1,4 @@
 import React from "react";
-import { Navigate } from "react-router-dom";
 import WorkPlanSection from "@/components/work-plan/WorkPlanSection";
 
 interface WorkPlanProps {

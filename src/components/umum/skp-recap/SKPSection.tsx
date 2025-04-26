@@ -16,7 +16,7 @@ import { SKPForm } from "./SKPForm";
 import { SKPTable } from "./SKPTable";
 import { YearlySKP, MonthlySKP } from "./types";
 import { exportToExcel } from "@/utils/excelExport";
-import { SKPDashboard } from "./SKPDashboard";
+import { SKPDashboard } from "../../umum/skp-recap/SKPDashboard";
 
 export default function SKPSection() {
   const [searchQuery, setSearchQuery] = useState("");

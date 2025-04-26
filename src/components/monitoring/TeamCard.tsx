@@ -14,10 +14,13 @@ export function TeamCard({ name, icon: Icon, color, text }: TeamCardProps) {
 
   const handleClick = () => {
     if (name === "UMUM") {
-      navigate("/monitoring/general-subsection");
+      navigate("/monitoring/umum");
     }
     else if (name === "ANSOS") {
-      navigate("/monitoring/social-statistics");
+      navigate("/monitoring/ansos");
+    }
+    else if (name === "KAPE") {
+      navigate("/monitoring/kape");
     }
   };
 

@@ -17,7 +17,7 @@ import {
   MonitorCheck,
   CalendarCheck,
 } from "lucide-react";
-import { TeamEvaluationCategory } from "@/components/general-subsection/team-evaluation/types";
+import { TeamEvaluationCategory } from "@/components/umum/team-evaluation/types";
 
 export const teams = [
   {
@@ -28,25 +28,25 @@ export const teams = [
     text: "Subbagian Umum",
     items: [
       {
+        title: "Rencana Kerja",
+        url: "/monitoring/umum/work-plan",
+        icon: CalendarCheck,
+      },
+      {
         title: "Rekap Surat",
-        url: "/monitoring/general-subsection/mails-recap",
+        url: "/monitoring/umum/mails-recap",
         icon: Mails,
       },
       {
         title: "Rekap SKP",
-        url: "/monitoring/general-subsection/skp-recap",
+        url: "/monitoring/umum/skp-recap",
         icon: ChevronsUp,
       },
-      {
-        title: "Evaluasi Tim Kerja",
-        url: "/monitoring/general-subsection/team-evaluation",
-        icon: FileSpreadsheet,
-      },
-      {
-        title: "Rencana Kerja",
-        url: "/monitoring/general-subsection/work-plan",
-        icon: CalendarCheck,
-      },
+      // {
+      //   title: "Evaluasi Tim Kerja",
+      //   url: "/monitoring/umum/team-evaluation",
+      //   icon: FileSpreadsheet,
+      // },
     ],
     categories: [] as TeamEvaluationCategory[],
   },
@@ -58,19 +58,19 @@ export const teams = [
     text: "Fungsi Statistik Sosial",
     items: [
       {
+        title: "Rencana Kerja",
+        url: "/monitoring/ansos/work-plan",
+        icon: CalendarCheck,
+      },
+      {
         title: "Susenas Maret 2025",
-        url: "/monitoring/social-statistics/ssn-m25",
+        url: "/monitoring/ansos/ssn-m25",
         icon: ClipboardList,
       },
       {
         title: "Sakernas Februari 2025",
-        url: "/monitoring/social-statistics/sak-f25",
+        url: "/monitoring/ansos/sak-f25",
         icon: BarChart3,
-      },
-      {
-        title: "Rencana Kerja",
-        url: "/monitoring/social-statistics/work-plan",
-        icon: CalendarCheck,
       },
     ],
     categories: [] as TeamEvaluationCategory[],

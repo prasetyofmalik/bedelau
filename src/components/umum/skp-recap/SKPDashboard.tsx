@@ -25,9 +25,11 @@ export function SKPDashboard({ type, period }: SKPDashboardProps) {
   const COLORS = ["#4f46e5", "#f43f5e", "#10b981", "#f59e0b"];
 
   const totalEmployees = employees.length;
-  
+
   // Get unique employee names from the skpDocuments
-  const employeeNamesWithSkp = new Set(skpDocuments.map((skp) => skp.employee_name));
+  const employeeNamesWithSkp = new Set(
+    skpDocuments.map((skp) => skp.employee_name)
+  );
   const employeesWithSkp = employeeNamesWithSkp.size;
   const employeesWithoutSkp = totalEmployees - employeesWithSkp;
 
@@ -100,10 +102,7 @@ export function SKPDashboard({ type, period }: SKPDashboardProps) {
         <CardContent className="p-2 md:p-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="w-full md:w-3/5 h-[350px]">
-              <ChartContainer
-                config={chartConfig}
-                className="w-full h-full"
-              >
+              <ChartContainer config={chartConfig} className="w-full h-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
                     <Pie

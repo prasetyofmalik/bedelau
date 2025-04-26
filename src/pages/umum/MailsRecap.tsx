@@ -2,8 +2,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   IncomingMailSection,
   OutgoingMailSection,
-} from "@/components/general-subsection/mails-recap/MailSection";
-import { SKSection } from "@/components/general-subsection/mails-recap/SKSection";
+} from "@/components/umum/mails-recap/MailSection";
+import { SKSection } from "@/components/umum/mails-recap/SKSection";
 
 export default function MailsRecap() {
   return (
