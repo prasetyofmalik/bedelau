@@ -23,27 +23,30 @@ import { useTeamAccess } from "@/hooks/useTeamAccess";
 
 const queryClient = new QueryClient();
 
+// Define TeamWorkPlanRoute component to handle routing with team access permissions
+interface TeamWorkPlanRouteProps {
+  teamId: number;
+  teamName: string;
+}
+
+const TeamWorkPlanRoute: React.FC<TeamWorkPlanRouteProps> = ({
+  teamId,
+  teamName,
+}) => {
+  const { hasAccess, isLoading } = useTeamAccess(teamId);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!hasAccess) {
+    return <Navigate to="/monitoring" replace />;
+  }
+
+  return <WorkPlan teamId={teamId} teamName={teamName} />;
+};
+
 const App = () => {
-  const TeamWorkPlanRoute = ({
-    teamId,
-    teamName,
-  }: {
-    teamId: number;
-    teamName: string;
-  }) => {
-    const { hasAccess, isLoading } = useTeamAccess(teamId);
-
-    if (isLoading) {
-      return <div>Loading...</div>;
-    }
-
-    if (!hasAccess) {
-      return <Navigate to="/monitoring" replace />;
-    }
-
-    return <WorkPlan teamId={teamId} teamName={teamName} />;
-  };
-
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
@@ -76,72 +79,6 @@ const App = () => {
             {/* Monitoring routes */}
             <Route path="/monitoring" element={<MonitoringLayout />}>
               <Route index element={<Monitoring />} />
-              <Route
-                path="umum"
-                element={
-                  <Navigate to="/monitoring/umum/work-plan" replace />
-                }
-              />
-              <Route
-                path="ansos"
-                element={
-                  <Navigate to="/monitoring/ansos/work-plan" replace />
-                }
-              />
-              <Route
-                path="kape"
-                element={
-                  <Navigate to="/monitoring/kape/work-plan" replace />
-                }
-              />
-              <Route
-                path="umum"
-                element={
-                  <Navigate to="/monitoring/umum/work-plan" replace />
-                }
-              />
-              <Route
-                path="umum"
-                element={
-                  <Navigate to="/monitoring/umum/work-plan" replace />
-                }
-              />
-              <Route
-                path="umum"
-                element={
-                  <Navigate to="/monitoring/umum/work-plan" replace />
-                }
-              />
-              <Route
-                path="umum"
-                element={
-                  <Navigate to="/monitoring/umum/work-plan" replace />
-                }
-              />
-              <Route
-                path="umum"
-                element={
-                  <Navigate to="/monitoring/umum/work-plan" replace />
-                }
-              />
-              <Route
-                path="umum"
-                element={
-                  <Navigate to="/monitoring/umum/work-plan" replace />
-                }
-              />
-              <Route
-                path="umum"
-                element={
-                  <Navigate to="/monitoring/umum/work-plan" replace />
-                }
-              />
-              <Route
-                path="umum"
-                element={
-                  <Navigate to="/monitoring/umum/work-plan" replace />
-                }
-              />
               <Route
                 path="umum/work-plan"
                 element={

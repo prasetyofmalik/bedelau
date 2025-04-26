@@ -87,6 +87,18 @@ export const WorkPlanCalendar = ({ teamId }: WorkPlanCalendarProps) => {
     return groupedByCategory;
   };
 
+  // Helper function to check if a day has any work plan items
+  const dayHasWorkPlanItems = (day: Date) => {
+    const dayOfWeek = day.getDay() || 7; // Convert 0 (Sunday) to 7 to match our day_of_week values
+    const dailyWorkPlans = getDailyWorkPlans(format(day, "yyyy-MM-dd"));
+
+    // Check if any work plan has items for this day
+    return dailyWorkPlans.some((workPlan) => {
+      const items = getWorkItemsForDay(workPlan, dayOfWeek);
+      return Object.keys(items).length > 0;
+    });
+  };
+
   if (isLoading) {
     return (
       <div className="flex justify-center py-12">
@@ -145,7 +157,7 @@ export const WorkPlanCalendar = ({ teamId }: WorkPlanCalendarProps) => {
               >
                 {format(day, "d")}
               </span>
-              {getDailyWorkPlans(format(day, "yyyy-MM-dd")).length > 0 && (
+              {dayHasWorkPlanItems(day) && (
                 <span
                   className={cn(
                     "mt-1 h-1.5 w-1.5 rounded-full",
