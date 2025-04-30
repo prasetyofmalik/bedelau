@@ -80,7 +80,7 @@ export const Header = () => {
         </Link>
       </Button>
       <Button variant="ghost" asChild>
-        <Link to="https://webapps.bps.go.id/siakkab/ai-bps-siak/" className="flex items-center gap-2">
+        <Link to="https://webapps.bps.go.id/siakkab/dara-ai-bps-siak/" className="flex items-center gap-2">
           <MessagesSquare className="h-4 w-4" />
           Dara AI
         </Link>
