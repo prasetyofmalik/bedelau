@@ -22,8 +22,7 @@ export const Footer = () => {
             <h3 className="text-white font-semibold mb-4">Tautan</h3>
             <ul className="space-y-2 text-sm">
               <li><Link to="https://siakkab.bps.go.id" className="hover:text-white transition-colors">Portal BPS</Link></li>
-              <li><Link to="#" className="hover:text-white transition-colors">Hubungan Masyarakat</Link></li>
-              <li><Link to="#" className="hover:text-white transition-colors">Reformasi Birokrasi</Link></li>
+              <li><Link to="/qaf" className="hover:text-white transition-colors">Quality Assurance Framework</Link></li>
             </ul>
           </div>
         </div>
