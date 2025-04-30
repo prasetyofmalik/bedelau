@@ -11,6 +11,7 @@ import Index from "./pages/Index";
 import Login from "./pages/Login";
 import AdminDashboard from "./pages/AdminDashboard";
 import UserDashboard from "./pages/UserDashboard";
+import QAF from "./pages/QAF";
 import Monitoring from "./pages/Monitoring";
 import MailsRecap from "./pages/umum/MailsRecap";
 import SKPRecap from "./pages/umum/SKPRecap";
@@ -55,6 +56,7 @@ const App = () => {
             {/* Public routes */}
             <Route path="/" element={<Index />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/qaf" element={<QAF />} />
 
             {/* Protected routes */}
             <Route
