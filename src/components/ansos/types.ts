@@ -19,6 +19,13 @@ export interface UpdateData {
   status?: 'belum' | 'sudah';
 }
 
+export interface UpdatePodes25Data {
+  id?: number;
+  sample_code: string;
+  created_at?: string;
+  status?: 'belum' | 'sudah';
+}
+
 export interface CacahSsnM25Data {
   id?: string;
   sample_code: string;
@@ -119,7 +126,7 @@ export interface FenomenaSsnM25TableProps {
   refetch: () => void;
 }
 
-export type SurveyType = "ssn_m25" | "sak_f25";
+export type SurveyType = "ssn_m25" | "sak_f25" | "podes25" | "supas25" | "seruti25";
 
 export interface MutakhirSectionProps {
   surveyType: SurveyType;
