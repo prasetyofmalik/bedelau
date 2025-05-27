@@ -23,6 +23,18 @@ export function CacahSection({ surveyType }: CacahSectionProps) {
   const tableName = `${surveyType}_samples`;
   const cacahTableName = `${surveyType}_cacah`;
 
+  // Define columns based on survey type
+  const getCacahColumns = () => {
+    const baseColumns = "id,no_ruta,status,created_at";
+    
+    if (surveyType === "seruti25") {
+      return `${baseColumns},r203_seruti,sample_type`;
+    } else {
+      // ssn_m25 and other survey types
+      return `${baseColumns},r203_kor,r203_kp,r203_seruti`;
+    }
+  };
+
   // Query to get all samples
   const { data: allSamples = [] } = useQuery({
     queryKey: [`${surveyType}_samples`, searchQuery2],
@@ -52,6 +64,8 @@ export function CacahSection({ surveyType }: CacahSectionProps) {
   } = useQuery({
     queryKey: [`${surveyType}_cacah`, searchQuery2],
     queryFn: async () => {
+      const cacahColumns = getCacahColumns();
+      
       let query = supabase
         .from(tableName)
         .select(
@@ -62,14 +76,7 @@ export function CacahSection({ surveyType }: CacahSectionProps) {
           pml,
           ppl,
           ${cacahTableName} (
-            id,
-            no_ruta,
-            r203_kor,
-            r203_kp,
-            r203_seruti,
-            sample_type,
-            status,
-            created_at
+            ${cacahColumns}
           )
         `
         )
