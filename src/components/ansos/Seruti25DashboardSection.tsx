@@ -27,7 +27,7 @@ export function DashboardSeruti25() {
           expectedRutaEntries.push({
             sample_code: sample.sample_code,
             no_ruta: i,
-            status: "belum",
+            status: "", // Default to empty status for non-inputted data
           });
         }
       });
@@ -45,7 +45,8 @@ export function DashboardSeruti25() {
         const existingCacah = cacahMap.get(key);
         return {
           ...entry,
-          status: existingCacah ? "sudah" : "belum",
+          // If data exists, use its status (sudah/belum), otherwise keep empty for non-inputted
+          status: existingCacah ? existingCacah.status || "belum" : "",
         };
       });
     },

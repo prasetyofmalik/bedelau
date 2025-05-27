@@ -1,4 +1,10 @@
-import { format, eachDayOfInterval, startOfMonth, isBefore, isSameMonth } from "date-fns";
+import {
+  format,
+  eachDayOfInterval,
+  startOfMonth,
+  isBefore,
+  isSameMonth,
+} from "date-fns";
 import {
   Table,
   TableBody,
