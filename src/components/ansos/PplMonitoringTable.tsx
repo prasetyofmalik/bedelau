@@ -1,4 +1,10 @@
-import { format, eachDayOfInterval, startOfMonth, isBefore, isSameMonth } from "date-fns";
+import {
+  format,
+  eachDayOfInterval,
+  startOfMonth,
+  isBefore,
+  isSameMonth,
+} from "date-fns";
 import {
   Table,
   TableBody,
@@ -40,8 +46,8 @@ export function PplMonitoringTable({
       };
     } else {
       return {
-        from: new Date(2025, 1, 8),
-        to: new Date(2025, 1, 27),
+        from: new Date(2025, 5, 1),
+        to: new Date(2025, 5, 30),
       };
     }
   });

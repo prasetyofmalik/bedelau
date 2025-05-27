@@ -28,7 +28,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
-import { CacahSsnM25DataFormProps } from "./types";
+import { CacahSsnM25DataFormProps, SurveyType } from "./types";
 
 const r203Options = [
   { value: 1, label: "Terisi lengkap" },
@@ -47,12 +47,22 @@ const statusOptions = [
   { value: "sudah", label: "Sudah Selesai" },
 ];
 
+const sampleTypeOptions = [
+  { value: "utama", label: "Utama" },
+  { value: "cadangan", label: "Cadangan" },
+];
+
+interface CacahDataFormProps extends CacahSsnM25DataFormProps {
+  surveyType?: SurveyType;
+}
+
 export function CacahDataForm({
   isOpen,
   onClose,
   onSuccess,
   initialData,
-}: CacahSsnM25DataFormProps) {
+  surveyType = "ssn_m25",
+}: CacahDataFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [selectedKecamatan, setSelectedKecamatan] = useState<string | null>(
@@ -61,11 +71,14 @@ export function CacahDataForm({
   const [selectedDesa, setSelectedDesa] = useState<string | null>(null);
   const [isSerutiSample, setIsSerutiSample] = useState(false);
 
+  const tableName = `${surveyType}_samples`;
+  const cacahTableName = `${surveyType}_cacah`;
+
   const { data: samples = [] } = useQuery({
-    queryKey: ["ssn_m25_samples"],
+    queryKey: [`${surveyType}_samples`],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("ssn_m25_samples")
+        .from(tableName)
         .select("kecamatan, desa_kelurahan, sample_code")
         .order("sample_code");
 
@@ -76,12 +89,12 @@ export function CacahDataForm({
 
   // Query to get sample data for editing
   const { data: sampleData } = useQuery({
-    queryKey: ["ssn_m25_sample", initialData?.sample_code],
+    queryKey: [`${surveyType}_sample`, initialData?.sample_code],
     queryFn: async () => {
       if (!initialData?.sample_code) return null;
 
       const { data, error } = await supabase
-        .from("ssn_m25_samples")
+        .from(tableName)
         .select("kecamatan, desa_kelurahan")
         .eq("sample_code", initialData.sample_code)
         .single();
@@ -135,6 +148,7 @@ export function CacahDataForm({
       r203_kor: initialData?.r203_kor || 0,
       r203_kp: initialData?.r203_kp || 0,
       r203_seruti: initialData?.r203_seruti || 0,
+      sample_type: (initialData as any)?.sample_type || "utama",
     },
   });
 
@@ -148,6 +162,7 @@ export function CacahDataForm({
         r203_kor: initialData?.r203_kor || 0,
         r203_kp: initialData?.r203_kp || 0,
         r203_seruti: initialData?.r203_seruti || 0,
+        sample_type: (initialData as any)?.sample_type || "utama",
       });
 
       // Find and set initial kecamatan and desa
@@ -166,16 +181,31 @@ export function CacahDataForm({
   const onSubmit = async (data: any) => {
     setIsSubmitting(true);
     try {
-      const cacahData = {
-        ...data,
-        r203_kor: Number(data.r203_kor),
-        r203_kp: Number(data.r203_kp),
-        r203_seruti: isSerutiSample ? Number(data.r203_seruti) : null,
+      let cacahData: any = {
+        sample_code: data.sample_code,
+        no_ruta: Number(data.no_ruta),
+        status: data.status,
       };
+
+      // Add survey-specific fields
+      if (surveyType === "seruti25") {
+        cacahData = {
+          ...cacahData,
+          r203_seruti: Number(data.r203_seruti),
+          sample_type: data.sample_type,
+        };
+      } else {
+        cacahData = {
+          ...cacahData,
+          r203_kor: Number(data.r203_kor),
+          r203_kp: Number(data.r203_kp),
+          r203_seruti: isSerutiSample ? Number(data.r203_seruti) : null,
+        };
+      }
 
       if (initialData?.id) {
         const { error } = await supabase
-          .from("ssn_m25_cacah")
+          .from(cacahTableName)
           .update(cacahData)
           .eq("id", initialData.id);
 
@@ -183,7 +213,7 @@ export function CacahDataForm({
         toast.success("Data pencacahan berhasil diperbarui");
       } else {
         const { error } = await supabase
-          .from("ssn_m25_cacah")
+          .from(cacahTableName)
           .insert([cacahData]);
 
         if (error) throw error;
@@ -210,7 +240,7 @@ export function CacahDataForm({
     setIsDeleting(true);
     try {
       const { error } = await supabase
-        .from("ssn_m25_cacah")
+        .from(cacahTableName)
         .delete()
         .eq("id", initialData.id);
 
@@ -312,6 +342,39 @@ export function CacahDataForm({
               )}
             />
 
+            {surveyType === "seruti25" && (
+              <FormField
+                control={form.control}
+                name="sample_type"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Jenis Sampel Rumah Tangga</FormLabel>
+                    <UISelect
+                      onValueChange={field.onChange}
+                      value={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger className="bg-white">
+                          <SelectValue placeholder="Pilih jenis sampel" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent className="bg-white">
+                        {sampleTypeOptions.map((option) => (
+                          <SelectItem
+                            key={option.value}
+                            value={option.value}
+                          >
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </UISelect>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
+
             <FormField
               control={form.control}
               name="no_ruta"
@@ -338,71 +401,75 @@ export function CacahDataForm({
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="r203_kor"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    Hasil Pencacahan Rumah Tangga (R203) KOR
-                  </FormLabel>
-                  <UISelect
-                    onValueChange={field.onChange}
-                    value={field.value.toString()}
-                  >
-                    <FormControl>
-                      <SelectTrigger className="bg-white">
-                        <SelectValue placeholder="Pilih hasil pencacahan KOR" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent className="bg-white">
-                      {r203Options.map((option) => (
-                        <SelectItem
-                          key={option.value}
-                          value={option.value.toString()}
-                        >
-                          {option.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </UISelect>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {surveyType !== "seruti25" && (
+              <>
+                <FormField
+                  control={form.control}
+                  name="r203_kor"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        Hasil Pencacahan Rumah Tangga (R203) KOR
+                      </FormLabel>
+                      <UISelect
+                        onValueChange={field.onChange}
+                        value={field.value.toString()}
+                      >
+                        <FormControl>
+                          <SelectTrigger className="bg-white">
+                            <SelectValue placeholder="Pilih hasil pencacahan KOR" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent className="bg-white">
+                          {r203Options.map((option) => (
+                            <SelectItem
+                              key={option.value}
+                              value={option.value.toString()}
+                            >
+                              {option.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </UISelect>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-            <FormField
-              control={form.control}
-              name="r203_kp"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Hasil Pencacahan Rumah Tangga (R203) KP</FormLabel>
-                  <UISelect
-                    onValueChange={field.onChange}
-                    value={field.value.toString()}
-                  >
-                    <FormControl>
-                      <SelectTrigger className="bg-white">
-                        <SelectValue placeholder="Pilih hasil pencacahan KP" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent className="bg-white">
-                      {r203Options.map((option) => (
-                        <SelectItem
-                          key={option.value}
-                          value={option.value.toString()}
-                        >
-                          {option.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </UISelect>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                <FormField
+                  control={form.control}
+                  name="r203_kp"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Hasil Pencacahan Rumah Tangga (R203) KP</FormLabel>
+                      <UISelect
+                        onValueChange={field.onChange}
+                        value={field.value.toString()}
+                      >
+                        <FormControl>
+                          <SelectTrigger className="bg-white">
+                            <SelectValue placeholder="Pilih hasil pencacahan KP" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent className="bg-white">
+                          {r203Options.map((option) => (
+                            <SelectItem
+                              key={option.value}
+                              value={option.value.toString()}
+                            >
+                              {option.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </UISelect>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </>
+            )}
 
-            {isSerutiSample && (
+            {(surveyType === "seruti25" || isSerutiSample) && (
               <FormField
                 control={form.control}
                 name="r203_seruti"

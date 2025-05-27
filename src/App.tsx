@@ -20,6 +20,7 @@ import WorkPlan from "./pages/WorkPlan";
 import SsnM25 from "./pages/ansos/SsnM25";
 import SakF25 from "./pages/ansos/SakF25";
 import Podes25 from "./pages/ansos/Podes25";
+import Seruti25 from "./pages/ansos/Seruti25";
 import { teams } from "@/components/monitoring/teamsData";
 import { MonitoringLayout } from "@/components/monitoring/MonitoringLayout";
 import { useTeamAccess } from "@/hooks/useTeamAccess";
@@ -203,6 +204,7 @@ const App = () => {
               <Route path="ansos/ssn-m25" element={<SsnM25 />} />
               <Route path="ansos/sak-f25" element={<SakF25 />} />
               <Route path="ansos/podes25" element={<Podes25 />} />
+              <Route path="ansos/seruti25" element={<Seruti25 />} />
             </Route>
           </Routes>
         </BrowserRouter>

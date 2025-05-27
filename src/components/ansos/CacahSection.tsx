@@ -6,21 +6,40 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { CacahDataForm } from "./CacahForm";
 import { CacahTable } from "./CacahTable";
-import { CacahSsnM25Data } from "./types";
+import { CacahSsnM25Data, SurveyType } from "./types";
 import { exportToExcel } from "@/utils/excelExport";
 
-export function CacahSection() {
+interface CacahSectionProps {
+  surveyType: SurveyType;
+}
+
+export function CacahSection({ surveyType }: CacahSectionProps) {
   const [searchQuery2, setSearchQuery2] = useState("");
   const [isAddCacahOpen, setIsAddCacahOpen] = useState(false);
   const [editingCacah, setEditingCacah] = useState<CacahSsnM25Data | null>(
     null
   );
 
+  const tableName = `${surveyType}_samples`;
+  const cacahTableName = `${surveyType}_cacah`;
+
+  // Define columns based on survey type
+  const getCacahColumns = () => {
+    const baseColumns = "id,no_ruta,status,created_at";
+    
+    if (surveyType === "seruti25") {
+      return `${baseColumns},r203_seruti,sample_type`;
+    } else {
+      // ssn_m25 and other survey types
+      return `${baseColumns},r203_kor,r203_kp,r203_seruti`;
+    }
+  };
+
   // Query to get all samples
   const { data: allSamples = [] } = useQuery({
-    queryKey: ["ssn_m25_samples", searchQuery2],
+    queryKey: [`${surveyType}_samples`, searchQuery2],
     queryFn: async () => {
-      let query = supabase.from("ssn_m25_samples").select("*");
+      let query = supabase.from(tableName).select("*");
 
       if (searchQuery2) {
         query = query.or(
@@ -43,10 +62,12 @@ export function CacahSection() {
     isLoading,
     refetch,
   } = useQuery({
-    queryKey: ["ssn_m25_cacah", searchQuery2],
+    queryKey: [`${surveyType}_cacah`, searchQuery2],
     queryFn: async () => {
+      const cacahColumns = getCacahColumns();
+      
       let query = supabase
-        .from("ssn_m25_samples")
+        .from(tableName)
         .select(
           `
           sample_code,
@@ -54,14 +75,8 @@ export function CacahSection() {
           desa_kelurahan,
           pml,
           ppl,
-          ssn_m25_cacah (
-            id,
-            no_ruta,
-            r203_kor,
-            r203_kp,
-            r203_seruti,
-            status,
-            created_at
+          ${cacahTableName} (
+            ${cacahColumns}
           )
         `
         )
@@ -79,7 +94,7 @@ export function CacahSection() {
       // Transform the data to include all samples, even those without cacah data
       return data.map((sample: any) => ({
         ...sample,
-        cacah_data: sample.ssn_m25_cacah || [],
+        cacah_data: sample[cacahTableName] || [],
       }));
     },
   });
@@ -87,15 +102,33 @@ export function CacahSection() {
   const handleExport = () => {
     const exportData = tercacahSamples.flatMap((sample) =>
       sample.cacah_data.length > 0
-        ? sample.cacah_data.map((cacah: any) => ({
-            "kode prop": "14",
-            "kode kab": "05",
-            "kode NKS [6 digit]": sample.sample_code,
-            "No Urut Ruta [max: 10]": cacah.no_ruta,
-            "Sudah Selesai [sudah/belum]": cacah.status,
-            "Hasil Pencacahan Ruta (R203) KOR": cacah.r203_kor || "-",
-            "Hasil Pencacahan Ruta (R203) KP": cacah.r203_kp || "-",
-          }))
+        ? sample.cacah_data.map((cacah: any) => {
+            const baseData = {
+              "kode prop": "14",
+              "kode kab": "05",
+              "kode NKS [6 digit]": sample.sample_code,
+              "No Urut Ruta [max: 10]": cacah.no_ruta,
+              "Sudah Selesai [sudah/belum]": cacah.status,
+            };
+
+            if (surveyType === "seruti25") {
+              return {
+                ...baseData,
+                "Jenis Sampel": cacah.sample_type || "-",
+                "Hasil Pencacahan Ruta (R203) Seruti": cacah.r203_seruti || "-",
+              };
+            } else {
+              return {
+                ...baseData,
+                "Hasil Pencacahan Ruta (R203) KOR": cacah.r203_kor || "-",
+                "Hasil Pencacahan Ruta (R203) KP": cacah.r203_kp || "-",
+                "Hasil Pencacahan Ruta (R203) Seruti":
+                  sample.sample_code?.startsWith("2")
+                    ? cacah.r203_seruti || "-"
+                    : "-",
+              };
+            }
+          })
         : [
             {
               "kode prop": "14",
@@ -103,8 +136,16 @@ export function CacahSection() {
               "kode NKS [6 digit]": sample.sample_code,
               "No Urut Ruta [max: 10]": "-",
               "Sudah Selesai [sudah/belum]": "-",
-              "Hasil Pencacahan Ruta (R203) KOR": "-",
-              "Hasil Pencacahan Ruta (R203) KP": "-",
+              ...(surveyType === "seruti25"
+                ? {
+                    "Jenis Sampel": "-",
+                    "Hasil Pencacahan Ruta (R203) Seruti": "-",
+                  }
+                : {
+                    "Hasil Pencacahan Ruta (R203) KOR": "-",
+                    "Hasil Pencacahan Ruta (R203) KP": "-",
+                    "Hasil Pencacahan Ruta (R203) Seruti": "-",
+                  }),
             },
           ]
     );
@@ -166,6 +207,7 @@ export function CacahSection() {
             cacahs={tercacahSamples}
             onEdit={handleEdit}
             onSuccess={refetch}
+            surveyType={surveyType}
           />
         )}
       </div>
@@ -175,6 +217,7 @@ export function CacahSection() {
         onClose={handleClose}
         onSuccess={refetch}
         initialData={editingCacah}
+        surveyType={surveyType}
       />
     </div>
   );
