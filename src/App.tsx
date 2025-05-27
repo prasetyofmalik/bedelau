@@ -202,7 +202,7 @@ const App = () => {
               />
               <Route path="ansos/ssn-m25" element={<SsnM25 />} />
               <Route path="ansos/sak-f25" element={<SakF25 />} />
-              <Route path="ansos/podes25" element={<SakF25 />} />
+              <Route path="ansos/podes25" element={<Podes25 />} />
             </Route>
           </Routes>
         </BrowserRouter>
