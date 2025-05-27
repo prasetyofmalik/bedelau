@@ -35,13 +35,13 @@ export function PplMonitoringTable({
   const [date, setDate] = useState<DateRange | undefined>(() => {
     if (type === "pemutakhiran") {
       return {
-        from: new Date(2025, 1, 1), // February 1, 2025
-        to: new Date(2025, 1, 6), // February 6, 2025
+        from: new Date(2025, 5, 1),
+        to: new Date(2025, 5, 30),
       };
     } else {
       return {
-        from: new Date(2025, 1, 8), // February 8, 2025
-        to: new Date(2025, 1, 27), // February 27, 2025
+        from: new Date(2025, 1, 8),
+        to: new Date(2025, 1, 27),
       };
     }
   });
