@@ -34,7 +34,7 @@ export default function Login() {
   useEffect(() => {
     if (session && profile) {
       // Redirect based on user role
-      if (profile.role === "admin") {
+      if (profile.role === "admin" || profile.role === "head_office" || profile.role === "general_subsection") {
         navigate("/admin");
       } else {
         navigate("/user");
