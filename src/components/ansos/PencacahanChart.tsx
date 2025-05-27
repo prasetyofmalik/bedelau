@@ -21,7 +21,9 @@ export function PencacahanChart({ data, surveyType }: PencacahanChartProps) {
     const serutiInProgressCount = data.filter(
       (item) => item.status === "belum"
     ).length;
-    const serutiNotStartedCount = data.filter((item) => !item.status).length;
+    const serutiNotStartedCount = data.filter(
+      (item) => !item.status || item.status === ""
+    ).length;
     const serutiTotal =
       serutiCompletedCount + serutiInProgressCount + serutiNotStartedCount;
 
@@ -75,6 +77,25 @@ export function PencacahanChart({ data, surveyType }: PencacahanChartProps) {
                 outerRadius="80%"
                 paddingAngle={0}
                 dataKey="value"
+                className={`${surveyType}-pencacahan-chart`}
+                onMouseEnter={(data, index) => {
+                  const paths = document.querySelectorAll(
+                    `.${surveyType}-pencacahan-chart .recharts-sector`
+                  );
+                  paths.forEach((path, i) => {
+                    if (i !== index) {
+                      (path as SVGPathElement).style.fill = "#e5e7eb";
+                    }
+                  });
+                }}
+                onMouseLeave={() => {
+                  const paths = document.querySelectorAll(
+                    `.${surveyType}-pencacahan-chart .recharts-sector`
+                  );
+                  paths.forEach((path, i) => {
+                    (path as SVGPathElement).style.fill = COLORS[i];
+                  });
+                }}
               >
                 {serutiChartData.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={COLORS[index]} />
@@ -104,7 +125,6 @@ export function PencacahanChart({ data, surveyType }: PencacahanChartProps) {
   const susenasData = data.filter((item) => item.sample_code?.startsWith("1"));
   const serutiData = data.filter((item) => item.sample_code?.startsWith("2"));
 
-  // Calculate stats for Susenas-only
   const susenasCompletedCount = susenasData.filter(
     (item) => item.status === "sudah"
   ).length;
@@ -117,7 +137,6 @@ export function PencacahanChart({ data, surveyType }: PencacahanChartProps) {
   const susenasTotal =
     susenasCompletedCount + susenasInProgressCount + susenasNotStartedCount;
 
-  // Calculate stats for Susenas+Seruti
   const serutiCompletedCount = serutiData.filter(
     (item) => item.status === "sudah"
   ).length;
@@ -204,10 +223,10 @@ export function PencacahanChart({ data, surveyType }: PencacahanChartProps) {
             outerRadius="80%"
             paddingAngle={0}
             dataKey="value"
-            className={className}
+            className={`${surveyType}-${className}`}
             onMouseEnter={(data, index) => {
               const paths = document.querySelectorAll(
-                `.${className} .recharts-sector`
+                `.${surveyType}-${className} .recharts-sector`
               );
               paths.forEach((path, i) => {
                 if (i !== index) {
@@ -217,7 +236,7 @@ export function PencacahanChart({ data, surveyType }: PencacahanChartProps) {
             }}
             onMouseLeave={() => {
               const paths = document.querySelectorAll(
-                `.${className} .recharts-sector`
+                `.${surveyType}-${className} .recharts-sector`
               );
               paths.forEach((path, i) => {
                 (path as SVGPathElement).style.fill = COLORS[i];
