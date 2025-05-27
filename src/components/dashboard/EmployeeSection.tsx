@@ -18,8 +18,9 @@ export function EmployeeSection() {
       const { data } = await supabase
         .from("profiles")
         .select("*")
-        .in('role', ['head_office', 'employee'])
-        .order("created_at");
+        .in('role', ['head_office', 'general_subsection', 'functional'])
+        .order('role', { ascending: false })
+        .order('nip_bps', { ascending: true });
       return data;
     },
   });

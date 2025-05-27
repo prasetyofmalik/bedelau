@@ -31,7 +31,7 @@ export default function AdminDashboard() {
         .eq("id", session.user.id)
         .single();
 
-      if (profile?.role !== "admin") {
+      if (!["admin", "head_office", "general_subsection"].includes(profile?.role)) {
         navigate("/");
         return null;
       }
