@@ -1,9 +1,9 @@
-import { DashboardSeruti25Section as DashboardContent } from "./Seruti25DashboardSection";
+import { DashboardSeruti25 } from "./Seruti25DashboardSection";
 import { CacahSection } from "./CacahSection";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export function DashboardSeruti25Section() {
-  return <DashboardContent />;
+  return <DashboardSeruti25 />;
 }
 
 export function InputPplSeruti25Section() {

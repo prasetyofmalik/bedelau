@@ -1,11 +1,105 @@
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from "recharts";
+import {
+  PieChart,
+  Pie,
+  Cell,
+  ResponsiveContainer,
+  Legend,
+  Tooltip,
+} from "recharts";
 
 interface PencacahanChartProps {
   data: any[];
+  surveyType?: string;
 }
 
-export function PencacahanChart({ data }: PencacahanChartProps) {
+export function PencacahanChart({ data, surveyType }: PencacahanChartProps) {
+  if (surveyType === "seruti25") {
+    // For Seruti25, only show Seruti data
+    const serutiCompletedCount = data.filter(
+      (item) => item.status === "sudah"
+    ).length;
+    const serutiInProgressCount = data.filter(
+      (item) => item.status === "belum"
+    ).length;
+    const serutiNotStartedCount = data.filter((item) => !item.status).length;
+    const serutiTotal =
+      serutiCompletedCount + serutiInProgressCount + serutiNotStartedCount;
 
+    const serutiChartData = [
+      {
+        name: "Sudah Selesai",
+        value: serutiCompletedCount,
+        percentage: ((serutiCompletedCount / serutiTotal) * 100).toFixed(2),
+      },
+      {
+        name: "Belum Selesai",
+        value: serutiInProgressCount,
+        percentage: ((serutiInProgressCount / serutiTotal) * 100).toFixed(2),
+      },
+      {
+        name: "Belum Input",
+        value: serutiNotStartedCount,
+        percentage: ((serutiNotStartedCount / serutiTotal) * 100).toFixed(2),
+      },
+    ];
+
+    const COLORS = ["#4ade80", "#fbbf24", "#94a3b8"];
+
+    const CustomTooltip = ({ active, payload }: any) => {
+      if (active && payload && payload.length) {
+        return (
+          <div className="bg-white p-2 border border-gray-200 rounded shadow-sm">
+            <p className="text-sm font-medium">{`${payload[0].name}: ${payload[0].payload.percentage}%`}</p>
+          </div>
+        );
+      }
+      return null;
+    };
+
+    return (
+      <div className="space-y-4 mb-4 md:mb-0">
+        <h3 className="text-xl font-semibold text-secondary mb-4 text-center">
+          Progress Pencacahan
+        </h3>
+        <div className="w-[80%] md:w-full aspect-square max-w-md mx-auto">
+          <h4 className="text-lg font-semibold text-secondary mx-3 text-center">
+            Seruti
+          </h4>
+          <ResponsiveContainer width="100%" height="90%">
+            <PieChart>
+              <Pie
+                data={serutiChartData}
+                cx="50%"
+                cy="50%"
+                innerRadius="60%"
+                outerRadius="80%"
+                paddingAngle={0}
+                dataKey="value"
+              >
+                {serutiChartData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={COLORS[index]} />
+                ))}
+              </Pie>
+              <Tooltip content={<CustomTooltip />} />
+              <Legend
+                verticalAlign="bottom"
+                height={36}
+                formatter={(value, entry) => {
+                  const { payload } = entry as any;
+                  return `${value} ${payload.value}`;
+                }}
+                wrapperStyle={{
+                  fontSize: window.innerWidth < 768 ? "11px" : "14px",
+                }}
+              />
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+    );
+  }
+
+  // Original logic for other survey types
   // Separate data into Susenas-only and Susenas+Seruti
   const susenasData = data.filter((item) => item.sample_code?.startsWith("1"));
   const serutiData = data.filter((item) => item.sample_code?.startsWith("2"));
@@ -56,7 +150,7 @@ export function PencacahanChart({ data }: PencacahanChartProps) {
       name: "Belum Input",
       value: notStarted,
       percentage: ((notStarted / total) * 100).toFixed(2),
-    }
+    },
   ];
 
   const susenasChartData = createChartData(
@@ -73,8 +167,8 @@ export function PencacahanChart({ data }: PencacahanChartProps) {
     serutiTotal
   );
 
-  const COLORS = ['#4ade80', '#fbbf24', '#94a3b8'];
-  const HOVER_COLOR = '#e5e7eb';
+  const COLORS = ["#4ade80", "#fbbf24", "#94a3b8"];
+  const HOVER_COLOR = "#e5e7eb";
 
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
@@ -87,9 +181,19 @@ export function PencacahanChart({ data }: PencacahanChartProps) {
     return null;
   };
 
-  const RenderPieChart = ({ data, className, title }: { data: any[], className: string, title: string }) => (
+  const RenderPieChart = ({
+    data,
+    className,
+    title,
+  }: {
+    data: any[];
+    className: string;
+    title: string;
+  }) => (
     <div className="w-[80%] md:w-full aspect-square max-w-md mx-auto">
-      <h4 className="text-lg font-semibold text-secondary mx-3 text-center">{title}</h4>
+      <h4 className="text-lg font-semibold text-secondary mx-3 text-center">
+        {title}
+      </h4>
       <ResponsiveContainer width="100%" height="90%">
         <PieChart>
           <Pie
@@ -102,17 +206,21 @@ export function PencacahanChart({ data }: PencacahanChartProps) {
             dataKey="value"
             className={className}
             onMouseEnter={(data, index) => {
-              const paths = document.querySelectorAll( `.${className} .recharts-sector`);
+              const paths = document.querySelectorAll(
+                `.${className} .recharts-sector`
+              );
               paths.forEach((path, i) => {
-          if (i !== index) {
-            (path as SVGPathElement).style.fill = HOVER_COLOR;
-          }
+                if (i !== index) {
+                  (path as SVGPathElement).style.fill = HOVER_COLOR;
+                }
               });
             }}
             onMouseLeave={() => {
-              const paths = document.querySelectorAll( `.${className} .recharts-sector` );
+              const paths = document.querySelectorAll(
+                `.${className} .recharts-sector`
+              );
               paths.forEach((path, i) => {
-          (path as SVGPathElement).style.fill = COLORS[i];
+                (path as SVGPathElement).style.fill = COLORS[i];
               });
             }}
           >
@@ -129,7 +237,7 @@ export function PencacahanChart({ data }: PencacahanChartProps) {
               return `${value} ${payload.value}`;
             }}
             wrapperStyle={{
-              fontSize: window.innerWidth < 768 ? '11px' : '14px',
+              fontSize: window.innerWidth < 768 ? "11px" : "14px",
             }}
           />
         </PieChart>
@@ -139,16 +247,18 @@ export function PencacahanChart({ data }: PencacahanChartProps) {
 
   return (
     <div className="space-y-4 mb-4 md:mb-0">
-      <h3 className="text-xl font-semibold text-secondary mb-4 text-center">Progress Pencacahan</h3>
+      <h3 className="text-xl font-semibold text-secondary mb-4 text-center">
+        Progress Pencacahan
+      </h3>
       <div className="grid md:grid-cols-2 gap-2">
-        <RenderPieChart 
-          data={susenasChartData} 
-          className="susenas-chart" 
+        <RenderPieChart
+          data={susenasChartData}
+          className="susenas-chart"
           title="Susenas"
         />
-        <RenderPieChart 
-          data={serutiChartData} 
-          className="seruti-chart" 
+        <RenderPieChart
+          data={serutiChartData}
+          className="seruti-chart"
           title="Susenas + Seruti"
         />
       </div>

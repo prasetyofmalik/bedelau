@@ -6,7 +6,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { CacahSsnM25TableProps } from "./types";
+import { CacahSsnM25TableProps, SurveyType } from "./types";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Pencil } from "lucide-react";
@@ -28,7 +28,22 @@ const getR203Label = (value?: string) => {
   }
 };
 
-export function CacahTable({ cacahs, onEdit }: CacahSsnM25TableProps) {
+const getSampleTypeLabel = (value?: string) => {
+  switch (value) {
+    case "utama":
+      return "Utama";
+    case "cadangan":
+      return "Cadangan";
+    default:
+      return "-";
+  }
+};
+
+interface CacahTableProps extends CacahSsnM25TableProps {
+  surveyType: SurveyType;
+}
+
+export function CacahTable({ cacahs, onEdit, surveyType }: CacahTableProps) {
   const getStatusBadge = (status?: string) => {
     switch (status) {
       case "sudah":
@@ -51,15 +66,24 @@ export function CacahTable({ cacahs, onEdit }: CacahSsnM25TableProps) {
             <TableHead className="text-black p-1 text-center">
               Status Pencacahan
             </TableHead>
+            {surveyType === "seruti25" && (
+              <TableHead className="text-black p-1 text-center">
+                Jenis Sampel
+              </TableHead>
+            )}
             <TableHead className="text-black py-1 text-center">
               No Urut Ruta
             </TableHead>
-            <TableHead className="text-black p-1 text-xs text-center">
-              Hasil Pencacahan Ruta (R203) KOR
-            </TableHead>
-            <TableHead className="text-black p-1 text-xs text-center">
-              Hasil Pencacahan Ruta (R203) KP
-            </TableHead>
+            {surveyType !== "seruti25" && (
+              <>
+                <TableHead className="text-black p-1 text-xs text-center">
+                  Hasil Pencacahan Ruta (R203) KOR
+                </TableHead>
+                <TableHead className="text-black p-1 text-xs text-center">
+                  Hasil Pencacahan Ruta (R203) KP
+                </TableHead>
+              </>
+            )}
             <TableHead className="text-black p-1 text-xs text-center">
               Hasil Pencacahan Ruta (R203) Seruti
             </TableHead>
@@ -101,17 +125,27 @@ export function CacahTable({ cacahs, onEdit }: CacahSsnM25TableProps) {
                   <TableCell className="text-secondary p-1 text-center whitespace-nowrap">
                     {getStatusBadge(cacah.status)}
                   </TableCell>
+                  {surveyType === "seruti25" && (
+                    <TableCell className="text-secondary p-1 text-center">
+                      {getSampleTypeLabel(cacah.sample_type)}
+                    </TableCell>
+                  )}
                   <TableCell className="text-secondary p-1 pr-4 text-right">
                     {cacah.no_ruta || "-"}
                   </TableCell>
+                  {surveyType !== "seruti25" && (
+                    <>
+                      <TableCell className="text-secondary p-1 text-xs md:text-base">
+                        {getR203Label(cacah.r203_kor?.toString())}
+                      </TableCell>
+                      <TableCell className="text-secondary p-1 text-xs md:text-base">
+                        {getR203Label(cacah.r203_kp?.toString())}
+                      </TableCell>
+                    </>
+                  )}
                   <TableCell className="text-secondary p-1 text-xs md:text-base">
-                    {getR203Label(cacah.r203_kor?.toString())}
-                  </TableCell>
-                  <TableCell className="text-secondary p-1 text-xs md:text-base">
-                    {getR203Label(cacah.r203_kp?.toString())}
-                  </TableCell>
-                  <TableCell className="text-secondary p-1 text-xs md:text-base">
-                    {sample.sample_code?.startsWith("2")
+                    {surveyType === "seruti25" ||
+                    sample.sample_code?.startsWith("2")
                       ? getR203Label(cacah.r203_seruti?.toString())
                       : "-"}
                   </TableCell>
@@ -145,15 +179,24 @@ export function CacahTable({ cacahs, onEdit }: CacahSsnM25TableProps) {
                 <TableCell className="text-secondary p-1 text-center whitespace-nowrap">
                   {getStatusBadge(undefined)}
                 </TableCell>
+                {surveyType === "seruti25" && (
+                  <TableCell className="text-secondary p-1 text-center">
+                    -
+                  </TableCell>
+                )}
                 <TableCell className="text-secondary p-1 pr-4 text-right">
                   -
                 </TableCell>
-                <TableCell className="text-secondary p-1 text-xs md:text-base">
-                  -
-                </TableCell>
-                <TableCell className="text-secondary p-1 text-xs md:text-base">
-                  -
-                </TableCell>
+                {surveyType !== "seruti25" && (
+                  <>
+                    <TableCell className="text-secondary p-1 text-xs md:text-base">
+                      -
+                    </TableCell>
+                    <TableCell className="text-secondary p-1 text-xs md:text-base">
+                      -
+                    </TableCell>
+                  </>
+                )}
                 <TableCell className="text-secondary p-1 text-xs md:text-base">
                   -
                 </TableCell>
