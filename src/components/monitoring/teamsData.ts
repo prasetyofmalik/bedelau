@@ -7,17 +7,15 @@ import {
   Laptop,
   Mails,
   ChevronsUp,
-  ClipboardList,
   BarChart,
   BarChart2,
-  BarChart3,
-  FileSpreadsheet,
   HousePlus,
   Camera,
   Workflow,
   FileCheck,
   MonitorCheck,
   CalendarCheck,
+  UsersRound,
 } from "lucide-react";
 import { TeamEvaluationCategory } from "@/components/umum/team-evaluation/types";
 
@@ -83,6 +81,11 @@ export const teams = [
         title: "Seruti Triwulan II 2025",
         url: "/monitoring/ansos/seruti25",
         icon: HousePlus,
+      },
+      {
+        title: "SUPAS 2025",
+        url: "/monitoring/ansos/supas25",
+        icon: UsersRound,
       },
     ],
     categories: [] as TeamEvaluationCategory[],

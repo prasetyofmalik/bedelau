@@ -13,7 +13,7 @@ interface PencacahanChartProps {
 }
 
 export function PencacahanChart({ data, surveyType }: PencacahanChartProps) {
-  if (surveyType === "seruti25") {
+  if (surveyType === "seruti25" || surveyType === "supas25") {
     // For Seruti25, only show Seruti data
     const serutiCompletedCount = data.filter(
       (item) => item.status === "sudah"
@@ -61,12 +61,12 @@ export function PencacahanChart({ data, surveyType }: PencacahanChartProps) {
     return (
       <div className="space-y-4 mb-4 md:mb-0">
         <h3 className="text-xl font-semibold text-secondary mb-4 text-center">
-          Progress Pencacahan
+          Pencacahan
         </h3>
         <div className="w-[80%] md:w-full aspect-square max-w-md mx-auto">
-          <h4 className="text-lg font-semibold text-secondary mx-3 text-center">
+          {/* <h4 className="text-lg font-semibold text-secondary mx-3 text-center">
             Seruti
-          </h4>
+          </h4> */}
           <ResponsiveContainer width="100%" height="90%">
             <PieChart>
               <Pie
